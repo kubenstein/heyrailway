@@ -22,37 +22,52 @@ export default function App() {
     }
   };
 
-  const isSelected = (y: number, x: number) => {
-    return (
-      (editStart && editStart.y === y && editStart.x === x) ||
-      lineSegments.some(segment =>
-        (segment.start.y === y && segment.start.x === x) ||
-        (segment.end.y === y && segment.end.x === x)
-      )
-    );
+  const getGridPos = (e: React.MouseEvent<SVGSVGElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = Math.floor((e.clientX - rect.left) / 20);
+    const y = Math.floor((e.clientY - rect.top) / 20);
+    return { x: Math.max(0, Math.min(99, x)), y: Math.max(0, Math.min(99, y)) };
+  };
+
+  const handleSvgClick = (e: React.MouseEvent<SVGSVGElement>) => {
+    const { y, x } = getGridPos(e);
+    handleClick(y, x);
+  };
+
+  const handleSvgMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    const { y, x } = getGridPos(e);
+    setHovered({ y, x });
+  };
+
+  const handleSvgMouseLeave = () => {
+    setHovered(null);
+  };
+
+  const getSelectedPoints = () => {
+    const points = new Set<string>();
+    lineSegments.forEach(segment => {
+      points.add(`${segment.start.x},${segment.start.y}`);
+      points.add(`${segment.end.x},${segment.end.y}`);
+    });
+    if (editStart) {
+      points.add(`${editStart.x},${editStart.y}`);
+    }
+    return Array.from(points).map(str => {
+      const [x, y] = str.split(',').map(Number);
+      return { x, y };
+    });
   };
 
   return (
     <main className="app">
-      <svg className="grid-svg" width={2000} height={2000}>
-        {Array.from({ length: 100 * 100 }, (_, i) => {
-          const y = Math.floor(i / 100);
-          const x = i % 100;
-          return (
-            <rect
-              key={i}
-              x={x * 20}
-              y={y * 20}
-              width={20}
-              height={20}
-              stroke="#ccc"
-              fill={isSelected(y, x) ? 'yellow' : 'white'}
-              onClick={() => handleClick(y, x)}
-              onMouseEnter={() => setHovered({ y, x })}
-              onMouseLeave={() => setHovered(null)}
-            />
-          );
-        })}
+      <svg
+        className="grid-svg"
+        width={2000}
+        height={2000}
+        onClick={handleSvgClick}
+        onMouseMove={handleSvgMouseMove}
+        onMouseLeave={handleSvgMouseLeave}
+      >
         {lineSegments.map((segment, index) => {
           const isDiagonal = segment.start.x !== segment.end.x && segment.start.y !== segment.end.y;
           if (isDiagonal) {
@@ -133,6 +148,15 @@ export default function App() {
             );
           }
         })()}
+        {getSelectedPoints().map((point, index) => (
+          <circle
+            key={`point-${index}`}
+            cx={point.x * 20 + 10}
+            cy={point.y * 20 + 10}
+            r={8}
+            fill="yellow"
+          />
+        ))}
       </svg>
     </main>
   );
