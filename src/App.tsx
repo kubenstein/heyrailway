@@ -4,21 +4,22 @@ type Point = { x: number; y: number };
 
 type LineSegment = { start: Point; end: Point };
 
+type Line = { segments: LineSegment[] };
+
 export default function App() {
-  const [lineSegments, setLineSegments] = useState<LineSegment[]>([]);
-  const [editStart, setEditStart] = useState<Point | null>(null);
+  const [lines, setLines] = useState<Line[]>([]);
+  const [editingLine, setEditingLine] = useState<{ segments: LineSegment[]; currentStart: Point | null } | null>(null);
   const [hovered, setHovered] = useState<Point | null>(null);
 
   const handleClick = (y: number, x: number) => {
-    if (editStart) {
-      if (editStart.y === y && editStart.x === x) {
-        setEditStart(null);
-      } else {
-        setLineSegments([...lineSegments, { start: editStart, end: { y, x } }]);
-        setEditStart(null);
-      }
-    } else {
-      setEditStart({ y, x });
+    if (!editingLine) {
+      setEditingLine({ segments: [], currentStart: { y, x } });
+    } else if (editingLine.currentStart) {
+      const newSegment = { start: editingLine.currentStart, end: { y, x } };
+      setEditingLine({
+        segments: [...editingLine.segments, newSegment],
+        currentStart: { y, x }
+      });
     }
   };
 
@@ -43,14 +44,29 @@ export default function App() {
     setHovered(null);
   };
 
+  const handleSvgDoubleClick = () => {
+    if (editingLine) {
+      setLines([...lines, { segments: editingLine.segments }]);
+      setEditingLine(null);
+    }
+  };
+
   const getSelectedPoints = () => {
     const points = new Set<string>();
-    lineSegments.forEach(segment => {
-      points.add(`${segment.start.x},${segment.start.y}`);
-      points.add(`${segment.end.x},${segment.end.y}`);
+    lines.forEach(line => {
+      line.segments.forEach(segment => {
+        points.add(`${segment.start.x},${segment.start.y}`);
+        points.add(`${segment.end.x},${segment.end.y}`);
+      });
     });
-    if (editStart) {
-      points.add(`${editStart.x},${editStart.y}`);
+    if (editingLine) {
+      editingLine.segments.forEach(segment => {
+        points.add(`${segment.start.x},${segment.start.y}`);
+        points.add(`${segment.end.x},${segment.end.y}`);
+      });
+      if (editingLine.currentStart) {
+        points.add(`${editingLine.currentStart.x},${editingLine.currentStart.y}`);
+      }
     }
     return Array.from(points).map(str => {
       const [x, y] = str.split(',').map(Number);
@@ -67,14 +83,15 @@ export default function App() {
         onClick={handleSvgClick}
         onMouseMove={handleSvgMouseMove}
         onMouseLeave={handleSvgMouseLeave}
+        onDoubleClick={handleSvgDoubleClick}
       >
-        {lineSegments.map((segment, index) => {
+        {lines.flatMap(line => line.segments).map((segment, index) => {
           const isDiagonal = segment.start.x !== segment.end.x && segment.start.y !== segment.end.y;
           if (isDiagonal) {
             const pivot = { x: segment.end.x, y: segment.start.y };
             return [
               <line
-                key={`${index}-1`}
+                key={`line-${index}-1`}
                 x1={segment.start.x * 20 + 10}
                 y1={segment.start.y * 20 + 10}
                 x2={pivot.x * 20 + 10}
@@ -83,7 +100,7 @@ export default function App() {
                 strokeWidth={2}
               />,
               <line
-                key={`${index}-2`}
+                key={`line-${index}-2`}
                 x1={pivot.x * 20 + 10}
                 y1={pivot.y * 20 + 10}
                 x2={segment.end.x * 20 + 10}
@@ -95,7 +112,7 @@ export default function App() {
           } else {
             return (
               <line
-                key={index}
+                key={`line-${index}`}
                 x1={segment.start.x * 20 + 10}
                 y1={segment.start.y * 20 + 10}
                 x2={segment.end.x * 20 + 10}
@@ -106,8 +123,46 @@ export default function App() {
             );
           }
         })}
-        {editStart && hovered && (editStart.y !== hovered.y || editStart.x !== hovered.x) && (() => {
-          const tempSegment = { start: editStart, end: hovered };
+        {editingLine && editingLine.segments.map((segment, index) => {
+          const isDiagonal = segment.start.x !== segment.end.x && segment.start.y !== segment.end.y;
+          if (isDiagonal) {
+            const pivot = { x: segment.end.x, y: segment.start.y };
+            return [
+              <line
+                key={`edit-${index}-1`}
+                x1={segment.start.x * 20 + 10}
+                y1={segment.start.y * 20 + 10}
+                x2={pivot.x * 20 + 10}
+                y2={pivot.y * 20 + 10}
+                stroke="orange"
+                strokeWidth={2}
+              />,
+              <line
+                key={`edit-${index}-2`}
+                x1={pivot.x * 20 + 10}
+                y1={pivot.y * 20 + 10}
+                x2={segment.end.x * 20 + 10}
+                y2={segment.end.y * 20 + 10}
+                stroke="orange"
+                strokeWidth={2}
+              />
+            ];
+          } else {
+            return (
+              <line
+                key={`edit-${index}`}
+                x1={segment.start.x * 20 + 10}
+                y1={segment.start.y * 20 + 10}
+                x2={segment.end.x * 20 + 10}
+                y2={segment.end.y * 20 + 10}
+                stroke="orange"
+                strokeWidth={2}
+              />
+            );
+          }
+        })}
+        {editingLine && editingLine.currentStart && hovered && (editingLine.currentStart.y !== hovered.y || editingLine.currentStart.x !== hovered.x) && (() => {
+          const tempSegment = { start: editingLine.currentStart!, end: hovered };
           const isDiagonal = tempSegment.start.x !== tempSegment.end.x && tempSegment.start.y !== tempSegment.end.y;
           if (isDiagonal) {
             const pivot = { x: tempSegment.end.x, y: tempSegment.start.y };
