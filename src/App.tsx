@@ -50,17 +50,44 @@ export default function App() {
             />
           );
         })}
-        {pairs.map((pair, index) => (
-          <line
-            key={index}
-            x1={pair.start.x * 20 + 10}
-            y1={pair.start.y * 20 + 10}
-            x2={pair.end.x * 20 + 10}
-            y2={pair.end.y * 20 + 10}
-            stroke="red"
-            strokeWidth={2}
-          />
-        ))}
+        {pairs.map((pair, index) => {
+          const isDiagonal = pair.start.x !== pair.end.x && pair.start.y !== pair.end.y;
+          if (isDiagonal) {
+            const pivot = { x: pair.end.x, y: pair.start.y };
+            return [
+              <line
+                key={`${index}-1`}
+                x1={pair.start.x * 20 + 10}
+                y1={pair.start.y * 20 + 10}
+                x2={pivot.x * 20 + 10}
+                y2={pivot.y * 20 + 10}
+                stroke="red"
+                strokeWidth={2}
+              />,
+              <line
+                key={`${index}-2`}
+                x1={pivot.x * 20 + 10}
+                y1={pivot.y * 20 + 10}
+                x2={pair.end.x * 20 + 10}
+                y2={pair.end.y * 20 + 10}
+                stroke="red"
+                strokeWidth={2}
+              />
+            ];
+          } else {
+            return (
+              <line
+                key={index}
+                x1={pair.start.x * 20 + 10}
+                y1={pair.start.y * 20 + 10}
+                x2={pair.end.x * 20 + 10}
+                y2={pair.end.y * 20 + 10}
+                stroke="red"
+                strokeWidth={2}
+              />
+            );
+          }
+        })}
       </svg>
     </main>
   );
