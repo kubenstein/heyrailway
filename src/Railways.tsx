@@ -1,4 +1,3 @@
-import React from 'react';
 import { Line } from './types';
 
 interface RailwaysProps {
@@ -7,7 +6,7 @@ interface RailwaysProps {
   strokeDasharray?: string;
 }
 
-const Railways: React.FC<RailwaysProps> = ({ lines, color = "red", strokeDasharray }) => {
+export default function Railways({ lines, color = "red", strokeDasharray }: RailwaysProps) {
   return (
     <>
       {lines.flatMap(line => line.segments).map((segment, index) => {
@@ -54,5 +53,3 @@ const Railways: React.FC<RailwaysProps> = ({ lines, color = "red", strokeDasharr
     </>
   );
 };
-
-export default Railways;

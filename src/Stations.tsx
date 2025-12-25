@@ -1,11 +1,10 @@
-import React from 'react';
 import { Point } from './types';
 
 interface StationsProps {
   stations: Point[];
 }
 
-const Stations: React.FC<StationsProps> = ({ stations }) => {
+export default function Stations({ stations }: StationsProps) {
   return (
     <>
       {stations.map((point, index) => (
@@ -20,5 +19,3 @@ const Stations: React.FC<StationsProps> = ({ stations }) => {
     </>
   );
 };
-
-export default Stations;

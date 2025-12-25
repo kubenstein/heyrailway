@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Railways from './Railways';
 import { Point, LineSegment, Line } from './types';
 
