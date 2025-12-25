@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import Railways from './Railways';
+import { LineComponent, Segment } from './Railways';
 import { Point, LineSegment, Line } from './types';
+
+type MouseEvent = React.MouseEvent<SVGGElement>;
 
 interface LineEditorProps {
   stations: Point[];
@@ -8,68 +10,57 @@ interface LineEditorProps {
 }
 
 export default function LineEditor({ stations, onLineCreated }: LineEditorProps) {
-  const [editingLine, setEditingLine] = useState<{ segments: LineSegment[]; currentStart: Point | null } | null>(null);
-  const [hovered, setHovered] = useState<Point | null>(null);
+  const [segments, setSegments] = useState<LineSegment[]>([]);
+  const [startingPoint, setStartingPoint] = useState<Point | null>(null);
+  const [hoveringPoint, setHoveringPoint] = useState<Point | null>(null);
 
+  const onClick = (e: MouseEvent) => {
+    const point = eToPoint(e);
+    if (!isStation(point)) return;
+
+    if (startingPoint) {
+      const newSegment = { start: startingPoint, end: point };
+      setSegments([...segments, newSegment]);
+    }
+    setStartingPoint(point);
+  };
+
+  const onMouseMove = (e: MouseEvent) => {
+    const point = eToPoint(e);
+    setHoveringPoint(point);
+  };
+
+  const onDoubleClick = () => {
+    onLineCreated({ segments });
+    setSegments([]);
+    setStartingPoint(null);
+  };
+
+
+  // support
   const isStation = (point: Point) => stations.some(s => s.x === point.x && s.y === point.y);
 
-  const handleClick = (y: number, x: number) => {
-    const point = { x, y };
-    if (!editingLine) {
-      if (isStation(point)) {
-        setEditingLine({ segments: [], currentStart: point });
-      }
-    } else if (editingLine.currentStart) {
-      if (isStation(point)) {
-        const newSegment = { start: editingLine.currentStart, end: point };
-        setEditingLine({
-          segments: [...editingLine.segments, newSegment],
-          currentStart: point
-        });
-      }
-    }
-  };
-
-  const handleSvgClick = (e: React.MouseEvent<SVGGElement>) => {
-    const svg = e.currentTarget.ownerSVGElement;
-    if (!svg) return;
+  const eToPoint = (e: MouseEvent) => {
+    const svg = e.currentTarget.ownerSVGElement!;
     const rect = svg.getBoundingClientRect();
     const x = Math.floor((e.clientX - rect.left) / 20);
     const y = Math.floor((e.clientY - rect.top) / 20);
-    const point = { x: Math.max(0, Math.min(99, x)), y: Math.max(0, Math.min(99, y)) };
-    handleClick(point.y, point.x);
-  };
+    const point: Point = { x, y };
+    return point;
+  }
 
-  const handleSvgMouseMove = (e: React.MouseEvent<SVGGElement>) => {
-    const svg = e.currentTarget.ownerSVGElement;
-    if (!svg) return;
-    const rect = svg.getBoundingClientRect();
-    const x = Math.floor((e.clientX - rect.left) / 20);
-    const y = Math.floor((e.clientY - rect.top) / 20);
-    setHovered({ y, x: Math.max(0, Math.min(99, x)) });
-  };
-
-  const handleSvgMouseLeave = () => {
-    setHovered(null);
-  };
-
-  const handleSvgDoubleClick = () => {
-    if (editingLine) {
-      onLineCreated({ segments: editingLine.segments });
-      setEditingLine(null);
-    }
-  };
+  const hoveringSegment: LineSegment | null = startingPoint && hoveringPoint && { start: startingPoint, end: hoveringPoint };
+  const appliedLine: Line = { segments };
 
   return (
     <g
-      onClick={handleSvgClick}
-      onMouseMove={handleSvgMouseMove}
-      onMouseLeave={handleSvgMouseLeave}
-      onDoubleClick={handleSvgDoubleClick}
+      onClick={onClick}
+      onMouseMove={onMouseMove}
+      onDoubleClick={onDoubleClick}
     >
       <rect x="0" y="0" width="2000" height="2000" fill="transparent" />
-      {editingLine && <Railways lines={[{ segments: editingLine.segments }]} color="orange" />}
-      {editingLine && editingLine.currentStart && hovered && (editingLine.currentStart.y !== hovered.y || editingLine.currentStart.x !== hovered.x) && <Railways lines={[{ segments: [{ start: editingLine.currentStart, end: hovered }] }]} color="blue" strokeDasharray="5,5" />}
+      <LineComponent line={appliedLine} color="orange" />
+      {hoveringSegment && <Segment segment={hoveringSegment} color="blue" strokeDasharray="5,5" />}
     </g>
   );
 }
