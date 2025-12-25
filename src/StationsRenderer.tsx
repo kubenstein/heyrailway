@@ -1,17 +1,17 @@
-import { Point } from './types';
+import { Station } from './types';
 
 interface StationsRendererProps {
-  stations: Point[];
+  stations: Station[];
 }
 
 export default function StationsRenderer({ stations }: StationsRendererProps) {
   return (
     <>
-      {stations.map((point, index) => (
+      {stations.map((station, index) => (
         <circle
           key={`point-${index}`}
-          cx={point.x * 20 + 10}
-          cy={point.y * 20 + 10}
+          cx={station.position.x * 20 + 10}
+          cy={station.position.y * 20 + 10}
           r={8}
           fill="yellow"
         />

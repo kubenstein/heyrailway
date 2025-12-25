@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { LineRenderer, SegmentRenderer } from './RailwaysRenderer';
-import { Point, LineSegment, Line } from './types';
+import { Point, LineSegment, Line, Station } from './types';
 
 type MouseEvent = React.MouseEvent<SVGGElement>;
 
 interface LineEditorProps {
-  stations: Point[];
+  stations: Station[];
   onLineCreated: (line: Line) => void;
 }
 
@@ -38,7 +38,7 @@ export default function LineEditor({ stations, onLineCreated }: LineEditorProps)
 
 
   // support
-  const isStation = (point: Point) => stations.some(s => s.x === point.x && s.y === point.y);
+  const isStation = (point: Point) => stations.some(s => s.position.x === point.x && s.position.y === point.y);
 
   const eToPoint = (e: MouseEvent) => {
     const svg = e.currentTarget.ownerSVGElement!;

@@ -2,17 +2,17 @@ import { useState } from 'react';
 import StationsRenderer from './StationsRenderer';
 import RailwaysRenderer from './RailwaysRenderer';
 import LineEditor from './LineEditor';
-import { Point, Line } from './types';
+import { Point, Line, Station } from './types';
 
 export default function App() {
   const [lines, setLines] = useState<Line[]>([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [stations, setStations] = useState<Point[]>(() => {
-    const points: Point[] = [];
+  const [stations] = useState<Station[]>(() => {
+    const stations: Station[] = [];
     for (let i = 0; i < 10; i++) {
-      points.push({ x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) });
+      stations.push({ position: { x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) } });
     }
-    return points;
+    return stations;
   });
 
   const onLineCreated = (line: Line) => {
