@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Stations from './Stations';
-import Railways from './Railways';
+import StationsRenderer from './StationsRenderer';
+import RailwaysRenderer from './RailwaysRenderer';
 import LineEditor from './LineEditor';
 import { Point, Line } from './types';
 
@@ -26,8 +26,8 @@ export default function App() {
         {isEditing ? 'Cancel Editing' : 'Start Editing'}
       </button>
       <svg className="grid-svg" width={2000} height={2000}>
-        <Stations stations={stations} />
-        <Railways lines={lines} />
+        <StationsRenderer stations={stations} />
+        <RailwaysRenderer lines={lines} />
         {isEditing && <LineEditor stations={stations} onLineCreated={onLineCreated} />}
       </svg>
     </main>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LineComponent, Segment } from './Railways';
+import { LineRenderer, SegmentRenderer } from './RailwaysRenderer';
 import { Point, LineSegment, Line } from './types';
 
 type MouseEvent = React.MouseEvent<SVGGElement>;
@@ -59,8 +59,8 @@ export default function LineEditor({ stations, onLineCreated }: LineEditorProps)
       onDoubleClick={onDoubleClick}
     >
       <rect x="0" y="0" width="2000" height="2000" fill="transparent" />
-      <LineComponent line={appliedLine} color="orange" />
-      {hoveringSegment && <Segment segment={hoveringSegment} color="blue" strokeDasharray="5,5" />}
+      <LineRenderer line={appliedLine} color="orange" />
+      {hoveringSegment && <SegmentRenderer segment={hoveringSegment} color="blue" strokeDasharray="5,5" />}
     </g>
   );
 }

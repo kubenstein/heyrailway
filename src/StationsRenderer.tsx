@@ -1,10 +1,10 @@
 import { Point } from './types';
 
-interface StationsProps {
+interface StationsRendererProps {
   stations: Point[];
 }
 
-export default function Stations({ stations }: StationsProps) {
+export default function StationsRenderer({ stations }: StationsRendererProps) {
   return (
     <>
       {stations.map((point, index) => (

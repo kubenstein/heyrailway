@@ -1,24 +1,24 @@
 import { Line, LineSegment } from './types';
 
-interface RailwaysProps {
+interface RailwaysRendererProps {
   lines: Line[];
   color?: string;
   strokeDasharray?: string;
 }
 
-interface LineProps {
+interface LineRendererProps {
   line: Line;
   color: string;
   strokeDasharray?: string;
 }
 
-interface SegmentProps {
+interface SegmentRendererProps {
   segment: LineSegment;
   color: string;
   strokeDasharray?: string;
 }
 
-export function Segment({ segment, color, strokeDasharray }: SegmentProps) {
+export function SegmentRenderer({ segment, color, strokeDasharray }: SegmentRendererProps) {
   const isDiagonal = segment.start.x !== segment.end.x && segment.start.y !== segment.end.y;
   if (isDiagonal) {
     const pivot = { x: segment.end.x, y: segment.start.y };
@@ -59,9 +59,9 @@ export function Segment({ segment, color, strokeDasharray }: SegmentProps) {
   }
 }
 
-export function LineComponent({ line, color, strokeDasharray }: LineProps) {
+export function LineRenderer({ line, color, strokeDasharray }: LineRendererProps) {
   return line.segments.map((segment, index) => (
-    <Segment
+    <SegmentRenderer
       key={`line-${index}`}
       segment={segment}
       color={color}
@@ -70,9 +70,9 @@ export function LineComponent({ line, color, strokeDasharray }: LineProps) {
   ));
 }
 
-export default function Railways({ lines, color = "red", strokeDasharray }: RailwaysProps) {
+export default function RailwaysRenderer({ lines, color = "red", strokeDasharray }: RailwaysRendererProps) {
   return lines.map((line, index) => (
-    <LineComponent
+    <LineRenderer
       key={`line-${index}`}
       line={line}
       color={color}
