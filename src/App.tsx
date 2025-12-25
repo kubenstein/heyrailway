@@ -78,91 +78,12 @@ export default function App() {
         onMouseLeave={handleSvgMouseLeave}
         onDoubleClick={handleSvgDoubleClick}
       >
+        <Stations stations={stations} />
         <Railways lines={lines} />
 
-        {editingLine && editingLine.segments.map((segment, index) => {
-          const isDiagonal = segment.start.x !== segment.end.x && segment.start.y !== segment.end.y;
-          if (isDiagonal) {
-            const pivot = { x: segment.end.x, y: segment.start.y };
-            return [
-              <line
-                key={`edit-${index}-1`}
-                x1={segment.start.x * 20 + 10}
-                y1={segment.start.y * 20 + 10}
-                x2={pivot.x * 20 + 10}
-                y2={pivot.y * 20 + 10}
-                stroke="orange"
-                strokeWidth={2}
-              />,
-              <line
-                key={`edit-${index}-2`}
-                x1={pivot.x * 20 + 10}
-                y1={pivot.y * 20 + 10}
-                x2={segment.end.x * 20 + 10}
-                y2={segment.end.y * 20 + 10}
-                stroke="orange"
-                strokeWidth={2}
-              />
-            ];
-          } else {
-            return (
-              <line
-                key={`edit-${index}`}
-                x1={segment.start.x * 20 + 10}
-                y1={segment.start.y * 20 + 10}
-                x2={segment.end.x * 20 + 10}
-                y2={segment.end.y * 20 + 10}
-                stroke="orange"
-                strokeWidth={2}
-              />
-            );
-          }
-        })}
-        {editingLine && editingLine.currentStart && hovered && (editingLine.currentStart.y !== hovered.y || editingLine.currentStart.x !== hovered.x) && (() => {
-          const tempSegment = { start: editingLine.currentStart!, end: hovered };
-          const isDiagonal = tempSegment.start.x !== tempSegment.end.x && tempSegment.start.y !== tempSegment.end.y;
-          if (isDiagonal) {
-            const pivot = { x: tempSegment.end.x, y: tempSegment.start.y };
-            return [
-              <line
-                key="temp-1"
-                x1={tempSegment.start.x * 20 + 10}
-                y1={tempSegment.start.y * 20 + 10}
-                x2={pivot.x * 20 + 10}
-                y2={pivot.y * 20 + 10}
-                stroke="blue"
-                strokeWidth={2}
-                strokeDasharray="5,5"
-              />,
-              <line
-                key="temp-2"
-                x1={pivot.x * 20 + 10}
-                y1={pivot.y * 20 + 10}
-                x2={tempSegment.end.x * 20 + 10}
-                y2={tempSegment.end.y * 20 + 10}
-                stroke="blue"
-                strokeWidth={2}
-                strokeDasharray="5,5"
-              />
-            ];
-          } else {
-            return (
-              <line
-                key="temp"
-                x1={tempSegment.start.x * 20 + 10}
-                y1={tempSegment.start.y * 20 + 10}
-                x2={tempSegment.end.x * 20 + 10}
-                y2={tempSegment.end.y * 20 + 10}
-                stroke="blue"
-                strokeWidth={2}
-                strokeDasharray="5,5"
-              />
-            );
-          }
-        })()}
+        {editingLine && <Railways lines={[{ segments: editingLine.segments }]} color="orange" />}
+        {editingLine && editingLine.currentStart && hovered && (editingLine.currentStart.y !== hovered.y || editingLine.currentStart.x !== hovered.x) && <Railways lines={[{ segments: [{ start: editingLine.currentStart, end: hovered }] }]} color="blue" strokeDasharray="5,5" />}
 
-
-        <Stations stations={stations} />
       </svg>
     </main>
   );

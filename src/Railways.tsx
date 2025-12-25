@@ -8,9 +8,11 @@ type Line = { segments: LineSegment[] };
 
 interface RailwaysProps {
   lines: Line[];
+  color?: string;
+  strokeDasharray?: string;
 }
 
-const Railways: React.FC<RailwaysProps> = ({ lines }) => {
+const Railways: React.FC<RailwaysProps> = ({ lines, color = "red", strokeDasharray }) => {
   return (
     <>
       {lines.flatMap(line => line.segments).map((segment, index) => {
@@ -24,8 +26,9 @@ const Railways: React.FC<RailwaysProps> = ({ lines }) => {
               y1={segment.start.y * 20 + 10}
               x2={pivot.x * 20 + 10}
               y2={pivot.y * 20 + 10}
-              stroke="red"
+              stroke={color}
               strokeWidth={2}
+              strokeDasharray={strokeDasharray}
             />,
             <line
               key={`line-${index}-2`}
@@ -33,8 +36,9 @@ const Railways: React.FC<RailwaysProps> = ({ lines }) => {
               y1={pivot.y * 20 + 10}
               x2={segment.end.x * 20 + 10}
               y2={segment.end.y * 20 + 10}
-              stroke="red"
+              stroke={color}
               strokeWidth={2}
+              strokeDasharray={strokeDasharray}
             />
           ];
         } else {
@@ -45,8 +49,9 @@ const Railways: React.FC<RailwaysProps> = ({ lines }) => {
               y1={segment.start.y * 20 + 10}
               x2={segment.end.x * 20 + 10}
               y2={segment.end.y * 20 + 10}
-              stroke="red"
+              stroke={color}
               strokeWidth={2}
+              strokeDasharray={strokeDasharray}
             />
           );
         }
