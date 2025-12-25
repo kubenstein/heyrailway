@@ -31,7 +31,7 @@ export default function LineEditor({ stations, onLineCreated }: LineEditorProps)
   };
 
   const onDoubleClick = () => {
-    onLineCreated({ segments });
+    onLineCreated({ id: Date.now(), segments });
     setSegments([]);
     setStartingPoint(null);
   };
@@ -50,7 +50,7 @@ export default function LineEditor({ stations, onLineCreated }: LineEditorProps)
   }
 
   const hoveringSegment: LineSegment | null = startingPoint && hoveringPoint && { start: startingPoint, end: hoveringPoint };
-  const appliedLine: Line = { segments };
+  const appliedLine: Line = { id: 0, segments };
 
   return (
     <g

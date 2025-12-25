@@ -10,7 +10,10 @@ export default function App() {
   const [stations] = useState<Station[]>(() => {
     const stations: Station[] = [];
     for (let i = 0; i < 10; i++) {
-      stations.push({ position: { x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) } });
+      stations.push({
+        id: Date.now(),
+        position: { x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) }
+      });
     }
     return stations;
   });
