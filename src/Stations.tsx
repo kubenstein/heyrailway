@@ -1,6 +1,5 @@
 import React from 'react';
-
-type Point = { x: number; y: number };
+import { Point } from './types';
 
 interface StationsProps {
   stations: Point[];

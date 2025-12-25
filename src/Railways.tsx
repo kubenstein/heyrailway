@@ -1,10 +1,5 @@
 import React from 'react';
-
-type Point = { x: number; y: number };
-
-type LineSegment = { start: Point; end: Point };
-
-type Line = { segments: LineSegment[] };
+import { Line } from './types';
 
 interface RailwaysProps {
   lines: Line[];

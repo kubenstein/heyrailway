@@ -14,7 +14,3 @@ body {
   padding: 2rem;
 }
 
-.grid-svg rect:hover {
-  fill: lightblue;
-}
-
