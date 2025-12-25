@@ -12,16 +12,30 @@ export default function App() {
   const [lines, setLines] = useState<Line[]>([]);
   const [editingLine, setEditingLine] = useState<{ segments: LineSegment[]; currentStart: Point | null } | null>(null);
   const [hovered, setHovered] = useState<Point | null>(null);
+  const [stations, setStations] = useState<Point[]>(() => {
+    const points: Point[] = [];
+    for (let i = 0; i < 10; i++) {
+      points.push({ x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) });
+    }
+    return points;
+  });
+
+  const isStation = (point: Point) => stations.some(s => s.x === point.x && s.y === point.y);
 
   const handleClick = (y: number, x: number) => {
+    const point = { x, y };
     if (!editingLine) {
-      setEditingLine({ segments: [], currentStart: { y, x } });
+      if (isStation(point)) {
+        setEditingLine({ segments: [], currentStart: point });
+      }
     } else if (editingLine.currentStart) {
-      const newSegment = { start: editingLine.currentStart, end: { y, x } };
-      setEditingLine({
-        segments: [...editingLine.segments, newSegment],
-        currentStart: { y, x }
-      });
+      if (isStation(point)) {
+        const newSegment = { start: editingLine.currentStart, end: point };
+        setEditingLine({
+          segments: [...editingLine.segments, newSegment],
+          currentStart: point
+        });
+      }
     }
   };
 
@@ -51,29 +65,6 @@ export default function App() {
       setLines([...lines, { segments: editingLine.segments }]);
       setEditingLine(null);
     }
-  };
-
-  const getSelectedPoints = () => {
-    const points = new Set<string>();
-    lines.forEach(line => {
-      line.segments.forEach(segment => {
-        points.add(`${segment.start.x},${segment.start.y}`);
-        points.add(`${segment.end.x},${segment.end.y}`);
-      });
-    });
-    if (editingLine) {
-      editingLine.segments.forEach(segment => {
-        points.add(`${segment.start.x},${segment.start.y}`);
-        points.add(`${segment.end.x},${segment.end.y}`);
-      });
-      if (editingLine.currentStart) {
-        points.add(`${editingLine.currentStart.x},${editingLine.currentStart.y}`);
-      }
-    }
-    return Array.from(points).map(str => {
-      const [x, y] = str.split(',').map(Number);
-      return { x, y };
-    });
   };
 
   return (
@@ -171,7 +162,7 @@ export default function App() {
         })()}
 
 
-        <Stations points={getSelectedPoints()} />
+        <Stations stations={stations} />
       </svg>
     </main>
   );

@@ -3,13 +3,13 @@ import React from 'react';
 type Point = { x: number; y: number };
 
 interface StationsProps {
-  points: Point[];
+  stations: Point[];
 }
 
-const Stations: React.FC<StationsProps> = ({ points }) => {
+const Stations: React.FC<StationsProps> = ({ stations }) => {
   return (
     <>
-      {points.map((point, index) => (
+      {stations.map((point, index) => (
         <circle
           key={`point-${index}`}
           cx={point.x * 20 + 10}
