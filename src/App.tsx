@@ -1,23 +1,42 @@
-import { useState } from 'react';
-import StationsRenderer from './StationsRenderer';
-import RailwaysRenderer from './RailwaysRenderer';
-import LineEditor from './LineEditor';
-import { Point, Line } from './types';
+import { useState, useRef } from 'react';
+import { Line, Station, Cart } from './lib/types';
+import StationsRenderer from './components/renderers/StationsRenderer';
+import RailwaysRenderer from './components/renderers/RailwaysRenderer';
+import CartsRenderer from './components/renderers/CartsRenderer';
+import LineEditor from './components/LineEditor';
+import CartsActivity, { nonReactCartPositionUpdater } from './components/CartsActivity';
 
 export default function App() {
-  const [lines, setLines] = useState<Line[]>([]);
+  const svgEl = useRef<SVGSVGElement>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [stations, setStations] = useState<Point[]>(() => {
-    const points: Point[] = [];
+  const [lines, setLines] = useState<Line[]>([]);
+  const [carts, setCarts] = useState<Cart[]>([]);
+  const [stations] = useState<Station[]>(() => {
+    const stations: Station[] = [];
     for (let i = 0; i < 10; i++) {
-      points.push({ x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) });
+      stations.push({
+        id: Date.now(),
+        position: { x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) }
+      });
     }
-    return points;
+    return stations;
   });
 
-  const onLineCreated = (line: Line) => {
+  const onLineCreate = (line: Line) => {
     setLines([...lines, line]);
     setIsEditing(false);
+  };
+
+  const onArriveToStation = (cart: Cart, station: Station) => {
+    // TODO
+  };
+
+  const addCart = (line: Line) => {
+    const newCart: Cart = {
+      id: Date.now(),
+      line,
+    };
+    setCarts([...carts, newCart]);
   };
 
   return (
@@ -25,10 +44,22 @@ export default function App() {
       <button onClick={() => setIsEditing(!isEditing)}>
         {isEditing ? 'Cancel Editing' : 'Start Editing'}
       </button>
-      <svg className="grid-svg" width={2000} height={2000}>
+      {lines.map((line) => (
+        <button key={line.id} onClick={() => addCart(line)}>Add Cart to Line {line.id}</button>
+      ))}
+
+      <svg ref={svgEl} className="grid-svg" width={2000} height={2000}>
         <StationsRenderer stations={stations} />
         <RailwaysRenderer lines={lines} />
-        {isEditing && <LineEditor stations={stations} onLineCreated={onLineCreated} />}
+        <CartsRenderer carts={carts} />
+        <CartsActivity
+          enabled={!isEditing}
+          carts={carts}
+          lines={lines}
+          onCartPositionUpdate={(cart, position) => nonReactCartPositionUpdater(svgEl.current!, cart, position)}
+          onArriveToStation={onArriveToStation}
+        />
+        {isEditing && <LineEditor stations={stations} onLineCreate={onLineCreate} />}
       </svg>
     </main>
   );
