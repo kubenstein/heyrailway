@@ -1,24 +1,41 @@
 import { Line, LineSegment } from './types';
 
+const typesToProps = {
+  red: {
+    stroke: 'red',
+    strokeDasharray: "",
+  },
+  blue: {
+    stroke: 'blue',
+    strokeDasharray: "",
+  },
+  green: {
+    stroke: 'green',
+    strokeDasharray: "",
+  },
+  dashed: {
+    stroke: 'black',
+    strokeDasharray: "5,5",
+  },
+} as const;
+type TYPES = keyof typeof typesToProps;
+
 interface RailwaysRendererProps {
   lines: Line[];
-  color?: string;
-  strokeDasharray?: string;
+  type?: TYPES;
 }
 
 interface LineRendererProps {
   line: Line;
-  color: string;
-  strokeDasharray?: string;
+  type: TYPES;
 }
 
 interface SegmentRendererProps {
   segment: LineSegment;
-  color: string;
-  strokeDasharray?: string;
+  type: TYPES;
 }
 
-export function SegmentRenderer({ segment, color, strokeDasharray }: SegmentRendererProps) {
+export function SegmentRenderer({ segment, type }: SegmentRendererProps) {
   const isDiagonal = segment.start.x !== segment.end.x && segment.start.y !== segment.end.y;
   if (isDiagonal) {
     const pivot = { x: segment.end.x, y: segment.start.y };
@@ -29,18 +46,16 @@ export function SegmentRenderer({ segment, color, strokeDasharray }: SegmentRend
           y1={segment.start.y * 20 + 10}
           x2={pivot.x * 20 + 10}
           y2={pivot.y * 20 + 10}
-          stroke={color}
           strokeWidth={2}
-          strokeDasharray={strokeDasharray}
+          {...typesToProps[type]}
         />
         <line
           x1={pivot.x * 20 + 10}
           y1={pivot.y * 20 + 10}
           x2={segment.end.x * 20 + 10}
           y2={segment.end.y * 20 + 10}
-          stroke={color}
           strokeWidth={2}
-          strokeDasharray={strokeDasharray}
+          {...typesToProps[type]}
         />
       </>
     );
@@ -51,32 +66,29 @@ export function SegmentRenderer({ segment, color, strokeDasharray }: SegmentRend
         y1={segment.start.y * 20 + 10}
         x2={segment.end.x * 20 + 10}
         y2={segment.end.y * 20 + 10}
-        stroke={color}
         strokeWidth={2}
-        strokeDasharray={strokeDasharray}
+        {...typesToProps[type]}
       />
     );
   }
 }
 
-export function LineRenderer({ line, color, strokeDasharray }: LineRendererProps) {
+export function LineRenderer({ line, type }: LineRendererProps) {
   return line.segments.map((segment, index) => (
     <SegmentRenderer
       key={`line-${index}`}
       segment={segment}
-      color={color}
-      strokeDasharray={strokeDasharray}
+      type={type}
     />
   ));
 }
 
-export default function RailwaysRenderer({ lines, color = "red", strokeDasharray }: RailwaysRendererProps) {
+export default function RailwaysRenderer({ lines, type = "green" }: RailwaysRendererProps) {
   return lines.map((line, index) => (
     <LineRenderer
       key={`line-${index}`}
       line={line}
-      color={color}
-      strokeDasharray={strokeDasharray}
+      type={type}
     />
   ));
 }
