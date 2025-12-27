@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Point, Station, Cart, Line } from "../lib/types";
 import ActivityEngine from "../lib/activityEngine/activityEngine";
 
@@ -6,18 +6,28 @@ interface CartsActivityEngineProps {
   enabled: boolean;
   carts: Cart[];
   lines: Line[];
-  stations: Station[];
   onCartPositionUpdate: (cart: Cart, position: Point) => void;
   onArriveToStation: (cart: Cart, station: Station) => void;
 }
 
 export default function CartsActivityEngine(props: CartsActivityEngineProps) {
-  const [activityEngine] = useState<ActivityEngine>(new ActivityEngine(props));
+  const [activityEngine] = useState(() => new ActivityEngine(props));
+  const lines = useRef(props.lines);
+  const carts = useRef(props.carts);
 
-  useEffect(() => activityEngine.setEnabled(props.enabled), [props.enabled]);
-  useEffect(() => activityEngine.setCarts(props.carts), [props.carts]);
-  useEffect(() => activityEngine.setLines(props.lines), [props.lines]);
-  useEffect(() => activityEngine.setStations(props.stations), [props.stations]);
+  useEffect(() => activityEngine.setEnabled(props.enabled), [props.enabled, activityEngine]);
+
+  useEffect(() => {
+    const newLines = props.lines.filter(line => !lines.current.some(prevLine => prevLine.id === line.id));
+    newLines.forEach(line => activityEngine.addLine(line));
+    lines.current = props.lines;
+  }, [props.lines, activityEngine]);
+
+  useEffect(() => {
+    const newCarts = props.carts.filter(cart => !carts.current.some(prevCart => prevCart.id === cart.id));
+    newCarts.forEach(cart => activityEngine.addCart(cart));
+    carts.current = props.carts;
+  }, [props.carts, activityEngine]);
 
   return null;
 }
@@ -27,8 +37,8 @@ export function nonReactCartPositionUpdater(
   cart: Cart,
   position: Point
 ) {
-  const cartEl = svgEl.querySelector(`[data-cart-id='${cart.id}']`);
+  const cartEl = svgEl.getElementById(`cart-${cart.id}`);
   if (!cartEl) return;
-  cartEl.setAttribute("cx", position.x.toString());
-  cartEl.setAttribute("cy", position.y.toString());
+  cartEl.setAttribute("cx", (position.x *20).toString());
+  cartEl.setAttribute("cy", (position.y *20).toString());
 }

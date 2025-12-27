@@ -56,7 +56,6 @@ export default function App() {
           enabled={!isEditing}
           carts={carts}
           lines={lines}
-          stations={stations}
           onCartPositionUpdate={(cart, position) => nonReactCartPositionUpdater(svgEl.current!, cart, position)}
           onArriveToStation={onArriveToStation}
         />
