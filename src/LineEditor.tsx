@@ -6,10 +6,10 @@ type MouseEvent = React.MouseEvent<SVGGElement>;
 
 interface LineEditorProps {
   stations: Station[];
-  onLineCreated: (line: Line) => void;
+  onLineCreate: (line: Line) => void;
 }
 
-export default function LineEditor({ stations, onLineCreated }: LineEditorProps) {
+export default function LineEditor({ stations, onLineCreate }: LineEditorProps) {
   const [segments, setSegments] = useState<LineSegment[]>([]);
   const [startingPoint, setStartingPoint] = useState<Point | null>(null);
   const [hoveringPoint, setHoveringPoint] = useState<Point | null>(null);
@@ -31,7 +31,7 @@ export default function LineEditor({ stations, onLineCreated }: LineEditorProps)
   };
 
   const onDoubleClick = () => {
-    onLineCreated({ id: Date.now(), segments });
+    onLineCreate({ id: Date.now(), segments });
     setSegments([]);
     setStartingPoint(null);
   };

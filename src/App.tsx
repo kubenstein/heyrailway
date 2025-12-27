@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import StationsRenderer from './StationsRenderer';
 import RailwaysRenderer from './RailwaysRenderer';
+import CartsRenderer from './CartsRenderer';
 import LineEditor from './LineEditor';
 import { Line, Station, Cart } from './types';
+import CartsActivityEngine, { nonReactCartPositionUpdater } from './CartsActivityEngine';
 
 export default function App() {
+  const svgEl = useRef<SVGSVGElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [lines, setLines] = useState<Line[]>([]);
   const [carts, setCarts] = useState<Cart[]>([]);
@@ -19,9 +22,13 @@ export default function App() {
     return stations;
   });
 
-  const onLineCreated = (line: Line) => {
+  const onLineCreate = (line: Line) => {
     setLines([...lines, line]);
     setIsEditing(false);
+  };
+
+  const onArriveToStation = (cart: Cart, station: Station) => {
+    // TODO
   };
 
   const addCart = (line: Line) => {
@@ -40,10 +47,20 @@ export default function App() {
       {lines.map((line) => (
         <button key={line.id} onClick={() => addCart(line)}>Add Cart to Line {line.id}</button>
       ))}
-      <svg className="grid-svg" width={2000} height={2000}>
+
+      <svg ref={svgEl} className="grid-svg" width={2000} height={2000}>
         <StationsRenderer stations={stations} />
         <RailwaysRenderer lines={lines} />
-        {isEditing && <LineEditor stations={stations} onLineCreated={onLineCreated} />}
+        <CartsRenderer carts={carts} />
+        <CartsActivityEngine
+          enabled={!isEditing}
+          carts={carts}
+          lines={lines}
+          stations={stations}
+          onCartPositionUpdate={(cart, position) => nonReactCartPositionUpdater(svgEl.current!, cart, position)}
+          onArriveToStation={onArriveToStation}
+        />
+        {isEditing && <LineEditor stations={stations} onLineCreate={onLineCreate} />}
       </svg>
     </main>
   );
