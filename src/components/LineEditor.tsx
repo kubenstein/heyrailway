@@ -11,18 +11,18 @@ interface LineEditorProps {
 
 export default function LineEditor({ stations, onLineCreate }: LineEditorProps) {
   const [segments, setSegments] = useState<LineSegment[]>([]);
-  const [startingPoint, setStartingPoint] = useState<Point | null>(null);
+  const [startingStation, setStartingStation] = useState<Station | null>(null);
   const [hoveringPoint, setHoveringPoint] = useState<Point | null>(null);
 
   const onClick = (e: MouseEvent) => {
-    const point = eToPoint(e);
-    if (!isStation(point)) return;
+    const station = stationAtPoint(eToPoint(e));
+    if (!station) return;
 
-    if (startingPoint) {
-      const newSegment = { start: startingPoint, end: point };
+    if (startingStation) {
+      const newSegment = { start: startingStation, end: station };
       setSegments([...segments, newSegment]);
     }
-    setStartingPoint(point);
+    setStartingStation(station);
   };
 
   const onMouseMove = (e: MouseEvent) => {
@@ -33,12 +33,12 @@ export default function LineEditor({ stations, onLineCreate }: LineEditorProps) 
   const onDoubleClick = () => {
     onLineCreate({ id: Date.now(), segments });
     setSegments([]);
-    setStartingPoint(null);
+    setStartingStation(null);
   };
 
 
   // support
-  const isStation = (point: Point) => stations.some(s => s.position.x === point.x && s.position.y === point.y);
+  const stationAtPoint = (point: Point) => stations.find(s => s.position.x === point.x && s.position.y === point.y);
 
   const eToPoint = (e: MouseEvent) => {
     const svg = e.currentTarget.ownerSVGElement!;
@@ -49,7 +49,10 @@ export default function LineEditor({ stations, onLineCreate }: LineEditorProps) 
     return point;
   }
 
-  const hoveringSegment: LineSegment | null = startingPoint && hoveringPoint && { start: startingPoint, end: hoveringPoint };
+  const hoveringSegment: LineSegment | null = startingStation && hoveringPoint && {
+    start: startingStation,
+    end: { position: hoveringPoint } as Station
+  };
   const appliedLine: Line = { id: 0, segments };
 
   return (

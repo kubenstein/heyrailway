@@ -36,14 +36,14 @@ interface SegmentRendererProps {
 }
 
 export function SegmentRenderer({ segment, type }: SegmentRendererProps) {
-  const isDiagonal = segment.start.x !== segment.end.x && segment.start.y !== segment.end.y;
+  const isDiagonal = segment.start.position.x !== segment.end.position.x && segment.start.position.y !== segment.end.position.y;
   if (isDiagonal) {
-    const pivot = { x: segment.end.x, y: segment.start.y };
+    const pivot = { x: segment.end.position.x, y: segment.start.position.y };
     return (
       <>
         <line
-          x1={segment.start.x * 20 + 10}
-          y1={segment.start.y * 20 + 10}
+          x1={segment.start.position.x * 20 + 10}
+          y1={segment.start.position.y * 20 + 10}
           x2={pivot.x * 20 + 10}
           y2={pivot.y * 20 + 10}
           strokeWidth={2}
@@ -52,8 +52,8 @@ export function SegmentRenderer({ segment, type }: SegmentRendererProps) {
         <line
           x1={pivot.x * 20 + 10}
           y1={pivot.y * 20 + 10}
-          x2={segment.end.x * 20 + 10}
-          y2={segment.end.y * 20 + 10}
+          x2={segment.end.position.x * 20 + 10}
+          y2={segment.end.position.y * 20 + 10}
           strokeWidth={2}
           {...typesToProps[type]}
         />
@@ -62,10 +62,10 @@ export function SegmentRenderer({ segment, type }: SegmentRendererProps) {
   } else {
     return (
       <line
-        x1={segment.start.x * 20 + 10}
-        y1={segment.start.y * 20 + 10}
-        x2={segment.end.x * 20 + 10}
-        y2={segment.end.y * 20 + 10}
+        x1={segment.start.position.x * 20 + 10}
+        y1={segment.start.position.y * 20 + 10}
+        x2={segment.end.position.x * 20 + 10}
+        y2={segment.end.position.y * 20 + 10}
         strokeWidth={2}
         {...typesToProps[type]}
       />
