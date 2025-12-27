@@ -21,7 +21,7 @@ export type aeLine = {
   speed: number;
 }
 
-interface ActivityEngineProps {
+interface CartsActivityEngineProps {
   enabled: boolean;
   carts: Cart[];
   lines: Line[];
@@ -29,7 +29,7 @@ interface ActivityEngineProps {
   onArriveToStation: (cart: Cart, station: Station) => void;
 }
 
-export default class ActivityEngine {
+export default class CartsActivityEngine {
   private enabled: boolean = false;
   private carts: Cart[] = [];
   private lines: Line[] = [];
@@ -39,7 +39,7 @@ export default class ActivityEngine {
   private onArriveToStation: (cart: Cart, station: Station) => void;
   private gameLoopLastTime: number = 0;
 
-  constructor(props: ActivityEngineProps) {
+  constructor(props: CartsActivityEngineProps) {
     this.onCartPositionUpdate = props.onCartPositionUpdate;
     this.onArriveToStation = props.onArriveToStation;
     props.lines.forEach(line => this.addLine(line));

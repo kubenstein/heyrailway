@@ -4,7 +4,7 @@ import StationsRenderer from './components/renderers/StationsRenderer';
 import RailwaysRenderer from './components/renderers/RailwaysRenderer';
 import CartsRenderer from './components/renderers/CartsRenderer';
 import LineEditor from './components/LineEditor';
-import CartsActivityEngine, { nonReactCartPositionUpdater } from './components/CartsActivityEngine';
+import CartsActivity, { nonReactCartPositionUpdater } from './components/CartsActivity';
 
 export default function App() {
   const svgEl = useRef<SVGSVGElement>(null);
@@ -52,7 +52,7 @@ export default function App() {
         <StationsRenderer stations={stations} />
         <RailwaysRenderer lines={lines} />
         <CartsRenderer carts={carts} />
-        <CartsActivityEngine
+        <CartsActivity
           enabled={!isEditing}
           carts={carts}
           lines={lines}

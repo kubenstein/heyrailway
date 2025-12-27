@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Point, Station, Cart, Line } from "../lib/types";
-import ActivityEngine from "../lib/activityEngine/activityEngine";
+import CartsActivityEngine from "../lib/cartsActivityEngine/cartsActivityEngine";
 
-interface CartsActivityEngineProps {
+interface CartsActivityProps {
   enabled: boolean;
   carts: Cart[];
   lines: Line[];
@@ -10,8 +10,8 @@ interface CartsActivityEngineProps {
   onArriveToStation: (cart: Cart, station: Station) => void;
 }
 
-export default function CartsActivityEngine(props: CartsActivityEngineProps) {
-  const [activityEngine] = useState(() => new ActivityEngine(props));
+export default function CartsActivity(props: CartsActivityProps) {
+  const [activityEngine] = useState(() => new CartsActivityEngine(props));
   const lines = useRef(props.lines);
   const carts = useRef(props.carts);
 
