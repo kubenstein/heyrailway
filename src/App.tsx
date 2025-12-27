@@ -2,11 +2,12 @@ import { useState } from 'react';
 import StationsRenderer from './StationsRenderer';
 import RailwaysRenderer from './RailwaysRenderer';
 import LineEditor from './LineEditor';
-import { Point, Line, Station } from './types';
+import { Line, Station, Cart } from './types';
 
 export default function App() {
-  const [lines, setLines] = useState<Line[]>([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [lines, setLines] = useState<Line[]>([]);
+  const [carts, setCarts] = useState<Cart[]>([]);
   const [stations] = useState<Station[]>(() => {
     const stations: Station[] = [];
     for (let i = 0; i < 10; i++) {
@@ -23,11 +24,22 @@ export default function App() {
     setIsEditing(false);
   };
 
+  const addCart = (line: Line) => {
+    const newCart: Cart = {
+      id: Date.now(),
+      line,
+    };
+    setCarts([...carts, newCart]);
+  };
+
   return (
     <main className="app">
       <button onClick={() => setIsEditing(!isEditing)}>
         {isEditing ? 'Cancel Editing' : 'Start Editing'}
       </button>
+      {lines.map((line) => (
+        <button key={line.id} onClick={() => addCart(line)}>Add Cart to Line {line.id}</button>
+      ))}
       <svg className="grid-svg" width={2000} height={2000}>
         <StationsRenderer stations={stations} />
         <RailwaysRenderer lines={lines} />
