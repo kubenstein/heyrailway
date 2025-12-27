@@ -1,4 +1,4 @@
-import { Line, LineSegment } from './types';
+import { Line, LineSegment } from '../../lib/types';
 
 const typesToProps = {
   red: {

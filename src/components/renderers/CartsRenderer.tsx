@@ -1,4 +1,4 @@
-import { Cart } from './types';
+import { Cart } from '../../lib/types';
 
 interface CartsRendererProps {
   carts: Cart[];

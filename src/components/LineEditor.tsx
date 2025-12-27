@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { LineRenderer, SegmentRenderer } from './RailwaysRenderer';
-import { Point, LineSegment, Line, Station } from './types';
+import { LineRenderer, SegmentRenderer } from './renderers/RailwaysRenderer';
+import { Point, LineSegment, Line, Station } from '../lib/types';
 
 type MouseEvent = React.MouseEvent<SVGGElement>;
 

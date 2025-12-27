@@ -1,4 +1,4 @@
-import { Station } from './types';
+import { Station } from '../../lib/types';
 
 interface StationsRendererProps {
   stations: Station[];

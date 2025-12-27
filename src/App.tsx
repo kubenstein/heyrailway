@@ -1,10 +1,10 @@
 import { useState, useRef } from 'react';
-import StationsRenderer from './StationsRenderer';
-import RailwaysRenderer from './RailwaysRenderer';
-import CartsRenderer from './CartsRenderer';
-import LineEditor from './LineEditor';
-import { Line, Station, Cart } from './types';
-import CartsActivityEngine, { nonReactCartPositionUpdater } from './CartsActivityEngine';
+import { Line, Station, Cart } from './lib/types';
+import StationsRenderer from './components/renderers/StationsRenderer';
+import RailwaysRenderer from './components/renderers/RailwaysRenderer';
+import CartsRenderer from './components/renderers/CartsRenderer';
+import LineEditor from './components/LineEditor';
+import CartsActivityEngine, { nonReactCartPositionUpdater } from './components/CartsActivityEngine';
 
 export default function App() {
   const svgEl = useRef<SVGSVGElement>(null);

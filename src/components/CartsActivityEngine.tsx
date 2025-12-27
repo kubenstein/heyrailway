@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Point, Station, Cart, Line } from "./types";
-import ActivityEngine from "./activityEngine/ActivityEngine";
+import { Point, Station, Cart, Line } from "../lib/types";
+import ActivityEngine from "../lib/activityEngine/activityEngine";
 
 interface CartsActivityEngineProps {
   enabled: boolean;
