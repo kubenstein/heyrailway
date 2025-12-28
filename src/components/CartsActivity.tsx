@@ -41,6 +41,5 @@ export function nonReactCartPositionUpdater(
 ) {
   const cartEl = svgEl.getElementById(`cart-${cart.id}`);
   if (!cartEl) return;
-  cartEl.setAttribute("cx", (position.x *20).toString());
-  cartEl.setAttribute("cy", (position.y *20).toString());
+  cartEl.setAttribute("transform", `translate(${position.x * 20}, ${position.y * 20})`);
 }
