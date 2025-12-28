@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Line, Station, Cart, CargoType } from './lib/types';
 import StationsRenderer from './components/renderers/StationsRenderer';
 import RailwaysRenderer from './components/renderers/RailwaysRenderer';
@@ -11,7 +11,7 @@ export default function App() {
   const [isEditing, setIsEditing] = useState(false);
   const [lines, setLines] = useState<Line[]>([]);
   const [carts, setCarts] = useState<Cart[]>([]);
-  const [stations] = useState<Station[]>(() => {
+  const [stations, setStations] = useState<Station[]>(() => {
     const stations: Station[] = [];
     for (let i = 0; i < 10; i++) {
       stations.push({
@@ -23,6 +23,24 @@ export default function App() {
     }
     return stations;
   });
+
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStations(prevStations => {
+        const newStations = [...prevStations];
+        const randomStationIndex = Math.floor(Math.random() * newStations.length);
+        const cargoTypes: CargoType[] = ["TRIANGLE", "CIRCLE", "SQUARE"];
+        const randomCargoType = cargoTypes[Math.floor(Math.random() * cargoTypes.length)];
+        const newCargo = { id: Date.now(), cargoType: randomCargoType };
+        newStations[randomStationIndex].cargos.push(newCargo);
+        return newStations;
+      });
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const onLineCreate = (line: Line) => {
     setLines([...lines, line]);
