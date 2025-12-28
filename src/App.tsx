@@ -49,13 +49,25 @@ export default function App() {
   };
 
   const onArriveToStation = (cart: Cart, station: Station) => {
-    // TODO
+    const remainingCartCargos = cart.cargos.filter(
+      (cargo) => cargo.cargoType !== station.cargoType
+    );
+
+    const availableCartSlots = Math.max(0, cart.capacity - remainingCartCargos.length);
+    const pickedCargos = station.cargos.slice(0, availableCartSlots);
+    station.cargos = station.cargos.slice(availableCartSlots);
+
+    cart.cargos = [...remainingCartCargos, ...pickedCargos].slice(0, cart.capacity);
+
+    setCarts((prevCarts) => [...prevCarts]);
+    setStations((prevStations) => [...prevStations]);
   };
 
   const addCart = (line: Line) => {
     const newCart: Cart = {
       id: generateId(),
       line,
+      capacity: 6,
       cargos: [],
     };
     setCarts([...carts, newCart]);
@@ -86,4 +98,3 @@ export default function App() {
     </main>
   );
 }
-
