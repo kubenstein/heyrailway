@@ -5,6 +5,7 @@ import RailwaysRenderer from './components/renderers/RailwaysRenderer';
 import CartsRenderer from './components/renderers/CartsRenderer';
 import LineEditor from './components/LineEditor';
 import CartsActivity, { nonReactCartPositionUpdater } from './components/CartsActivity';
+import generateId from './lib/id';
 
 export default function App() {
   const svgEl = useRef<SVGSVGElement>(null);
@@ -15,7 +16,7 @@ export default function App() {
     const stations: Station[] = [];
     for (let i = 0; i < 10; i++) {
       stations.push({
-        id: Date.now(),
+        id: generateId(),
         position: { x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) },
         cargoType: (["TRIANGLE", "CIRCLE", "SQUARE"] as CargoType[])[Math.floor(Math.random() * 3)],
         cargos: [],
@@ -33,7 +34,7 @@ export default function App() {
         const randomStationIndex = Math.floor(Math.random() * newStations.length);
         const cargoTypes: CargoType[] = ["TRIANGLE", "CIRCLE", "SQUARE"];
         const randomCargoType = cargoTypes[Math.floor(Math.random() * cargoTypes.length)];
-        const newCargo = { id: Date.now(), cargoType: randomCargoType };
+        const newCargo = { id: generateId(), cargoType: randomCargoType };
         newStations[randomStationIndex].cargos.push(newCargo);
         return newStations;
       });
@@ -53,7 +54,7 @@ export default function App() {
 
   const addCart = (line: Line) => {
     const newCart: Cart = {
-      id: Date.now(),
+      id: generateId(),
       line,
       cargos: [],
     };

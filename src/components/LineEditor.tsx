@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { LineRenderer, SegmentRenderer } from './renderers/RailwaysRenderer';
 import { Point, LineSegment, Line, Station } from '../lib/types';
+import generateId from '../lib/id';
 
 type MouseEvent = React.MouseEvent<SVGGElement>;
 
@@ -31,7 +32,7 @@ export default function LineEditor({ stations, onLineCreate }: LineEditorProps) 
   };
 
   const onDoubleClick = () => {
-    onLineCreate({ id: Date.now(), segments });
+    onLineCreate({ id: generateId(), segments });
     setSegments([]);
     setStartingStation(null);
   };
