@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Line, Station, Cart } from './lib/types';
+import { Line, Station, Cart, CargoType } from './lib/types';
 import StationsRenderer from './components/renderers/StationsRenderer';
 import RailwaysRenderer from './components/renderers/RailwaysRenderer';
 import CartsRenderer from './components/renderers/CartsRenderer';
@@ -16,7 +16,9 @@ export default function App() {
     for (let i = 0; i < 10; i++) {
       stations.push({
         id: Date.now(),
-        position: { x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) }
+        position: { x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) },
+        cargoType: (["TRIANGLE", "CIRCLE", "SQUARE"] as CargoType[])[Math.floor(Math.random() * 3)],
+        cargos: [],
       });
     }
     return stations;
@@ -35,6 +37,7 @@ export default function App() {
     const newCart: Cart = {
       id: Date.now(),
       line,
+      cargos: [],
     };
     setCarts([...carts, newCart]);
   };
