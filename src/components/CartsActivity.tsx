@@ -12,21 +12,23 @@ interface CartsActivityProps {
 
 export default function CartsActivity(props: CartsActivityProps) {
   const [activityEngine] = useState(() => new CartsActivityEngine(props));
-  const lines = useRef(props.lines);
-  const carts = useRef(props.carts);
+  const lineIds = useRef<Line["id"][]>([]);
+  const cartIds = useRef<Cart["id"][]>([]);
 
   useEffect(() => activityEngine.setEnabled(props.enabled), [props.enabled, activityEngine]);
 
   useEffect(() => {
-    const newLines = props.lines.filter(line => !lines.current.some(prevLine => prevLine.id === line.id));
-    newLines.forEach(line => activityEngine.addLine(line));
-    lines.current = props.lines;
+    props.lines
+      .filter(line => !lineIds.current.includes(line.id))
+      .forEach(line => activityEngine.addLine(line));
+    lineIds.current = props.lines.map(({ id }) => id);
   }, [props.lines, activityEngine]);
 
   useEffect(() => {
-    const newCarts = props.carts.filter(cart => !carts.current.some(prevCart => prevCart.id === cart.id));
-    newCarts.forEach(cart => activityEngine.addCart(cart));
-    carts.current = props.carts;
+    props.carts
+      .filter(cart => !cartIds.current.includes(cart.id))
+      .forEach(cart => activityEngine.addCart(cart));
+    cartIds.current = props.carts.map(({ id }) => id);
   }, [props.carts, activityEngine]);
 
   return null;
