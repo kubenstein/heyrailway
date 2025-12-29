@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Line, Station, Cart, CargoType } from './lib/types';
+import { Line, Station, Cart, CargoType, Cargo } from './lib/types';
 import StationsRenderer from './components/renderers/StationsRenderer';
 import RailwaysRenderer from './components/renderers/RailwaysRenderer';
 import CartsRenderer from './components/renderers/CartsRenderer';
@@ -7,6 +7,7 @@ import LineEditor from './components/LineEditor';
 import CartsActivity, { nonReactCartPositionUpdater } from './components/CartsActivity';
 import generateId from './lib/id';
 
+const deepCopy = <T,>(obj: T): T => JSON.parse(JSON.stringify(obj));
 const randomCargoType = () => {
   const types: CargoType[] = ["TRIANGLE", "CIRCLE", "SQUARE"];
   return types[Math.floor(Math.random() * types.length)];
@@ -17,14 +18,14 @@ export default function App() {
   const [isEditing, setIsEditing] = useState(false);
   const [lines, setLines] = useState<Line[]>([]);
   const [carts, setCarts] = useState<Cart[]>([]);
+  const [cargos, setCargos] = useState<Cargo[]>([]);
   const [stations, setStations] = useState<Station[]>(() => {
     const stations: Station[] = [];
     for (let i = 0; i < 10; i++) {
       stations.push({
         id: generateId(),
         position: { x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) },
-        cargoType: randomCargoType(),
-        cargos: [],
+        cargoType: randomCargoType()
       });
     }
     return stations;
@@ -34,44 +35,66 @@ export default function App() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setStations(prevStations => {
-        const newStations = [...prevStations];
-        const randomStationIndex = Math.floor(Math.random() * newStations.length);
-        const newCargo = { id: generateId(), cargoType: randomCargoType() };
-        newStations[randomStationIndex].cargos.push(newCargo);
-        return newStations;
+      setCargos(prevCargos => {
+        const stationRoute = [...new Set(lines.flatMap(line => line.stations))];
+        const startingStation = stationRoute.shift()!;
+        const stationIdsRoute = stationRoute.map(station => station.id);
+        const destinationStation = stationRoute[stationRoute.length - 1]!;
+
+        const newCargo: Cargo = {
+          id: generateId(),
+          cargoType: destinationStation.cargoType,
+          stationId: startingStation.id,
+          stationIdsRoute,
+          cartId: null,
+        };
+        return [...prevCargos, newCargo];
       });
     }, 10000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [lines]);
 
   const onLineCreate = (line: Line) => {
     setLines([...lines, line]);
     setIsEditing(false);
   };
 
-  const onArriveToStation = (cart: Cart, station: Station) => {
-    const remainingCartCargos = cart.cargos.filter(
-      (cargo) => cargo.cargoType !== station.cargoType
-    );
+  const onArriveToStation = (cart: Cart, station: Station, cartNextStation: Station) => {
+    setCargos(prevCargos => {
+      let newCargos = deepCopy(prevCargos);
+      newCargos = newCargos
+        // drop cargos
+        .map(cargo => {
+          if (cargo.cartId !== cart.id) return cargo; // not this cart
+          if (cargo.stationIdsRoute[0] !== station.id) return cargo; // not this station
 
-    const availableCartSlots = Math.max(0, cart.capacity - remainingCartCargos.length);
-    const pickedCargos = station.cargos.slice(0, availableCartSlots);
-    station.cargos = station.cargos.slice(availableCartSlots);
+          cargo.stationId = station.id;
+          cargo.cartId = null;
+          cargo.stationIdsRoute.shift();
+          return cargo;
+        })
+        // remove cargos that reached destination
+        .filter(cargo => cargo.stationIdsRoute.length !== 0)
+        // load cargos
+        .map(cargo => {
+          if (cargo.stationId !== station.id) return cargo; // not this station
+          if (cargo.stationIdsRoute[0] !== cartNextStation.id) return cargo; // not going to cart next station
 
-    cart.cargos = [...remainingCartCargos, ...pickedCargos].slice(0, cart.capacity);
+          cargo.cartId = cart.id;
+          cargo.stationId = null;
+          return cargo;
+        });
 
-    setCarts((prevCarts) => [...prevCarts]);
-    setStations((prevStations) => [...prevStations]);
+      return newCargos;
+    });
   };
 
   const addCart = (line: Line) => {
     const newCart: Cart = {
       id: generateId(),
       line,
-      capacity: 6,
-      cargos: [],
+      capacity: 6
     };
     setCarts([...carts, newCart]);
   };
@@ -86,9 +109,9 @@ export default function App() {
       ))}
 
       <svg ref={svgEl} className="grid-svg" width={2000} height={2000}>
-        <StationsRenderer stations={stations} />
+        <StationsRenderer stations={stations} cargos={cargos} />
         <RailwaysRenderer lines={lines} />
-        <CartsRenderer carts={carts} />
+        <CartsRenderer carts={carts} cargos={cargos} />
         <CartsActivity
           enabled={!isEditing}
           carts={carts}

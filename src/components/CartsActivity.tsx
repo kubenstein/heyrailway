@@ -7,7 +7,7 @@ interface CartsActivityProps {
   carts: Cart[];
   lines: Line[];
   onCartPositionUpdate: (cart: Cart, position: Point) => void;
-  onArriveToStation: (cart: Cart, station: Station) => void;
+  onArriveToStation: (cart: Cart, station: Station, nextStation: Station) => void;
 }
 
 export default function CartsActivity(props: CartsActivityProps) {
