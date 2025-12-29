@@ -1,12 +1,22 @@
-import { Cart, Line, LineSegment, Point } from "../types";
-import { aeCart, aeLine, aeStation } from "./cartsActivityEngine";
+import { Cart, Line, Point, Station } from "../types";
+import { meCart, meLine, meStation } from "./cartsMovementEngine";
 
+type LineSegment = {
+  start: Station;
+  end: Station;
+};
 
-const pathCache: Map<number, SVGPathElement> = new Map();
+const pathCache: Map<Line["id"], SVGPathElement> = new Map();
 
-export const createAeLine = (line: Line): aeLine => {
-  const segments = line.segments;
-  if (line.segments.length === 0) return { line, stations: [], speed: 0 };
+export const createMeLine = (line: Line): meLine => {
+
+  if (line.stations.length < 2) return { line, stations: [], speed: 0 };
+
+  // create segments
+  const segments: LineSegment[] = [];
+  for (let i = 0; i < line.stations.length - 1; i++) {
+    segments.push({ start: line.stations[i], end: line.stations[i + 1] });
+  }
 
   // calculate path length
   const path = pathFromPoints(pointsFromSegments(segments));
@@ -15,41 +25,41 @@ export const createAeLine = (line: Line): aeLine => {
   // store path in cache
   pathCache.set(line.id, path);
 
-  // create aeStations
+  // create meStations
   const tmpSegments = [...segments];
-  const aeStations: aeStation[] = [];
+  const meStations: meStation[] = [];
   while(tmpSegments.length > 0) {
-    aeStations.push({
+    meStations.push({
       line,
       station: tmpSegments[tmpSegments.length - 1].end,
       progress: pathFromPoints(pointsFromSegments(tmpSegments)).getTotalLength() / pathLength,
     });
     tmpSegments.pop();
   }
-  aeStations.push({ line: line, station: segments[0].start, progress: 0 });
-  aeStations.reverse();
+  meStations.push({ line: line, station: segments[0].start, progress: 0 });
+  meStations.reverse();
 
   // calculate speed
   const constantSpeedPxPerSecond = 5;
   const speed = constantSpeedPxPerSecond / pathLength;
 
-  return { line, stations: aeStations, speed };
+  return { line, stations: meStations, speed };
 }
 
-export const createAeCart = (cart: Cart, aeLines: aeLine[]): aeCart => {
-  const aeLine = aeLines.find(aeLine => aeLine.line.id === cart.line.id)!;
+export const createMeCart = (cart: Cart, meLines: meLine[]): meCart => {
+  const meLine = meLines.find(meLine => meLine.line.id === cart.line.id)!;
 
   return {
     cart,
-    line: aeLine,
-    nextStation: aeLine.stations[0],
+    line: meLine,
+    nextStation: meLine.stations[0],
     progress: 0,
     direction: 1,
   };
 }
 
-export const pointOnLineAtProgress = (progress: number, aeLine: aeLine) => {
-  const path = pathCache.get(aeLine.line.id)!;
+export const pointOnLineAtProgress = (progress: number, meLine: meLine) => {
+  const path = pathCache.get(meLine.line.id)!;
   const totalLength = path.getTotalLength();
   return path.getPointAtLength(progress * totalLength);
 }

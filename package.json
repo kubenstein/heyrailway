@@ -10,6 +10,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "graphology": "^0.26.0",
+    "graphology-shortest-path": "^2.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
@@ -17,6 +19,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.7.0",
+    "graphology-types": "^0.24.8",
     "typescript": "^5.7.2",
     "vite": "^6.1.0"
   }

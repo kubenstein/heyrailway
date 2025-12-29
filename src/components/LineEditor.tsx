@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { LineRenderer, SegmentRenderer } from './renderers/RailwaysRenderer';
-import { Point, LineSegment, Line, Station } from '../lib/types';
+import { Point, Line, Station } from '../lib/types';
+import randomId from '../lib/randomId';
 
 type MouseEvent = React.MouseEvent<SVGGElement>;
 
@@ -10,19 +11,15 @@ interface LineEditorProps {
 }
 
 export default function LineEditor({ stations, onLineCreate }: LineEditorProps) {
-  const [segments, setSegments] = useState<LineSegment[]>([]);
-  const [startingStation, setStartingStation] = useState<Station | null>(null);
+  const [lineStations, setLineStations] = useState<Station[]>([]);
   const [hoveringPoint, setHoveringPoint] = useState<Point | null>(null);
 
   const onClick = (e: MouseEvent) => {
     const station = stationAtPoint(eToPoint(e));
     if (!station) return;
+    if (lineStations[lineStations.length - 1]?.id === station.id) return;
 
-    if (startingStation) {
-      const newSegment = { start: startingStation, end: station };
-      setSegments([...segments, newSegment]);
-    }
-    setStartingStation(station);
+    setLineStations([...lineStations, station]);
   };
 
   const onMouseMove = (e: MouseEvent) => {
@@ -31,9 +28,10 @@ export default function LineEditor({ stations, onLineCreate }: LineEditorProps) 
   };
 
   const onDoubleClick = () => {
-    onLineCreate({ id: Date.now(), segments });
-    setSegments([]);
-    setStartingStation(null);
+    if (lineStations.length >= 2) {
+      onLineCreate({ id: randomId(), stations: lineStations });
+    };
+    setLineStations([]);
   };
 
 
@@ -49,11 +47,9 @@ export default function LineEditor({ stations, onLineCreate }: LineEditorProps) 
     return point;
   }
 
-  const hoveringSegment: LineSegment | null = startingStation && hoveringPoint && {
-    start: startingStation,
-    end: { position: hoveringPoint } as Station
-  };
-  const appliedLine: Line = { id: 0, segments };
+  const lastStation = lineStations[lineStations.length - 1];
+  const hoveringSegment = lastStation && hoveringPoint ? { start: lastStation.position, end: hoveringPoint } : null;
+  const appliedLine: Line = { id: "temp", stations: lineStations };
 
   return (
     <g
