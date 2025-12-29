@@ -1,5 +1,5 @@
 import { Cart, Line, Point, Station } from "../types";
-import { meCart, meLine, meStation } from "./cartsMovementEngine";
+import { cmeCart, cmeLine, cmeStation } from "./cartsMovementEngine";
 
 type LineSegment = {
   start: Station;
@@ -8,7 +8,7 @@ type LineSegment = {
 
 const pathCache: Map<Line["id"], SVGPathElement> = new Map();
 
-export const createMeLine = (line: Line): meLine => {
+export const createCmeLine = (line: Line): cmeLine => {
 
   if (line.stations.length < 2) return { line, stations: [], speed: 0 };
 
@@ -25,41 +25,41 @@ export const createMeLine = (line: Line): meLine => {
   // store path in cache
   pathCache.set(line.id, path);
 
-  // create meStations
+  // create cmeStations
   const tmpSegments = [...segments];
-  const meStations: meStation[] = [];
+  const cmeStations: cmeStation[] = [];
   while(tmpSegments.length > 0) {
-    meStations.push({
+    cmeStations.push({
       line,
       station: tmpSegments[tmpSegments.length - 1].end,
       progress: pathFromPoints(pointsFromSegments(tmpSegments)).getTotalLength() / pathLength,
     });
     tmpSegments.pop();
   }
-  meStations.push({ line: line, station: segments[0].start, progress: 0 });
-  meStations.reverse();
+  cmeStations.push({ line: line, station: segments[0].start, progress: 0 });
+  cmeStations.reverse();
 
   // calculate speed
   const constantSpeedPxPerSecond = 5;
   const speed = constantSpeedPxPerSecond / pathLength;
 
-  return { line, stations: meStations, speed };
+  return { line, stations: cmeStations, speed };
 }
 
-export const createMeCart = (cart: Cart, meLines: meLine[]): meCart => {
-  const meLine = meLines.find(meLine => meLine.line.id === cart.line.id)!;
+export const createCmeCart = (cart: Cart, cmeLines: cmeLine[]): cmeCart => {
+  const cmeLine = cmeLines.find(cmeLine => cmeLine.line.id === cart.line.id)!;
 
   return {
     cart,
-    line: meLine,
-    nextStation: meLine.stations[0],
+    line: cmeLine,
+    nextStation: cmeLine.stations[0],
     progress: 0,
     direction: 1,
   };
 }
 
-export const pointOnLineAtProgress = (progress: number, meLine: meLine) => {
-  const path = pathCache.get(meLine.line.id)!;
+export const pointOnLineAtProgress = (progress: number, cmeLine: cmeLine) => {
+  const path = pathCache.get(cmeLine.line.id)!;
   const totalLength = path.getTotalLength();
   return path.getPointAtLength(progress * totalLength);
 }

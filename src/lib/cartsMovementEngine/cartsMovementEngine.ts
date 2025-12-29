@@ -1,23 +1,23 @@
 import { Cart, Line, Point, Station } from "../types";
-import { createMeLine, createMeCart, pointOnLineAtProgress } from "./geometryHelpers";
+import { createCmeLine, createCmeCart, pointOnLineAtProgress } from "./geometryHelpers";
 
-export type meCart = {
+export type cmeCart = {
   cart: Cart;
-  line: meLine;
-  nextStation: meStation;
+  line: cmeLine;
+  nextStation: cmeStation;
   progress: number;
   direction: 1 | -1;
 }
 
-export type meStation = {
+export type cmeStation = {
   line: Line;
   station: Station;
   progress: number;
 }
 
-export type meLine = {
+export type cmeLine = {
   line: Line;
-  stations: meStation[];
+  stations: cmeStation[];
   speed: number;
 }
 
@@ -33,8 +33,8 @@ export default class CartsMovementEngine {
   private enabled: boolean = false;
   private carts: Cart[] = [];
   private lines: Line[] = [];
-  private meLines: meLine[] = [];
-  private meCarts: meCart[] = [];
+  private cmeLines: cmeLine[] = [];
+  private cmeCarts: cmeCart[] = [];
   private onCartPositionUpdate: (cart: Cart, position: Point) => void;
   private onArriveToStation: (cart: Cart, station: Station, cartNextStation: Station) => void;
   private gameLoopLastTime: number = 0;
@@ -42,6 +42,7 @@ export default class CartsMovementEngine {
   constructor(props: CartsMovementEngineProps) {
     this.onCartPositionUpdate = props.onCartPositionUpdate;
     this.onArriveToStation = props.onArriveToStation;
+
     props.lines.forEach(line => this.addLine(line));
     props.carts.forEach(cart => this.addCart(cart));
     this.setEnabled(props.enabled);
@@ -49,12 +50,12 @@ export default class CartsMovementEngine {
 
   addLine(line: Line) {
     this.lines.push(line);
-    this.meLines.push(createMeLine(line));
+    this.cmeLines.push(createCmeLine(line));
   }
 
   addCart(cart: Cart) {
     this.carts.push(cart);
-    this.meCarts.push(createMeCart(cart, this.meLines));
+    this.cmeCarts.push(createCmeCart(cart, this.cmeLines));
   }
 
   setEnabled(enabled: boolean) {
@@ -67,12 +68,10 @@ export default class CartsMovementEngine {
 
   // main game loop
   private gameLoop(deltaTime: number) {
-    this.meCarts.forEach(meCart => {
-      this.gameLoopCarts(deltaTime, meCart);
-    })
+    this.cmeCarts.forEach(cmeCart => this.gameLoopCart(deltaTime, cmeCart));
   };
 
-  private gameLoopCarts(deltaTime: number, cart: meCart) {
+  private gameLoopCart(deltaTime: number, cart: cmeCart) {
     cart.progress += cart.direction * cart.line.speed * deltaTime;
 
     const hasArivedAtNextStation =
@@ -97,9 +96,8 @@ export default class CartsMovementEngine {
       this.onArriveToStation(cart.cart, arivedAtStation.station,  cart.nextStation.station);
     }
 
-    // Update cart position
-    const newPosition = pointOnLineAtProgress(cart.progress, cart.line);
-    this.onCartPositionUpdate(cart.cart, newPosition);
+    const newCartPosition = pointOnLineAtProgress(cart.progress, cart.line);
+    this.onCartPositionUpdate(cart.cart, newCartPosition);
   };
 
   // support
