@@ -1,3 +1,4 @@
+import deepCopy from "../deepCopy";
 import { Cart, Line, Point, Station } from "../types";
 import { cmeCart, cmeLine, cmeStation } from "./cartsMovementEngine";
 
@@ -8,8 +9,13 @@ type LineSegment = {
 
 const pathCache: Map<Line["id"], SVGPathElement> = new Map();
 
-export const createCmeLine = (line: Line): cmeLine => {
+export const pointOnLineAtProgress = (progress: number, cmeLine: cmeLine) => {
+  const path = pathCache.get(cmeLine.line.id)!;
+  const totalLength = path.getTotalLength();
+  return path.getPointAtLength(progress * totalLength);
+}
 
+export const createCmeLine = (line: Line, speedPxPerSec: number): cmeLine => {
   if (line.stations.length < 2) return { line, stations: [], speed: 0 };
 
   // create segments
@@ -22,11 +28,19 @@ export const createCmeLine = (line: Line): cmeLine => {
   const path = pathFromPoints(pointsFromSegments(segments));
   const pathLength = path.getTotalLength();
 
-  // store path in cache
+  // store path in cache for later pointOnLineAtProgress use
   pathCache.set(line.id, path);
 
-  // create cmeStations
-  const tmpSegments = [...segments];
+  // create cmeStations with progress (where on the path they are as %)
+  // for each segment, starting from the full line (all segments):
+  //   - we take end station as paths end
+  //   - create the path
+  //   - and calculate length.
+  // then compare with actual full path length to get progress %.
+  // then we remove last segment and repeat.
+  // finally we add first station at progress 0
+  // we reverse as we started from the end
+  const tmpSegments = deepCopy(segments);
   const cmeStations: cmeStation[] = [];
   while(tmpSegments.length > 0) {
     cmeStations.push({
@@ -40,15 +54,18 @@ export const createCmeLine = (line: Line): cmeLine => {
   cmeStations.reverse();
 
   // calculate speed
-  const constantSpeedPxPerSecond = 5;
-  const speed = constantSpeedPxPerSecond / pathLength;
+  const speed = speedPxPerSec / pathLength;
 
-  return { line, stations: cmeStations, speed };
+  const newCmeLine: cmeLine = {
+    line,
+    stations: cmeStations,
+    speed
+  };
+  return newCmeLine;
 }
 
 export const createCmeCart = (cart: Cart, cmeLines: cmeLine[]): cmeCart => {
   const cmeLine = cmeLines.find(cmeLine => cmeLine.line.id === cart.line.id)!;
-
   return {
     cart,
     line: cmeLine,
@@ -58,18 +75,12 @@ export const createCmeCart = (cart: Cart, cmeLines: cmeLine[]): cmeCart => {
   };
 }
 
-export const pointOnLineAtProgress = (progress: number, cmeLine: cmeLine) => {
-  const path = pathCache.get(cmeLine.line.id)!;
-  const totalLength = path.getTotalLength();
-  return path.getPointAtLength(progress * totalLength);
-}
-
 // support
 const isDiagonal = (segment: LineSegment) => {
   return segment.start.position.x !== segment.end.position.x && segment.start.position.y !== segment.end.position.y;
 };
 
-export const pointsFromSegments = (segments: LineSegment[]) => {
+const pointsFromSegments = (segments: LineSegment[]) => {
   const points: Point[] = [segments[0].start.position];
   for (const segment of segments) {
     if (isDiagonal(segment)) {
@@ -81,7 +92,7 @@ export const pointsFromSegments = (segments: LineSegment[]) => {
   return points
 }
 
-export const pathFromPoints = (points: Point[]) => {
+const pathFromPoints = (points: Point[]) => {
   let pathData = `M ${points[0].x} ${points[0].y}`;
   for (let i = 1; i < points.length; i++) {
     pathData += ` L ${points[i].x} ${points[i].y}`;

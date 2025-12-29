@@ -88,6 +88,7 @@ export default function Game() {
         <CartsRenderer carts={carts} cargos={cargos} />
         <CartsMovement
           enabled={!isEditing}
+          speedPxPerSec={5}
           carts={carts}
           lines={lines}
           onCartPositionUpdate={(cart, position) => nonReactCartPositionUpdater(svgEl.current!, cart, position)}

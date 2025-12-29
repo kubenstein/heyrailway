@@ -23,6 +23,7 @@ export type cmeLine = {
 
 interface CartsMovementEngineProps {
   enabled: boolean;
+  speedPxPerSec: number;
   carts: Cart[];
   lines: Line[];
   onCartPositionUpdate: (cart: Cart, position: Point) => void;
@@ -35,6 +36,7 @@ export default class CartsMovementEngine {
   private lines: Line[] = [];
   private cmeLines: cmeLine[] = [];
   private cmeCarts: cmeCart[] = [];
+  private speedPxPerSec: number;
   private onCartPositionUpdate: (cart: Cart, position: Point) => void;
   private onArriveToStation: (cart: Cart, station: Station, cartNextStation: Station) => void;
   private gameLoopLastTime: number = 0;
@@ -42,6 +44,7 @@ export default class CartsMovementEngine {
   constructor(props: CartsMovementEngineProps) {
     this.onCartPositionUpdate = props.onCartPositionUpdate;
     this.onArriveToStation = props.onArriveToStation;
+    this.speedPxPerSec = props.speedPxPerSec;
 
     props.lines.forEach(line => this.addLine(line));
     props.carts.forEach(cart => this.addCart(cart));
@@ -50,7 +53,7 @@ export default class CartsMovementEngine {
 
   addLine(line: Line) {
     this.lines.push(line);
-    this.cmeLines.push(createCmeLine(line));
+    this.cmeLines.push(createCmeLine(line, this.speedPxPerSec));
   }
 
   addCart(cart: Cart) {

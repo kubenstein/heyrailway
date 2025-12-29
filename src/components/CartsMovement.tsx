@@ -4,6 +4,7 @@ import CartsMovementEngine from "../lib/cartsMovementEngine/cartsMovementEngine"
 
 interface CartsMovementProps {
   enabled: boolean;
+  speedPxPerSec: number;
   carts: Cart[];
   lines: Line[];
   onCartPositionUpdate: (cart: Cart, position: Point) => void;
