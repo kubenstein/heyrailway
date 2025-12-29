@@ -1,5 +1,9 @@
-import { Cart, Line, Point, Station } from "../types";
-import { createCmeLine, createCmeCart, pointOnLineAtProgress } from "./geometryHelpers";
+import { Cart, Line, Point, Station } from '../types';
+import {
+  createCmeLine,
+  createCmeCart,
+  pointOnLineAtProgress,
+} from './geometryHelpers';
 
 export type cmeCart = {
   cart: Cart;
@@ -7,19 +11,19 @@ export type cmeCart = {
   nextStation: cmeStation;
   progress: number;
   direction: 1 | -1;
-}
+};
 
 export type cmeStation = {
   line: Line;
   station: Station;
   progress: number;
-}
+};
 
 export type cmeLine = {
   line: Line;
   stations: cmeStation[];
   speed: number;
-}
+};
 
 interface CartsMovementEngineProps {
   enabled: boolean;
@@ -27,7 +31,11 @@ interface CartsMovementEngineProps {
   carts: Cart[];
   lines: Line[];
   onCartPositionUpdate: (cart: Cart, position: Point) => void;
-  onArriveToStation: (cart: Cart, station: Station, cartNextStation: Station) => void;
+  onArriveToStation: (
+    cart: Cart,
+    station: Station,
+    cartNextStation: Station
+  ) => void;
 }
 
 export default class CartsMovementEngine {
@@ -38,7 +46,11 @@ export default class CartsMovementEngine {
   private cmeCarts: cmeCart[] = [];
   private speedPxPerSec: number;
   private onCartPositionUpdate: (cart: Cart, position: Point) => void;
-  private onArriveToStation: (cart: Cart, station: Station, cartNextStation: Station) => void;
+  private onArriveToStation: (
+    cart: Cart,
+    station: Station,
+    cartNextStation: Station
+  ) => void;
   private gameLoopLastTime: number = 0;
 
   constructor(props: CartsMovementEngineProps) {
@@ -46,8 +58,8 @@ export default class CartsMovementEngine {
     this.onArriveToStation = props.onArriveToStation;
     this.speedPxPerSec = props.speedPxPerSec;
 
-    props.lines.forEach(line => this.addLine(line));
-    props.carts.forEach(cart => this.addCart(cart));
+    props.lines.forEach((line) => this.addLine(line));
+    props.carts.forEach((cart) => this.addCart(cart));
     this.setEnabled(props.enabled);
   }
 
@@ -71,8 +83,8 @@ export default class CartsMovementEngine {
 
   // main game loop
   private gameLoop(deltaTime: number) {
-    this.cmeCarts.forEach(cmeCart => this.gameLoopCart(deltaTime, cmeCart));
-  };
+    this.cmeCarts.forEach((cmeCart) => this.gameLoopCart(deltaTime, cmeCart));
+  }
 
   private gameLoopCart(deltaTime: number, cart: cmeCart) {
     cart.progress += cart.direction * cart.line.speed * deltaTime;
@@ -88,7 +100,7 @@ export default class CartsMovementEngine {
       const nextStationIndex = stationIndex + cart.direction;
       const nextStation = stations[nextStationIndex];
 
-      if(nextStation) {
+      if (nextStation) {
         cart.nextStation = nextStation;
       } else {
         // reverse direction
@@ -96,12 +108,16 @@ export default class CartsMovementEngine {
         cart.nextStation = stations[stationIndex + cart.direction];
       }
 
-      this.onArriveToStation(cart.cart, arivedAtStation.station,  cart.nextStation.station);
+      this.onArriveToStation(
+        cart.cart,
+        arivedAtStation.station,
+        cart.nextStation.station
+      );
     }
 
     const newCartPosition = pointOnLineAtProgress(cart.progress, cart.line);
     this.onCartPositionUpdate(cart.cart, newCartPosition);
-  };
+  }
 
   // support
   private _gameLoop(currentTime: number) {

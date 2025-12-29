@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
-import { Point, Station, Cart, Line } from "../lib/types";
-import CartsMovementEngine from "../lib/cartsMovementEngine/cartsMovementEngine";
+import { useState, useEffect, useRef } from 'react';
+import { Point, Station, Cart, Line } from '../lib/types';
+import CartsMovementEngine from '../lib/cartsMovementEngine/cartsMovementEngine';
 
 interface CartsMovementProps {
   enabled: boolean;
@@ -8,27 +8,34 @@ interface CartsMovementProps {
   carts: Cart[];
   lines: Line[];
   onCartPositionUpdate: (cart: Cart, position: Point) => void;
-  onArriveToStation: (cart: Cart, station: Station, nextStation: Station) => void;
+  onArriveToStation: (
+    cart: Cart,
+    station: Station,
+    nextStation: Station
+  ) => void;
 }
 
 export default function CartsMovement(props: CartsMovementProps) {
   const [movementEngine] = useState(() => new CartsMovementEngine(props));
-  const lineIds = useRef<Line["id"][]>([]);
-  const cartIds = useRef<Cart["id"][]>([]);
+  const lineIds = useRef<Line['id'][]>([]);
+  const cartIds = useRef<Cart['id'][]>([]);
 
-  useEffect(() => movementEngine.setEnabled(props.enabled), [props.enabled, movementEngine]);
+  useEffect(
+    () => movementEngine.setEnabled(props.enabled),
+    [props.enabled, movementEngine]
+  );
 
   useEffect(() => {
     props.lines
-      .filter(line => !lineIds.current.includes(line.id))
-      .forEach(line => movementEngine.addLine(line));
+      .filter((line) => !lineIds.current.includes(line.id))
+      .forEach((line) => movementEngine.addLine(line));
     lineIds.current = props.lines.map(({ id }) => id);
   }, [props.lines, movementEngine]);
 
   useEffect(() => {
     props.carts
-      .filter(cart => !cartIds.current.includes(cart.id))
-      .forEach(cart => movementEngine.addCart(cart));
+      .filter((cart) => !cartIds.current.includes(cart.id))
+      .forEach((cart) => movementEngine.addCart(cart));
     cartIds.current = props.carts.map(({ id }) => id);
   }, [props.carts, movementEngine]);
 
@@ -42,5 +49,8 @@ export function nonReactCartPositionUpdater(
 ) {
   const cartEl = svgEl.getElementById(`cart-${cart.id}`);
   if (!cartEl) return;
-  cartEl.setAttribute("transform", `translate(${position.x * 20}, ${position.y * 20})`);
+  cartEl.setAttribute(
+    'transform',
+    `translate(${position.x * 20}, ${position.y * 20})`
+  );
 }

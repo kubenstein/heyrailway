@@ -20,11 +20,11 @@ export default function Game() {
 
   // callbacks
   const onStationCreate = (station: Station) => {
-    setStations(prevStations => [...prevStations, station]);
+    setStations((prevStations) => [...prevStations, station]);
   };
 
   const onCargoCreate = (cargo: Cargo) => {
-    setCargos(prevCargos => [...prevCargos, cargo]);
+    setCargos((prevCargos) => [...prevCargos, cargo]);
   };
 
   const onLineCreate = (line: Line) => {
@@ -32,45 +32,58 @@ export default function Game() {
     setIsEditing(false);
   };
 
-  const onArriveToStation = (cart: Cart, station: Station, cartNextStation: Station) => {
-    setCargos((prevCargos) => dropRemoveLoadCargos(prevCargos, cart, station, cartNextStation));
+  const onArriveToStation = (
+    cart: Cart,
+    station: Station,
+    cartNextStation: Station
+  ) => {
+    setCargos((prevCargos) =>
+      dropRemoveLoadCargos(prevCargos, cart, station, cartNextStation)
+    );
   };
 
   // actions
   const addCart = (line: Line) => {
     const newCart: Cart = {
       id: randomId(),
-      line
+      line,
     };
     setCarts([...carts, newCart]);
   };
 
   // support
-  const dropRemoveLoadCargos = (prevCargos: Cargo[], cart: Cart, station: Station, cartNextStation: Station) => {
+  const dropRemoveLoadCargos = (
+    prevCargos: Cargo[],
+    cart: Cart,
+    station: Station,
+    cartNextStation: Station
+  ) => {
     const newCargos = deepCopy(prevCargos);
-    return newCargos
-      // drop cargos
-      .map(cargo => {
-        if (cargo.cartId !== cart.id) return cargo; // not this cart
-        if (cargo.stationIdsRoute[0] !== station.id) return cargo; // not this station
+    return (
+      newCargos
+        // drop cargos
+        .map((cargo) => {
+          if (cargo.cartId !== cart.id) return cargo; // not this cart
+          if (cargo.stationIdsRoute[0] !== station.id) return cargo; // not this station
 
-        cargo.stationId = station.id;
-        cargo.cartId = null;
-        cargo.stationIdsRoute.shift();
-        return cargo;
-      })
-      // remove cargos that reached destination
-      .filter(cargo => cargo.stationIdsRoute.length !== 0)
-      // load cargos
-      .map(cargo => {
-        if (cargo.stationId !== station.id) return cargo; // not this station
-        if (cargo.stationIdsRoute[0] !== cartNextStation.id) return cargo; // not going to cart next station
+          cargo.stationId = station.id;
+          cargo.cartId = null;
+          cargo.stationIdsRoute.shift();
+          return cargo;
+        })
+        // remove cargos that reached destination
+        .filter((cargo) => cargo.stationIdsRoute.length !== 0)
+        // load cargos
+        .map((cargo) => {
+          if (cargo.stationId !== station.id) return cargo; // not this station
+          if (cargo.stationIdsRoute[0] !== cartNextStation.id) return cargo; // not going to cart next station
 
-        cargo.cartId = cart.id;
-        cargo.stationId = null;
-        return cargo;
-      });
-  }
+          cargo.cartId = cart.id;
+          cargo.stationId = null;
+          return cargo;
+        })
+    );
+  };
 
   // render
   return (
@@ -79,7 +92,9 @@ export default function Game() {
         {isEditing ? 'Cancel Editing' : 'Start Editing'}
       </button>
       {lines.map((line) => (
-        <button key={line.id} onClick={() => addCart(line)}>Add Cart to Line {line.id}</button>
+        <button key={line.id} onClick={() => addCart(line)}>
+          Add Cart to Line {line.id}
+        </button>
       ))}
 
       <svg ref={svgEl} className="grid-svg" width={2000} height={2000}>
@@ -91,7 +106,9 @@ export default function Game() {
           speedPxPerSec={5}
           carts={carts}
           lines={lines}
-          onCartPositionUpdate={(cart, position) => nonReactCartPositionUpdater(svgEl.current!, cart, position)}
+          onCartPositionUpdate={(cart, position) =>
+            nonReactCartPositionUpdater(svgEl.current!, cart, position)
+          }
           onArriveToStation={onArriveToStation}
         />
         <CargoSpawner
@@ -107,7 +124,9 @@ export default function Game() {
           enabled={!isEditing}
           onStationSpawn={onStationCreate}
         />
-        {isEditing && <LineEditor stations={stations} onLineCreate={onLineCreate} />}
+        {isEditing && (
+          <LineEditor stations={stations} onLineCreate={onLineCreate} />
+        )}
       </svg>
     </main>
   );

@@ -1,19 +1,19 @@
-import deepCopy from "../deepCopy";
-import { Cart, Line, Point, Station } from "../types";
-import { cmeCart, cmeLine, cmeStation } from "./cartsMovementEngine";
+import deepCopy from '../deepCopy';
+import { Cart, Line, Point, Station } from '../types';
+import { cmeCart, cmeLine, cmeStation } from './cartsMovementEngine';
 
 type LineSegment = {
   start: Station;
   end: Station;
 };
 
-const pathCache: Map<Line["id"], SVGPathElement> = new Map();
+const pathCache: Map<Line['id'], SVGPathElement> = new Map();
 
 export const pointOnLineAtProgress = (progress: number, cmeLine: cmeLine) => {
   const path = pathCache.get(cmeLine.line.id)!;
   const totalLength = path.getTotalLength();
   return path.getPointAtLength(progress * totalLength);
-}
+};
 
 export const createCmeLine = (line: Line, speedPxPerSec: number): cmeLine => {
   if (line.stations.length < 2) return { line, stations: [], speed: 0 };
@@ -42,11 +42,13 @@ export const createCmeLine = (line: Line, speedPxPerSec: number): cmeLine => {
   // we reverse as we started from the end
   const tmpSegments = deepCopy(segments);
   const cmeStations: cmeStation[] = [];
-  while(tmpSegments.length > 0) {
+  while (tmpSegments.length > 0) {
     cmeStations.push({
       line,
       station: tmpSegments[tmpSegments.length - 1].end,
-      progress: pathFromPoints(pointsFromSegments(tmpSegments)).getTotalLength() / pathLength,
+      progress:
+        pathFromPoints(pointsFromSegments(tmpSegments)).getTotalLength() /
+        pathLength,
     });
     tmpSegments.pop();
   }
@@ -59,13 +61,13 @@ export const createCmeLine = (line: Line, speedPxPerSec: number): cmeLine => {
   const newCmeLine: cmeLine = {
     line,
     stations: cmeStations,
-    speed
+    speed,
   };
   return newCmeLine;
-}
+};
 
 export const createCmeCart = (cart: Cart, cmeLines: cmeLine[]): cmeCart => {
-  const cmeLine = cmeLines.find(cmeLine => cmeLine.line.id === cart.line.id)!;
+  const cmeLine = cmeLines.find((cmeLine) => cmeLine.line.id === cart.line.id)!;
   return {
     cart,
     line: cmeLine,
@@ -73,24 +75,30 @@ export const createCmeCart = (cart: Cart, cmeLines: cmeLine[]): cmeCart => {
     progress: 0,
     direction: 1,
   };
-}
+};
 
 // support
 const isDiagonal = (segment: LineSegment) => {
-  return segment.start.position.x !== segment.end.position.x && segment.start.position.y !== segment.end.position.y;
+  return (
+    segment.start.position.x !== segment.end.position.x &&
+    segment.start.position.y !== segment.end.position.y
+  );
 };
 
 const pointsFromSegments = (segments: LineSegment[]) => {
   const points: Point[] = [segments[0].start.position];
   for (const segment of segments) {
     if (isDiagonal(segment)) {
-      const pivot: Point = { x: segment.end.position.x, y: segment.start.position.y };
+      const pivot: Point = {
+        x: segment.end.position.x,
+        y: segment.start.position.y,
+      };
       points.push(pivot);
     }
     points.push(segment.end.position);
   }
-  return points
-}
+  return points;
+};
 
 const pathFromPoints = (points: Point[]) => {
   let pathData = `M ${points[0].x} ${points[0].y}`;
@@ -101,4 +109,4 @@ const pathFromPoints = (points: Point[]) => {
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   path.setAttribute('d', pathData);
   return path;
-}
+};

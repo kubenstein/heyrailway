@@ -1,8 +1,8 @@
-import Graph from "graphology";
+import Graph from 'graphology';
 import { bidirectional } from 'graphology-shortest-path';
-import { Cargo, Line, Station } from "../types";
-import randomId from "../randomId";
-import randomCargoType from "../randomCargoType";
+import { Cargo, Line, Station } from '../types';
+import randomId from '../randomId';
+import randomCargoType from '../randomCargoType';
 
 interface CargoSpawnerEngineProps {
   enabled: boolean;
@@ -23,8 +23,8 @@ export default class CargoSpawnerEngine {
     this.onCargoSpawn = props.onCargoSpawn;
     this.frequencyMs = props.frequencyMs;
 
-    props.lines.forEach(line => this.addLine(line));
-    props.stations.forEach(station => this.addStation(station));
+    props.lines.forEach((line) => this.addLine(line));
+    props.stations.forEach((station) => this.addStation(station));
     this.setEnabled(props.enabled);
   }
 
@@ -32,7 +32,10 @@ export default class CargoSpawnerEngine {
     for (let i = 0; i < line.stations.length - 1; i++) {
       const segmentStartStation = line.stations[i];
       const segmentEndStation = line.stations[i + 1];
-      this.graph.addUndirectedEdge(segmentStartStation.id, segmentEndStation.id);
+      this.graph.addUndirectedEdge(
+        segmentStartStation.id,
+        segmentEndStation.id
+      );
     }
   }
 
@@ -47,7 +50,10 @@ export default class CargoSpawnerEngine {
 
     clearInterval(this.timeIntervalId || 0);
     if (this.enabled) {
-      this.timeIntervalId = setInterval(this.spawn.bind(this), this.frequencyMs);
+      this.timeIntervalId = setInterval(
+        this.spawn.bind(this),
+        this.frequencyMs
+      );
     }
   }
 
@@ -60,16 +66,27 @@ export default class CargoSpawnerEngine {
     const cargoType = randomCargoType();
 
     // pick random connected station with different cargo type from destination
-    const connectedStations = tmpGraph.filterNodes((node, attrs) => tmpGraph.degree(node) > 0 && attrs.cargoType !== cargoType);
-    const startStationId = connectedStations[Math.floor(Math.random() * connectedStations.length)];
+    const connectedStations = tmpGraph.filterNodes(
+      (node, attrs) =>
+        tmpGraph.degree(node) > 0 && attrs.cargoType !== cargoType
+    );
+    const startStationId =
+      connectedStations[Math.floor(Math.random() * connectedStations.length)];
     if (!startStationId) return;
 
     // find path to any station that accepts this cargo type
     tmpGraph.addNode('fakeDestination');
     tmpGraph
-      .filterNodes((node, attrs) => tmpGraph.degree(node) > 0 && attrs.cargoType === cargoType)
-      .forEach(node => tmpGraph.addUndirectedEdge(node, 'fakeDestination'));
-    const fullStationIdsRoute = bidirectional(tmpGraph, startStationId, 'fakeDestination')
+      .filterNodes(
+        (node, attrs) =>
+          tmpGraph.degree(node) > 0 && attrs.cargoType === cargoType
+      )
+      .forEach((node) => tmpGraph.addUndirectedEdge(node, 'fakeDestination'));
+    const fullStationIdsRoute = bidirectional(
+      tmpGraph,
+      startStationId,
+      'fakeDestination'
+    );
     // no path found - this may happen if there is no station with matching cargo type
     if (!fullStationIdsRoute) return;
     // remove start and fake destination
@@ -83,5 +100,5 @@ export default class CargoSpawnerEngine {
       cartId: null,
     };
     this.onCargoSpawn(newCargo);
-  };
+  }
 }

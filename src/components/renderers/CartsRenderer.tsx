@@ -8,7 +8,7 @@ interface CartsRendererProps {
 export default function CartsRenderer({ carts, cargos }: CartsRendererProps) {
   return carts.map((cart) => {
     const cargoShapes = cargos
-      .filter(cargo => cargo.cartId === cart.id)
+      .filter((cargo) => cargo.cartId === cart.id)
       .map((cargo, index) => {
         const cargoX = (index % 3) * 6 - 6;
         const cargoY = 12 + Math.floor(index / 3) * 6;
@@ -51,14 +51,9 @@ export default function CartsRenderer({ carts, cargos }: CartsRendererProps) {
 
     return (
       <g key={`cart-group-${cart.id}`} id={`cart-${cart.id}`}>
-        <circle
-          cx={0}
-          cy={0}
-          r={8}
-          fill="orange"
-        />
+        <circle cx={0} cy={0} r={8} fill="orange" />
         {cargoShapes}
       </g>
     );
   });
-};
+}
