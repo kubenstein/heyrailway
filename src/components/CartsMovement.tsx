@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Point, Station, Cart, Line } from "../lib/types";
-import CartsActivityEngine from "../lib/cartsActivityEngine/cartsActivityEngine";
+import CartsMovementEngine from "../lib/cartsMovementEngine/cartsMovementEngine";
 
-interface CartsActivityProps {
+interface CartsMovementProps {
   enabled: boolean;
   carts: Cart[];
   lines: Line[];
@@ -10,26 +10,26 @@ interface CartsActivityProps {
   onArriveToStation: (cart: Cart, station: Station, nextStation: Station) => void;
 }
 
-export default function CartsActivity(props: CartsActivityProps) {
-  const [activityEngine] = useState(() => new CartsActivityEngine(props));
+export default function CartsMovement(props: CartsMovementProps) {
+  const [movementEngine] = useState(() => new CartsMovementEngine(props));
   const lineIds = useRef<Line["id"][]>([]);
   const cartIds = useRef<Cart["id"][]>([]);
 
-  useEffect(() => activityEngine.setEnabled(props.enabled), [props.enabled, activityEngine]);
+  useEffect(() => movementEngine.setEnabled(props.enabled), [props.enabled, movementEngine]);
 
   useEffect(() => {
     props.lines
       .filter(line => !lineIds.current.includes(line.id))
-      .forEach(line => activityEngine.addLine(line));
+      .forEach(line => movementEngine.addLine(line));
     lineIds.current = props.lines.map(({ id }) => id);
-  }, [props.lines, activityEngine]);
+  }, [props.lines, movementEngine]);
 
   useEffect(() => {
     props.carts
       .filter(cart => !cartIds.current.includes(cart.id))
-      .forEach(cart => activityEngine.addCart(cart));
+      .forEach(cart => movementEngine.addCart(cart));
     cartIds.current = props.carts.map(({ id }) => id);
-  }, [props.carts, activityEngine]);
+  }, [props.carts, movementEngine]);
 
   return null;
 }

@@ -4,7 +4,7 @@ import StationsRenderer from './components/renderers/StationsRenderer';
 import RailwaysRenderer from './components/renderers/RailwaysRenderer';
 import CartsRenderer from './components/renderers/CartsRenderer';
 import LineEditor from './components/LineEditor';
-import CartsActivity, { nonReactCartPositionUpdater } from './components/CartsActivity';
+import CartsMovement, { nonReactCartPositionUpdater } from './components/CartsMovement';
 import generateId from './lib/id';
 
 const deepCopy = <T,>(obj: T): T => JSON.parse(JSON.stringify(obj));
@@ -112,7 +112,7 @@ export default function App() {
         <StationsRenderer stations={stations} cargos={cargos} />
         <RailwaysRenderer lines={lines} />
         <CartsRenderer carts={carts} cargos={cargos} />
-        <CartsActivity
+        <CartsMovement
           enabled={!isEditing}
           carts={carts}
           lines={lines}
