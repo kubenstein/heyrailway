@@ -51,31 +51,34 @@ export default class CargoSpawnerEngine {
     }
   }
 
-  // main spawning loop
   private spawn() {
     if (this.graph.size === 0) return;
 
     const tmpGraph = this.graph.copy();
 
-    // pick random cargo type
+    // pick random destination cargo type
     const cargoType = randomCargoType();
 
-    // pick random connected station with different cargo type
-    const connectedNodes = tmpGraph.filterNodes((node, attrs) => tmpGraph.degree(node) > 0 && attrs.cargoType !== cargoType);
-    const stationId = connectedNodes[Math.floor(Math.random() * connectedNodes.length)];
-    if (!stationId) return;
+    // pick random connected station with different cargo type from destination
+    const connectedStations = tmpGraph.filterNodes((node, attrs) => tmpGraph.degree(node) > 0 && attrs.cargoType !== cargoType);
+    const startStationId = connectedStations[Math.floor(Math.random() * connectedStations.length)];
+    if (!startStationId) return;
 
     // find path to any station that accepts this cargo type
-    tmpGraph.addNode('destination');
+    tmpGraph.addNode('fakeDestination');
     tmpGraph
       .filterNodes((node, attrs) => tmpGraph.degree(node) > 0 && attrs.cargoType === cargoType)
-      .forEach(node => tmpGraph.addUndirectedEdge(node, 'destination'));
-    const stationIdsRoute = bidirectional(tmpGraph, stationId, 'destination')!.slice(1, -1); // remove source and fake destination
+      .forEach(node => tmpGraph.addUndirectedEdge(node, 'fakeDestination'));
+    const fullStationIdsRoute = bidirectional(tmpGraph, startStationId, 'fakeDestination')
+    // no path found - this may happen if there is no station with matching cargo type
+    if (!fullStationIdsRoute) return;
+    // remove start and fake destination
+    const stationIdsRoute = fullStationIdsRoute.slice(1, -1);
 
     const newCargo: Cargo = {
       id: randomId(),
       cargoType,
-      stationId,
+      stationId: startStationId,
       stationIdsRoute,
       cartId: null,
     };
