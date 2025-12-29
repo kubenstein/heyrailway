@@ -1,4 +1,4 @@
-import { Line, LineSegment } from '../../lib/types';
+import { Line, Point } from '../../lib/types';
 
 const typesToProps = {
   red: {
@@ -20,6 +20,8 @@ const typesToProps = {
 } as const;
 type TYPES = keyof typeof typesToProps;
 
+type LineSegment = { start: Point; end: Point };
+
 interface RailwaysRendererProps {
   lines: Line[];
   type?: TYPES;
@@ -36,14 +38,14 @@ interface SegmentRendererProps {
 }
 
 export function SegmentRenderer({ segment, type }: SegmentRendererProps) {
-  const isDiagonal = segment.start.position.x !== segment.end.position.x && segment.start.position.y !== segment.end.position.y;
+  const isDiagonal = segment.start.x !== segment.end.x && segment.start.y !== segment.end.y;
   if (isDiagonal) {
-    const pivot = { x: segment.end.position.x, y: segment.start.position.y };
+    const pivot = { x: segment.end.x, y: segment.start.y };
     return (
       <>
         <line
-          x1={segment.start.position.x * 20 + 10}
-          y1={segment.start.position.y * 20 + 10}
+          x1={segment.start.x * 20 + 10}
+          y1={segment.start.y * 20 + 10}
           x2={pivot.x * 20 + 10}
           y2={pivot.y * 20 + 10}
           strokeWidth={2}
@@ -52,8 +54,8 @@ export function SegmentRenderer({ segment, type }: SegmentRendererProps) {
         <line
           x1={pivot.x * 20 + 10}
           y1={pivot.y * 20 + 10}
-          x2={segment.end.position.x * 20 + 10}
-          y2={segment.end.position.y * 20 + 10}
+          x2={segment.end.x * 20 + 10}
+          y2={segment.end.y * 20 + 10}
           strokeWidth={2}
           {...typesToProps[type]}
         />
@@ -62,10 +64,10 @@ export function SegmentRenderer({ segment, type }: SegmentRendererProps) {
   } else {
     return (
       <line
-        x1={segment.start.position.x * 20 + 10}
-        y1={segment.start.position.y * 20 + 10}
-        x2={segment.end.position.x * 20 + 10}
-        y2={segment.end.position.y * 20 + 10}
+        x1={segment.start.x * 20 + 10}
+        y1={segment.start.y * 20 + 10}
+        x2={segment.end.x * 20 + 10}
+        y2={segment.end.y * 20 + 10}
         strokeWidth={2}
         {...typesToProps[type]}
       />
@@ -74,9 +76,19 @@ export function SegmentRenderer({ segment, type }: SegmentRendererProps) {
 }
 
 export function LineRenderer({ line, type }: LineRendererProps) {
-  return line.segments.map((segment, index) => (
+  if (line.stations.length < 2) return null;
+
+  const segments: LineSegment[] = [];
+  for (let i = 0; i < line.stations.length - 1; i++) {
+    segments.push({
+      start: line.stations[i].position,
+      end: line.stations[i + 1].position,
+    });
+  }
+
+  return segments.map((segment, index) => (
     <SegmentRenderer
-      key={`line-${index}`}
+      key={`line-${line.id}-segment-${index}`}
       segment={segment}
       type={type}
     />
@@ -84,9 +96,9 @@ export function LineRenderer({ line, type }: LineRendererProps) {
 }
 
 export default function RailwaysRenderer({ lines, type = "green" }: RailwaysRendererProps) {
-  return lines.map((line, index) => (
+  return lines.map((line) => (
     <LineRenderer
-      key={`line-${index}`}
+      key={`line-${line.id}`}
       line={line}
       type={type}
     />

@@ -1,12 +1,22 @@
-import { Cart, Line, LineSegment, Point } from "../types";
+import { Cart, Line, Point, Station } from "../types";
 import { aeCart, aeLine, aeStation } from "./cartsActivityEngine";
 
+type LineSegment = {
+  start: Station;
+  end: Station;
+};
 
 const pathCache: Map<number, SVGPathElement> = new Map();
 
 export const createAeLine = (line: Line): aeLine => {
-  const segments = line.segments;
-  if (line.segments.length === 0) return { line, stations: [], speed: 0 };
+
+  if (line.stations.length < 2) return { line, stations: [], speed: 0 };
+
+  // create segments
+  const segments: LineSegment[] = [];
+  for (let i = 0; i < line.stations.length - 1; i++) {
+    segments.push({ start: line.stations[i], end: line.stations[i + 1] });
+  }
 
   // calculate path length
   const path = pathFromPoints(pointsFromSegments(segments));
