@@ -40,8 +40,7 @@ export default function Game() {
   const addCart = (line: Line) => {
     const newCart: Cart = {
       id: randomId(),
-      line,
-      capacity: 6
+      line
     };
     setCarts([...carts, newCart]);
   };
