@@ -16,6 +16,4 @@ pnpm-debug.log*
 
 # editor/OS
 .DS_Store
-.vscode/
-.idea/
 

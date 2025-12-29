@@ -3,19 +3,19 @@ import { Line, Point } from '../../lib/types';
 const typesToProps = {
   red: {
     stroke: 'red',
-    strokeDasharray: "",
+    strokeDasharray: '',
   },
   blue: {
     stroke: 'blue',
-    strokeDasharray: "",
+    strokeDasharray: '',
   },
   green: {
     stroke: 'green',
-    strokeDasharray: "",
+    strokeDasharray: '',
   },
   dashed: {
     stroke: 'black',
-    strokeDasharray: "5,5",
+    strokeDasharray: '5,5',
   },
 } as const;
 type TYPES = keyof typeof typesToProps;
@@ -38,7 +38,8 @@ interface SegmentRendererProps {
 }
 
 export function SegmentRenderer({ segment, type }: SegmentRendererProps) {
-  const isDiagonal = segment.start.x !== segment.end.x && segment.start.y !== segment.end.y;
+  const isDiagonal =
+    segment.start.x !== segment.end.x && segment.start.y !== segment.end.y;
   if (isDiagonal) {
     const pivot = { x: segment.end.x, y: segment.start.y };
     return (
@@ -95,12 +96,11 @@ export function LineRenderer({ line, type }: LineRendererProps) {
   ));
 }
 
-export default function RailwaysRenderer({ lines, type = "green" }: RailwaysRendererProps) {
+export default function RailwaysRenderer({
+  lines,
+  type = 'green',
+}: RailwaysRendererProps) {
   return lines.map((line) => (
-    <LineRenderer
-      key={`line-${line.id}`}
-      line={line}
-      type={type}
-    />
+    <LineRenderer key={`line-${line.id}`} line={line} type={type} />
   ));
 }

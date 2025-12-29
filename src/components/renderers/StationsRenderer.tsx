@@ -5,7 +5,10 @@ interface StationsRendererProps {
   cargos: Cargo[];
 }
 
-export default function StationsRenderer({ stations, cargos }: StationsRendererProps) {
+export default function StationsRenderer({
+  stations,
+  cargos,
+}: StationsRendererProps) {
   const renderStation = (station: Station) => {
     const x = station.position.x * 20 + 10;
     const y = station.position.y * 20 + 10;
@@ -58,7 +61,7 @@ export default function StationsRenderer({ stations, cargos }: StationsRendererP
     }
 
     const cargoShapes = cargos
-      .filter(cargo => cargo.stationId === station.id)
+      .filter((cargo) => cargo.stationId === station.id)
       .map((cargo, index) => {
         const cargoX = x + (index % 5) * 10 - 20; // 5 per row, spaced 10px
         const cargoY = y + 20 + Math.floor(index / 5) * 10;
