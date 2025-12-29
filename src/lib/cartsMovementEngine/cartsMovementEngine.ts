@@ -93,6 +93,7 @@ export default class CartsMovementEngine {
         cart.direction = cart.direction === 1 ? -1 : 1;
         cart.nextStation = stations[stationIndex + cart.direction];
       }
+
       this.onArriveToStation(cart.cart, arivedAtStation.station,  cart.nextStation.station);
     }
 

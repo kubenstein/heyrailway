@@ -6,7 +6,7 @@ type LineSegment = {
   end: Station;
 };
 
-const pathCache: Map<number, SVGPathElement> = new Map();
+const pathCache: Map<Line["id"], SVGPathElement> = new Map();
 
 export const createMeLine = (line: Line): meLine => {
 

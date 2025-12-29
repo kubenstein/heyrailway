@@ -1,17 +1,14 @@
-import { useState, useRef, useEffect } from 'react';
-import { Line, Station, Cart, CargoType, Cargo } from './lib/types';
+import { useState, useRef } from 'react';
+import { Line, Station, Cart, Cargo } from './lib/types';
 import StationsRenderer from './components/renderers/StationsRenderer';
 import RailwaysRenderer from './components/renderers/RailwaysRenderer';
 import CartsRenderer from './components/renderers/CartsRenderer';
 import LineEditor from './components/LineEditor';
 import CartsMovement, { nonReactCartPositionUpdater } from './components/CartsMovement';
-import generateId from './lib/id';
-
-const deepCopy = <T,>(obj: T): T => JSON.parse(JSON.stringify(obj));
-const randomCargoType = () => {
-  const types: CargoType[] = ["TRIANGLE", "CIRCLE", "SQUARE"];
-  return types[Math.floor(Math.random() * types.length)];
-}
+import CargoSpawner from './components/CargoSpawner';
+import randomId from './lib/randomId';
+import randomCargoType from './lib/randomCargoType';
+import deepCopy from './lib/deepCopy';
 
 export default function App() {
   const svgEl = useRef<SVGSVGElement>(null);
@@ -23,7 +20,7 @@ export default function App() {
     const stations: Station[] = [];
     for (let i = 0; i < 10; i++) {
       stations.push({
-        id: generateId(),
+        id: randomId(),
         position: { x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) },
         cargoType: randomCargoType()
       });
@@ -31,29 +28,9 @@ export default function App() {
     return stations;
   });
 
-
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCargos(prevCargos => {
-        const stationRoute = [...new Set(lines.flatMap(line => line.stations))];
-        const startingStation = stationRoute.shift()!;
-        const stationIdsRoute = stationRoute.map(station => station.id);
-        const destinationStation = stationRoute[stationRoute.length - 1]!;
-
-        const newCargo: Cargo = {
-          id: generateId(),
-          cargoType: destinationStation.cargoType,
-          stationId: startingStation.id,
-          stationIdsRoute,
-          cartId: null,
-        };
-        return [...prevCargos, newCargo];
-      });
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, [lines]);
+  const onCargoCreate = (cargo: Cargo) => {
+    setCargos(prevCargos => [...prevCargos, cargo]);
+  };
 
   const onLineCreate = (line: Line) => {
     setLines([...lines, line]);
@@ -92,7 +69,7 @@ export default function App() {
 
   const addCart = (line: Line) => {
     const newCart: Cart = {
-      id: generateId(),
+      id: randomId(),
       line,
       capacity: 6
     };
@@ -118,6 +95,13 @@ export default function App() {
           lines={lines}
           onCartPositionUpdate={(cart, position) => nonReactCartPositionUpdater(svgEl.current!, cart, position)}
           onArriveToStation={onArriveToStation}
+        />
+        <CargoSpawner
+          frequencyMs={1000}
+          enabled={!isEditing}
+          stations={stations}
+          lines={lines}
+          onCargoSpawn={onCargoCreate}
         />
         {isEditing && <LineEditor stations={stations} onLineCreate={onLineCreate} />}
       </svg>

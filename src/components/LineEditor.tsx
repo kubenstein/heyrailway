@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { LineRenderer, SegmentRenderer } from './renderers/RailwaysRenderer';
 import { Point, Line, Station } from '../lib/types';
-import generateId from '../lib/id';
+import randomId from '../lib/randomId';
 
 type MouseEvent = React.MouseEvent<SVGGElement>;
 
@@ -29,7 +29,7 @@ export default function LineEditor({ stations, onLineCreate }: LineEditorProps) 
 
   const onDoubleClick = () => {
     if (lineStations.length >= 2) {
-      onLineCreate({ id: generateId(), stations: lineStations });
+      onLineCreate({ id: randomId(), stations: lineStations });
     };
     setLineStations([]);
   };
@@ -49,7 +49,7 @@ export default function LineEditor({ stations, onLineCreate }: LineEditorProps) 
 
   const lastStation = lineStations[lineStations.length - 1];
   const hoveringSegment = lastStation && hoveringPoint ? { start: lastStation.position, end: hoveringPoint } : null;
-  const appliedLine: Line = { id: 0, stations: lineStations };
+  const appliedLine: Line = { id: "temp", stations: lineStations };
 
   return (
     <g
