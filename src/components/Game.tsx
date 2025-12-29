@@ -18,6 +18,7 @@ export default function Game() {
   const [cargos, setCargos] = useState<Cargo[]>([]);
   const [stations, setStations] = useState<Station[]>([]);
 
+  // callbacks
   const onStationCreate = (station: Station) => {
     setStations(prevStations => [...prevStations, station]);
   };
@@ -32,35 +33,10 @@ export default function Game() {
   };
 
   const onArriveToStation = (cart: Cart, station: Station, cartNextStation: Station) => {
-    setCargos(prevCargos => {
-      let newCargos = deepCopy(prevCargos);
-      newCargos = newCargos
-        // drop cargos
-        .map(cargo => {
-          if (cargo.cartId !== cart.id) return cargo; // not this cart
-          if (cargo.stationIdsRoute[0] !== station.id) return cargo; // not this station
-
-          cargo.stationId = station.id;
-          cargo.cartId = null;
-          cargo.stationIdsRoute.shift();
-          return cargo;
-        })
-        // remove cargos that reached destination
-        .filter(cargo => cargo.stationIdsRoute.length !== 0)
-        // load cargos
-        .map(cargo => {
-          if (cargo.stationId !== station.id) return cargo; // not this station
-          if (cargo.stationIdsRoute[0] !== cartNextStation.id) return cargo; // not going to cart next station
-
-          cargo.cartId = cart.id;
-          cargo.stationId = null;
-          return cargo;
-        });
-
-      return newCargos;
-    });
+    setCargos((prevCargos) => dropRemoveLoadCargos(prevCargos, cart, station, cartNextStation));
   };
 
+  // actions
   const addCart = (line: Line) => {
     const newCart: Cart = {
       id: randomId(),
@@ -70,6 +46,34 @@ export default function Game() {
     setCarts([...carts, newCart]);
   };
 
+  // support
+  const dropRemoveLoadCargos = (prevCargos: Cargo[], cart: Cart, station: Station, cartNextStation: Station) => {
+    const newCargos = deepCopy(prevCargos);
+    return newCargos
+      // drop cargos
+      .map(cargo => {
+        if (cargo.cartId !== cart.id) return cargo; // not this cart
+        if (cargo.stationIdsRoute[0] !== station.id) return cargo; // not this station
+
+        cargo.stationId = station.id;
+        cargo.cartId = null;
+        cargo.stationIdsRoute.shift();
+        return cargo;
+      })
+      // remove cargos that reached destination
+      .filter(cargo => cargo.stationIdsRoute.length !== 0)
+      // load cargos
+      .map(cargo => {
+        if (cargo.stationId !== station.id) return cargo; // not this station
+        if (cargo.stationIdsRoute[0] !== cartNextStation.id) return cargo; // not going to cart next station
+
+        cargo.cartId = cart.id;
+        cargo.stationId = null;
+        return cargo;
+      });
+  }
+
+  // render
   return (
     <main className="app">
       <button onClick={() => setIsEditing(!isEditing)}>
