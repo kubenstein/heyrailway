@@ -7,8 +7,8 @@ import LineEditor from './components/LineEditor';
 import CartsMovement, { nonReactCartPositionUpdater } from './components/CartsMovement';
 import CargoSpawner from './components/CargoSpawner';
 import randomId from './lib/randomId';
-import randomCargoType from './lib/randomCargoType';
 import deepCopy from './lib/deepCopy';
+import StationSpawner from './components/StationSpawner';
 
 export default function App() {
   const svgEl = useRef<SVGSVGElement>(null);
@@ -16,17 +16,11 @@ export default function App() {
   const [lines, setLines] = useState<Line[]>([]);
   const [carts, setCarts] = useState<Cart[]>([]);
   const [cargos, setCargos] = useState<Cargo[]>([]);
-  const [stations, setStations] = useState<Station[]>(() => {
-    const stations: Station[] = [];
-    for (let i = 0; i < 10; i++) {
-      stations.push({
-        id: randomId(),
-        position: { x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) },
-        cargoType: randomCargoType()
-      });
-    }
-    return stations;
-  });
+  const [stations, setStations] = useState<Station[]>([]);
+
+  const onStationCreate = (station: Station) => {
+    setStations(prevStations => [...prevStations, station]);
+  };
 
   const onCargoCreate = (cargo: Cargo) => {
     setCargos(prevCargos => [...prevCargos, cargo]);
@@ -86,8 +80,8 @@ export default function App() {
       ))}
 
       <svg ref={svgEl} className="grid-svg" width={2000} height={2000}>
-        <StationsRenderer stations={stations} cargos={cargos} />
         <RailwaysRenderer lines={lines} />
+        <StationsRenderer stations={stations} cargos={cargos} />
         <CartsRenderer carts={carts} cargos={cargos} />
         <CartsMovement
           enabled={!isEditing}
@@ -102,6 +96,12 @@ export default function App() {
           stations={stations}
           lines={lines}
           onCargoSpawn={onCargoCreate}
+        />
+        <StationSpawner
+          initialStations={3}
+          frequencyMs={60000}
+          enabled={!isEditing}
+          onStationSpawn={onStationCreate}
         />
         {isEditing && <LineEditor stations={stations} onLineCreate={onLineCreate} />}
       </svg>
