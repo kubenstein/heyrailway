@@ -7,6 +7,11 @@ import LineEditor from './components/LineEditor';
 import CartsActivity, { nonReactCartPositionUpdater } from './components/CartsActivity';
 import generateId from './lib/id';
 
+const randomCargoType = () => {
+  const types: CargoType[] = ["TRIANGLE", "CIRCLE", "SQUARE"];
+  return types[Math.floor(Math.random() * types.length)];
+}
+
 export default function App() {
   const svgEl = useRef<SVGSVGElement>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -18,7 +23,7 @@ export default function App() {
       stations.push({
         id: generateId(),
         position: { x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) },
-        cargoType: (["TRIANGLE", "CIRCLE", "SQUARE"] as CargoType[])[Math.floor(Math.random() * 3)],
+        cargoType: randomCargoType(),
         cargos: [],
       });
     }
@@ -32,9 +37,7 @@ export default function App() {
       setStations(prevStations => {
         const newStations = [...prevStations];
         const randomStationIndex = Math.floor(Math.random() * newStations.length);
-        const cargoTypes: CargoType[] = ["TRIANGLE", "CIRCLE", "SQUARE"];
-        const randomCargoType = cargoTypes[Math.floor(Math.random() * cargoTypes.length)];
-        const newCargo = { id: generateId(), cargoType: randomCargoType };
+        const newCargo = { id: generateId(), cargoType: randomCargoType() };
         newStations[randomStationIndex].cargos.push(newCargo);
         return newStations;
       });
