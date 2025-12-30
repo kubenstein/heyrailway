@@ -9,9 +9,10 @@ import StationSpawner from './StationSpawner';
 import { Line, Station, Cart, Cargo } from '../lib/types';
 import randomId from '../lib/randomId';
 import deepCopy from '../lib/deepCopy';
+import { BOARD_SIZE } from '../lib/board';
 
 export default function Game() {
-  const svgEl = useRef<SVGSVGElement>(null);
+  const boardEl = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [lines, setLines] = useState<Line[]>([]);
   const [carts, setCarts] = useState<Cart[]>([]);
@@ -97,37 +98,42 @@ export default function Game() {
         </button>
       ))}
 
-      <svg ref={svgEl} className="grid-svg" width={2000} height={2000}>
+      <div
+        ref={boardEl}
+        className="board"
+        style={{ width: BOARD_SIZE, height: BOARD_SIZE }}
+      >
         <RailwaysRenderer lines={lines} />
         <StationsRenderer stations={stations} cargos={cargos} />
         <CartsRenderer carts={carts} cargos={cargos} />
-        <CartsMovement
-          enabled={!isEditing}
-          speedPxPerSec={5}
-          carts={carts}
-          lines={lines}
-          onCartPositionUpdate={(cart, position) =>
-            nonReactCartPositionUpdater(svgEl.current!, cart, position)
-          }
-          onArriveToStation={onArriveToStation}
-        />
-        <CargoSpawner
-          frequencyMs={1000}
-          enabled={!isEditing}
-          stations={stations}
-          lines={lines}
-          onCargoSpawn={onCargoCreate}
-        />
-        <StationSpawner
-          initialStations={3}
-          frequencyMs={60000}
-          enabled={!isEditing}
-          onStationSpawn={onStationCreate}
-        />
         {isEditing && (
           <LineEditor stations={stations} onLineCreate={onLineCreate} />
         )}
-      </svg>
+      </div>
+
+      <CartsMovement
+        enabled={!isEditing}
+        speedPxPerSec={5}
+        carts={carts}
+        lines={lines}
+        onCartPositionUpdate={(cart, position) =>
+          nonReactCartPositionUpdater(boardEl.current!, cart, position)
+        }
+        onArriveToStation={onArriveToStation}
+      />
+      <CargoSpawner
+        frequencyMs={1000}
+        enabled={!isEditing}
+        stations={stations}
+        lines={lines}
+        onCargoSpawn={onCargoCreate}
+      />
+      <StationSpawner
+        initialStations={3}
+        frequencyMs={60000}
+        enabled={!isEditing}
+        onStationSpawn={onStationCreate}
+      />
     </main>
   );
 }
