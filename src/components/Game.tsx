@@ -10,13 +10,7 @@ import { Line, Station, Cart, Cargo } from '../lib/types';
 import randomId from '../lib/randomId';
 import deepCopy from '../lib/deepCopy';
 import { BOARD_SIZE } from '../lib/board';
-import GameController from './GameController';
-
-type GameConfig = {
-  cartSpeedPxPerSec: number;
-  cargoSpawningFrequencyMs: number;
-  stationSpawningFrequencyMs: number;
-};
+import GameController, { GameConfig } from './GameController';
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
@@ -26,9 +20,11 @@ export default function Game() {
   const [cargos, setCargos] = useState<Cargo[]>([]);
   const [stations, setStations] = useState<Station[]>([]);
   const [config, setConfig] = useState<GameConfig>({
+    round: 1,
+    running: true,
     cartSpeedPxPerSec: 5,
-    cargoSpawningFrequencyMs: 1000,
-    stationSpawningFrequencyMs: 60000,
+    cargoSpawningFrequencyMs: 10000,
+    stationSpawningFrequencyMs: 35000,
   });
 
   // callbacks
@@ -128,7 +124,7 @@ export default function Game() {
       </div>
 
       <CartsMovement
-        enabled={!isEditing}
+        enabled={config.running}
         speedPxPerSec={config.cartSpeedPxPerSec}
         carts={carts}
         lines={lines}
@@ -138,20 +134,21 @@ export default function Game() {
         onArriveToStation={onArriveToStation}
       />
       <CargoSpawner
+        enabled={config.running}
         frequencyMs={config.cargoSpawningFrequencyMs}
-        enabled={!isEditing}
         stations={stations}
         lines={lines}
         onCargoSpawn={onCargoCreate}
       />
       <StationSpawner
+        enabled={config.running}
         initialStations={3}
         frequencyMs={config.stationSpawningFrequencyMs}
-        enabled={!isEditing}
         onStationSpawn={onStationCreate}
       />
       <GameController
-        enabled={!isEditing}
+        gameConfig={config}
+        isEditing={isEditing}
         stations={stations}
         lines={lines}
         cargos={cargos}
