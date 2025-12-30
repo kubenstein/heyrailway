@@ -10,6 +10,13 @@ import { Line, Station, Cart, Cargo } from '../lib/types';
 import randomId from '../lib/randomId';
 import deepCopy from '../lib/deepCopy';
 import { BOARD_SIZE } from '../lib/board';
+import GameController from './GameController';
+
+type GameConfig = {
+  cartSpeedPxPerSec: number;
+  cargoSpawningFrequencyMs: number;
+  stationSpawningFrequencyMs: number;
+};
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
@@ -18,8 +25,17 @@ export default function Game() {
   const [carts, setCarts] = useState<Cart[]>([]);
   const [cargos, setCargos] = useState<Cargo[]>([]);
   const [stations, setStations] = useState<Station[]>([]);
+  const [config, setConfig] = useState<GameConfig>({
+    cartSpeedPxPerSec: 5,
+    cargoSpawningFrequencyMs: 1000,
+    stationSpawningFrequencyMs: 60000,
+  });
 
   // callbacks
+  const onConfigUpdate = (config: GameConfig) => {
+    setConfig(config);
+  };
+
   const onStationCreate = (station: Station) => {
     setStations((prevStations) => [...prevStations, station]);
   };
@@ -113,7 +129,7 @@ export default function Game() {
 
       <CartsMovement
         enabled={!isEditing}
-        speedPxPerSec={5}
+        speedPxPerSec={config.cartSpeedPxPerSec}
         carts={carts}
         lines={lines}
         onCartPositionUpdate={(cart, position) =>
@@ -122,7 +138,7 @@ export default function Game() {
         onArriveToStation={onArriveToStation}
       />
       <CargoSpawner
-        frequencyMs={1000}
+        frequencyMs={config.cargoSpawningFrequencyMs}
         enabled={!isEditing}
         stations={stations}
         lines={lines}
@@ -130,9 +146,17 @@ export default function Game() {
       />
       <StationSpawner
         initialStations={3}
-        frequencyMs={60000}
+        frequencyMs={config.stationSpawningFrequencyMs}
         enabled={!isEditing}
         onStationSpawn={onStationCreate}
+      />
+      <GameController
+        enabled={!isEditing}
+        stations={stations}
+        lines={lines}
+        cargos={cargos}
+        carts={carts}
+        onConfigUpdate={onConfigUpdate}
       />
     </main>
   );

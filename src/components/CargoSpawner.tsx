@@ -20,6 +20,11 @@ export default function CargoSpawner(props: CargoSpawnerProps) {
     [props.enabled, spawningEngine]
   );
 
+  useEffect(
+    () => spawningEngine.setFrequency(props.frequencyMs),
+    [props.frequencyMs, spawningEngine]
+  );
+
   useEffect(() => {
     props.lines
       .filter((line) => !lineIds.current.includes(line.id))

@@ -45,6 +45,18 @@ export default class CargoSpawnerEngine {
     this.graph.addNode(id, { cargoType });
   }
 
+  setFrequency(frequencyMs: number) {
+    this.frequencyMs = frequencyMs;
+
+    clearInterval(this.timeIntervalId || 0);
+    if (this.enabled) {
+      this.timeIntervalId = setInterval(
+        this.spawn.bind(this),
+        this.frequencyMs
+      );
+    }
+  }
+
   setEnabled(enabled: boolean) {
     this.enabled = enabled;
 

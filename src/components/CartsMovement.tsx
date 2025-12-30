@@ -26,6 +26,11 @@ export default function CartsMovement(props: CartsMovementProps) {
     [props.enabled, movementEngine]
   );
 
+  useEffect(
+    () => movementEngine.setSpeed(props.speedPxPerSec),
+    [props.speedPxPerSec, movementEngine]
+  );
+
   useEffect(() => {
     props.lines
       .filter((line) => !lineIds.current.includes(line.id))
