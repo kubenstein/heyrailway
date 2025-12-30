@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, JSX } from 'react';
 import { Station, Line, Cargo, Cart } from '../lib/types';
+import { dropRemoveLoadCargos } from './CargoSpawner';
 
 export type GameData = {
   round: number;
@@ -12,23 +13,39 @@ export type GameData = {
   stationSpawningFrequencyMs: number;
 };
 
+export type RenderProps = {
+  lines: Line[];
+  carts: Cart[];
+  cargos: Cargo[];
+  stations: Station[];
+  gameData: GameData;
+  addStation: (station: Station) => void;
+  addLine: (line: Line) => void;
+  addCart: (cart: Cart) => void;
+  addCargo: (cargo: Cargo) => void;
+  onArriveToStation: (
+    cart: Cart,
+    station: Station,
+    cartNextStation: Station
+  ) => void;
+};
+
 interface GameControllerProps {
   isEditing: boolean;
-  stations: Station[];
-  lines: Line[];
-  cargos: Cargo[];
-  carts: Cart[];
-  onGameDataUpdate: (config: GameData) => void;
+  render?: (renderProps: RenderProps) => JSX.Element;
 }
 
 export default function GameController({
   isEditing,
-  lines,
-  onGameDataUpdate,
+  render,
 }: GameControllerProps) {
   const [clock, setClock] = useState(1);
   const clockIntervalId = useRef(0);
-  const prevLineCount = useRef(lines.length);
+
+  const [lines, setLines] = useState<Line[]>([]);
+  const [carts, setCarts] = useState<Cart[]>([]);
+  const [cargos, setCargos] = useState<Cargo[]>([]);
+  const [stations, setStations] = useState<Station[]>([]);
   const [gameData, setGameData] = useState<GameData>({
     round: 1,
     running: true,
@@ -39,6 +56,37 @@ export default function GameController({
     cargoSpawningFrequencyMs: 10000,
     stationSpawningFrequencyMs: 35000,
   });
+
+  // render prop actions
+  const addStation = (station: Station) => {
+    setStations((prevStations) => [...prevStations, station]);
+  };
+
+  const addLine = (line: Line) => {
+    setGameData((prevGameData) => ({
+      ...prevGameData,
+      perkAvailableLines: prevGameData.perkAvailableLines - 1,
+    }));
+    setLines((prevLines) => [...prevLines, line]);
+  };
+
+  const addCargo = (cargo: Cargo) => {
+    setCargos((prevCargos) => [...prevCargos, cargo]);
+  };
+
+  const addCart = (cart: Cart) => {
+    setCarts([...carts, cart]);
+  };
+
+  const onArriveToStation = (
+    cart: Cart,
+    station: Station,
+    cartNextStation: Station
+  ) => {
+    setCargos((prevCargos) =>
+      dropRemoveLoadCargos(prevCargos, cart, station, cartNextStation)
+    );
+  };
 
   // clock actions
   const startTime = () => {
@@ -53,32 +101,12 @@ export default function GameController({
   };
 
   // effects
-  // make sure to clear interval on unmount
-  useEffect(() => {
-    return () => clearInterval(clockIntervalId.current);
-  }, []);
-
-  // propagate gameData change
-  useEffect(() => {
-    onGameDataUpdate(gameData);
-  }, [gameData]);
-
   // handle isEditing changes
   useEffect(() => {
     isEditing ? stopTime() : startTime();
     setGameData((prevGameData) => ({ ...prevGameData, running: !isEditing }));
+    return () => clearInterval(clockIntervalId.current);
   }, [isEditing]);
-
-  // handle adding new line
-  useEffect(() => {
-    if (lines.length > prevLineCount.current) {
-      setGameData((prevGameData) => ({
-        ...prevGameData,
-        perkAvailableLines: prevGameData.perkAvailableLines - 1,
-      }));
-    }
-    prevLineCount.current = lines.length;
-  }, [lines]);
 
   // handle clock changes
   useEffect(() => {
@@ -101,5 +129,22 @@ export default function GameController({
     if (changed) setGameData(newGameData);
   }, [clock]);
 
-  return null;
+  // render
+  if (!render) return null;
+  return (
+    <>
+      {render({
+        lines,
+        carts,
+        cargos,
+        stations,
+        gameData,
+        addStation,
+        addLine,
+        addCart,
+        addCargo,
+        onArriveToStation,
+      })}
+    </>
+  );
 }

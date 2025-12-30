@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Station, Line, Cargo } from '../lib/types';
+import { Station, Line, Cargo, Cart } from '../lib/types';
 import CargoSpawnerEngine from '../lib/cargoSpawnerEngine/cargoSpawnerEngine';
+import deepCopy from '../lib/deepCopy';
 
 interface CargoSpawnerProps {
   enabled: boolean;
@@ -41,3 +42,40 @@ export default function CargoSpawner(props: CargoSpawnerProps) {
 
   return null;
 }
+
+export const dropRemoveLoadCargos = (
+  prevCargos: Cargo[],
+  cart: Cart,
+  station: Station,
+  cartNextStation: Station
+) => {
+  const newCargos = deepCopy(prevCargos);
+  return (
+    newCargos
+      // drop cargos
+      .map((cargo) => {
+        if (cargo.cartId !== cart.id) return cargo; // not this cart
+        if (cargo.stationIdsRoute[0] !== station.id) return cargo; // not this station
+
+        cargo.stationId = station.id;
+        cargo.cartId = null;
+        cargo.stationIdsRoute.shift();
+        return cargo;
+      })
+      // remove cargos that reached destination
+      .filter((cargo) => cargo.stationIdsRoute.length !== 0)
+      // load cargos
+      .map((cargo) => {
+        if (cargo.stationId !== station.id) return cargo; // not this station
+        if (cargo.stationIdsRoute[0] !== cartNextStation.id) return cargo; // not going to cart next station
+        if (
+          cart.capacity <= newCargos.filter((c) => c.cartId === cart.id).length
+        )
+          return cargo; // cart full
+
+        cargo.cartId = cart.id;
+        cargo.stationId = null;
+        return cargo;
+      })
+  );
+};
