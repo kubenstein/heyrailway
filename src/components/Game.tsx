@@ -59,6 +59,7 @@ export default function Game() {
   const addCart = (line: Line) => {
     const newCart: Cart = {
       id: randomId(),
+      capacity: 6,
       line,
     };
     setCarts([...carts, newCart]);
@@ -90,6 +91,11 @@ export default function Game() {
         .map((cargo) => {
           if (cargo.stationId !== station.id) return cargo; // not this station
           if (cargo.stationIdsRoute[0] !== cartNextStation.id) return cargo; // not going to cart next station
+          if (
+            cart.capacity <=
+            newCargos.filter((c) => c.cartId === cart.id).length
+          )
+            return cargo; // cart full
 
           cargo.cartId = cart.id;
           cargo.stationId = null;
