@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Station, Line, Cargo, Cart } from '../lib/types';
 
-export type GameConfig = {
+export type GameData = {
   round: number;
   running: boolean;
   cartSpeedPxPerSec: number;
@@ -10,19 +10,19 @@ export type GameConfig = {
 };
 
 interface GameControllerProps {
-  gameConfig: GameConfig;
+  gameData: GameData;
   isEditing: boolean;
   stations: Station[];
   lines: Line[];
   cargos: Cargo[];
   carts: Cart[];
-  onConfigUpdate: (config: GameConfig) => void;
+  onGameDataUpdate: (config: GameData) => void;
 }
 
 export default function GameController({
-  gameConfig,
+  gameData,
   isEditing,
-  onConfigUpdate,
+  onGameDataUpdate,
 }: GameControllerProps) {
   const [clock, setClock] = useState(1);
   const clockIntervalId = useRef(0);
@@ -44,26 +44,26 @@ export default function GameController({
     } else {
       startTime();
     }
-    onConfigUpdate({ ...gameConfig, running: !isEditing });
+    onGameDataUpdate({ ...gameData, running: !isEditing });
 
     return () => clearInterval(clockIntervalId.current);
   }, [isEditing]);
 
   useEffect(() => {
     let changed = false;
-    const newGameConfig: GameConfig = { ...gameConfig };
+    const newGameData: GameData = { ...gameData };
 
     if (clock % 60 === 0) {
       changed = true;
-      newGameConfig.round += 1;
+      newGameData.round += 1;
     }
 
     if (clock % 130 === 0) {
       changed = true;
-      newGameConfig.cargoSpawningFrequencyMs *= 0.9;
+      newGameData.cargoSpawningFrequencyMs *= 0.9;
     }
 
-    if (changed) onConfigUpdate(newGameConfig);
+    if (changed) onGameDataUpdate(newGameData);
   }, [clock]);
 
   return null;

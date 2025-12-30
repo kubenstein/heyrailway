@@ -10,7 +10,7 @@ import { Line, Station, Cart, Cargo } from '../lib/types';
 import randomId from '../lib/randomId';
 import deepCopy from '../lib/deepCopy';
 import { BOARD_SIZE } from '../lib/board';
-import GameController, { GameConfig } from './GameController';
+import GameController, { GameData } from './GameController';
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
@@ -19,7 +19,7 @@ export default function Game() {
   const [carts, setCarts] = useState<Cart[]>([]);
   const [cargos, setCargos] = useState<Cargo[]>([]);
   const [stations, setStations] = useState<Station[]>([]);
-  const [config, setConfig] = useState<GameConfig>({
+  const [gameData, setGameData] = useState<GameData>({
     round: 1,
     running: true,
     cartSpeedPxPerSec: 5,
@@ -28,8 +28,8 @@ export default function Game() {
   });
 
   // callbacks
-  const onConfigUpdate = (config: GameConfig) => {
-    setConfig(config);
+  const onGameDataUpdate = (gameData: GameData) => {
+    setGameData(gameData);
   };
 
   const onStationCreate = (station: Station) => {
@@ -130,8 +130,8 @@ export default function Game() {
       </div>
 
       <CartsMovement
-        enabled={config.running}
-        speedPxPerSec={config.cartSpeedPxPerSec}
+        enabled={gameData.running}
+        speedPxPerSec={gameData.cartSpeedPxPerSec}
         carts={carts}
         lines={lines}
         onCartPositionUpdate={(cart, position) =>
@@ -140,26 +140,26 @@ export default function Game() {
         onArriveToStation={onArriveToStation}
       />
       <CargoSpawner
-        enabled={config.running}
-        frequencyMs={config.cargoSpawningFrequencyMs}
+        enabled={gameData.running}
+        frequencyMs={gameData.cargoSpawningFrequencyMs}
         stations={stations}
         lines={lines}
         onCargoSpawn={onCargoCreate}
       />
       <StationSpawner
-        enabled={config.running}
+        enabled={gameData.running}
         initialStations={3}
-        frequencyMs={config.stationSpawningFrequencyMs}
+        frequencyMs={gameData.stationSpawningFrequencyMs}
         onStationSpawn={onStationCreate}
       />
       <GameController
-        gameConfig={config}
+        gameData={gameData}
         isEditing={isEditing}
         stations={stations}
         lines={lines}
         cargos={cargos}
         carts={carts}
-        onConfigUpdate={onConfigUpdate}
+        onGameDataUpdate={onGameDataUpdate}
       />
     </main>
   );
