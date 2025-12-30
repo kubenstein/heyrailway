@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Point, Station, Cart, Line } from '../lib/types';
 import CartsMovementEngine from '../lib/cartsMovementEngine/cartsMovementEngine';
+import { pointToBoardPoint } from '../lib/board';
 
 interface CartsMovementProps {
   enabled: boolean;
@@ -43,14 +44,12 @@ export default function CartsMovement(props: CartsMovementProps) {
 }
 
 export function nonReactCartPositionUpdater(
-  svgEl: SVGSVGElement,
+  boardEl: HTMLElement,
   cart: Cart,
   position: Point
 ) {
-  const cartEl = svgEl.getElementById(`cart-${cart.id}`);
+  const cartEl = boardEl.querySelector<HTMLElement>(`#cart-${cart.id}`);
   if (!cartEl) return;
-  cartEl.setAttribute(
-    'transform',
-    `translate(${position.x * 20}, ${position.y * 20})`
-  );
+  const { x, y } = pointToBoardPoint(position);
+  cartEl.style.transform = `translate(${x}px, ${y}px)`;
 }

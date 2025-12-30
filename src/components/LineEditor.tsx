@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 import { LineRenderer, SegmentRenderer } from './renderers/RailwaysRenderer';
 import { Point, Line, Station } from '../lib/types';
 import randomId from '../lib/randomId';
-
-type MouseEvent = React.MouseEvent<SVGGElement>;
+import { eToBoardPoint } from '../lib/board';
 
 interface LineEditorProps {
   stations: Station[];
@@ -23,26 +22,17 @@ export default function LineEditor({
   const stationAtPoint = (point: Point) =>
     stations.find((s) => s.position.x === point.x && s.position.y === point.y);
 
-  const eToPoint = (e: MouseEvent) => {
-    const svg = e.currentTarget.ownerSVGElement!;
-    const rect = svg.getBoundingClientRect();
-    const x = Math.floor((e.clientX - rect.left) / 20);
-    const y = Math.floor((e.clientY - rect.top) / 20);
-    const point: Point = { x, y };
-    return point;
-  };
-
   // actions
-  const onClick = (e: MouseEvent) => {
-    const station = stationAtPoint(eToPoint(e));
+  const onClick = (e: MouseEvent<HTMLDivElement>) => {
+    const station = stationAtPoint(eToBoardPoint(e));
     if (!station) return;
     if (lastStation?.id === station.id) return;
 
     setLineStations([...lineStations, station]);
   };
 
-  const onMouseMove = (e: MouseEvent) => {
-    const point = eToPoint(e);
+  const onMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    const point = eToBoardPoint(e);
     setHoveringPoint(point);
   };
 
@@ -61,16 +51,16 @@ export default function LineEditor({
   const appliedLine: Line = { id: 'editor', stations: lineStations };
 
   return (
-    <g
+    <div
+      className="line-editor"
       onClick={onClick}
       onMouseMove={onMouseMove}
       onDoubleClick={onDoubleClick}
     >
-      <rect x="0" y="0" width="2000" height="2000" fill="transparent" />
       <LineRenderer line={appliedLine} type="blue" />
       {hoveringSegment && (
         <SegmentRenderer segment={hoveringSegment} type="dashed" />
       )}
-    </g>
+    </div>
   );
 }
