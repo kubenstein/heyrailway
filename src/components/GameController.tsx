@@ -1,8 +1,14 @@
-import { useEffect, useRef, useState, JSX } from 'react';
+import { useEffect, useRef, useReducer, JSX } from 'react';
 import { Station, Line, Cargo, Cart } from '../lib/types';
-import { dropRemoveLoadCargos } from './CargoSpawner';
+import { dropDeliverLoadCargos } from './CargoSpawner';
 
-export type GameData = {
+type GameState = {
+  lines: Line[];
+  carts: Cart[];
+  cargos: Cargo[];
+  stations: Station[];
+  clock: number;
+  points: number;
   round: number;
   running: boolean;
   perkCartUpgrades: number;
@@ -13,12 +19,118 @@ export type GameData = {
   stationSpawningFrequencyMs: number;
 };
 
+type GameAction =
+  | { type: 'ADD_STATION'; station: Station }
+  | { type: 'ADD_LINE'; line: Line }
+  | { type: 'ADD_CARGO'; cargo: Cargo }
+  | { type: 'ADD_CART'; cart: Cart }
+  | {
+      type: 'ARRIVE_AT_STATION';
+      cart: Cart;
+      station: Station;
+      cartNextStation: Station;
+    }
+  | { type: 'SET_RUNNING'; isRunning: boolean }
+  | { type: 'TICK_CLOCK' };
+
+const gameReducer = (state: GameState, action: GameAction): GameState => {
+  switch (action.type) {
+    case 'ADD_STATION':
+      return { ...state, stations: [...state.stations, action.station] };
+
+    case 'ADD_LINE':
+      return {
+        ...state,
+        lines: [...state.lines, action.line],
+        perkAvailableLines: state.perkAvailableLines - 1,
+      };
+
+    case 'ADD_CARGO':
+      return { ...state, cargos: [...state.cargos, action.cargo] };
+
+    case 'ADD_CART':
+      return { ...state, carts: [...state.carts, action.cart] };
+
+    case 'ARRIVE_AT_STATION': {
+      const newCargos = dropDeliverLoadCargos(
+        state.cargos,
+        action.cart,
+        action.station,
+        action.cartNextStation
+      );
+      const deliveredCargosCount = state.cargos.length - newCargos.length;
+      return {
+        ...state,
+        cargos: newCargos,
+        points: state.points + deliveredCargosCount,
+      };
+    }
+
+    case 'SET_RUNNING':
+      return {
+        ...state,
+        running: action.isRunning,
+      };
+
+    case 'TICK_CLOCK': {
+      const newClock = state.clock + 1;
+      let nextState: GameState = { ...state, clock: newClock };
+
+      if (newClock % 60 === 0) {
+        nextState = {
+          ...nextState,
+          round: nextState.round + 1,
+          perkCartUpgrades: nextState.perkCartUpgrades + 1,
+          perkStationUpgrades: nextState.perkStationUpgrades + 1,
+          perkAvailableLines: nextState.perkAvailableLines + 1,
+        };
+      }
+
+      if (newClock % 130 === 0) {
+        nextState = {
+          ...nextState,
+          cargoSpawningFrequencyMs: nextState.cargoSpawningFrequencyMs * 0.9,
+        };
+      }
+
+      return nextState;
+    }
+    default:
+      return state;
+  }
+};
+
+const initialState: GameState = {
+  lines: [],
+  carts: [],
+  cargos: [],
+  stations: [],
+  clock: 1,
+  points: 0,
+  round: 1,
+  running: true,
+  perkCartUpgrades: 0,
+  perkStationUpgrades: 0,
+  perkAvailableLines: 2,
+  cartSpeedPxPerSec: 5,
+  cargoSpawningFrequencyMs: 10000,
+  stationSpawningFrequencyMs: 35000,
+};
+
 export type RenderProps = {
   lines: Line[];
   carts: Cart[];
   cargos: Cargo[];
   stations: Station[];
-  gameData: GameData;
+  points: number;
+  round: number;
+  running: boolean;
+  perkCartUpgrades: number;
+  perkStationUpgrades: number;
+  perkAvailableLines: number;
+  cartSpeedPxPerSec: number;
+  cargoSpawningFrequencyMs: number;
+  stationSpawningFrequencyMs: number;
   addStation: (station: Station) => void;
   addLine: (line: Line) => void;
   addCart: (cart: Cart) => void;
@@ -39,60 +151,15 @@ export default function GameController({
   isEditing,
   render,
 }: GameControllerProps) {
-  const [clock, setClock] = useState(1);
   const clockIntervalId = useRef(0);
 
-  const [lines, setLines] = useState<Line[]>([]);
-  const [carts, setCarts] = useState<Cart[]>([]);
-  const [cargos, setCargos] = useState<Cargo[]>([]);
-  const [stations, setStations] = useState<Station[]>([]);
-  const [gameData, setGameData] = useState<GameData>({
-    round: 1,
-    running: true,
-    perkCartUpgrades: 0,
-    perkStationUpgrades: 0,
-    perkAvailableLines: 2,
-    cartSpeedPxPerSec: 5,
-    cargoSpawningFrequencyMs: 10000,
-    stationSpawningFrequencyMs: 35000,
-  });
-
-  // render prop actions
-  const addStation = (station: Station) => {
-    setStations((prevStations) => [...prevStations, station]);
-  };
-
-  const addLine = (line: Line) => {
-    setGameData((prevGameData) => ({
-      ...prevGameData,
-      perkAvailableLines: prevGameData.perkAvailableLines - 1,
-    }));
-    setLines((prevLines) => [...prevLines, line]);
-  };
-
-  const addCargo = (cargo: Cargo) => {
-    setCargos((prevCargos) => [...prevCargos, cargo]);
-  };
-
-  const addCart = (cart: Cart) => {
-    setCarts([...carts, cart]);
-  };
-
-  const onArriveToStation = (
-    cart: Cart,
-    station: Station,
-    cartNextStation: Station
-  ) => {
-    setCargos((prevCargos) =>
-      dropRemoveLoadCargos(prevCargos, cart, station, cartNextStation)
-    );
-  };
+  const [state, dispatch] = useReducer(gameReducer, initialState);
 
   // clock actions
   const startTime = () => {
     clearInterval(clockIntervalId.current);
     clockIntervalId.current = setInterval(() => {
-      setClock((prevClock) => prevClock + 1);
+      dispatch({ type: 'TICK_CLOCK' });
     }, 1000);
   };
 
@@ -104,46 +171,40 @@ export default function GameController({
   // handle isEditing changes
   useEffect(() => {
     isEditing ? stopTime() : startTime();
-    setGameData((prevGameData) => ({ ...prevGameData, running: !isEditing }));
+    dispatch({ type: 'SET_RUNNING', isRunning: !isEditing });
     return () => clearInterval(clockIntervalId.current);
   }, [isEditing]);
-
-  // handle clock changes
-  useEffect(() => {
-    let changed = false;
-    const newGameData: GameData = { ...gameData };
-
-    if (clock % 60 === 0) {
-      changed = true;
-      newGameData.round += 1;
-      newGameData.perkCartUpgrades += 1;
-      newGameData.perkStationUpgrades += 1;
-      newGameData.perkAvailableLines += 1;
-    }
-
-    if (clock % 130 === 0) {
-      changed = true;
-      newGameData.cargoSpawningFrequencyMs *= 0.9;
-    }
-
-    if (changed) setGameData(newGameData);
-  }, [clock]);
 
   // render
   if (!render) return null;
   return (
     <>
       {render({
-        lines,
-        carts,
-        cargos,
-        stations,
-        gameData,
-        addStation,
-        addLine,
-        addCart,
-        addCargo,
-        onArriveToStation,
+        ...state,
+        addStation: (station: Station) => {
+          dispatch({ type: 'ADD_STATION', station });
+        },
+        addLine: (line: Line) => {
+          dispatch({ type: 'ADD_LINE', line });
+        },
+        addCart: (cart: Cart) => {
+          dispatch({ type: 'ADD_CART', cart });
+        },
+        addCargo: (cargo: Cargo) => {
+          dispatch({ type: 'ADD_CARGO', cargo });
+        },
+        onArriveToStation: (
+          cart: Cart,
+          station: Station,
+          cartNextStation: Station
+        ) => {
+          dispatch({
+            type: 'ARRIVE_AT_STATION',
+            cart,
+            station,
+            cartNextStation,
+          });
+        },
       })}
     </>
   );

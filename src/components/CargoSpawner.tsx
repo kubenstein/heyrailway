@@ -43,7 +43,7 @@ export default function CargoSpawner(props: CargoSpawnerProps) {
   return null;
 }
 
-export const dropRemoveLoadCargos = (
+export const dropDeliverLoadCargos = (
   prevCargos: Cargo[],
   cart: Cart,
   station: Station,
@@ -62,7 +62,7 @@ export const dropRemoveLoadCargos = (
         cargo.stationIdsRoute.shift();
         return cargo;
       })
-      // remove cargos that reached destination
+      // remove delivered cargos
       .filter((cargo) => cargo.stationIdsRoute.length !== 0)
       // load cargos
       .map((cargo) => {

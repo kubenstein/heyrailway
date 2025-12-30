@@ -23,58 +23,51 @@ export default function Game() {
 
       <GameController
         isEditing={isEditing}
-        render={({
-          gameData,
-          stations,
-          lines,
-          carts,
-          cargos,
-          addStation,
-          addLine,
-          addCart,
-          addCargo,
-          onArriveToStation,
-        }) => (
+        render={(g) => (
           <div>
             <CartsMovement
-              enabled={gameData.running}
-              speedPxPerSec={gameData.cartSpeedPxPerSec}
-              carts={carts}
-              lines={lines}
+              enabled={g.running}
+              speedPxPerSec={g.cartSpeedPxPerSec}
+              carts={g.carts}
+              lines={g.lines}
               onCartPositionUpdate={(cart, position) =>
                 nonReactCartPositionUpdater(boardEl.current!, cart, position)
               }
-              onArriveToStation={onArriveToStation}
+              onArriveToStation={g.onArriveToStation}
             />
             <CargoSpawner
-              enabled={gameData.running}
-              frequencyMs={gameData.cargoSpawningFrequencyMs}
-              stations={stations}
-              lines={lines}
-              onCargoSpawn={addCargo}
+              enabled={g.running}
+              frequencyMs={g.cargoSpawningFrequencyMs}
+              stations={g.stations}
+              lines={g.lines}
+              onCargoSpawn={g.addCargo}
             />
             <StationSpawner
-              enabled={gameData.running}
+              enabled={g.running}
               initialStations={3}
-              frequencyMs={gameData.stationSpawningFrequencyMs}
-              onStationSpawn={addStation}
+              frequencyMs={g.stationSpawningFrequencyMs}
+              onStationSpawn={g.addStation}
             />
 
-            {lines.map((line) => (
+            {g.lines.map((line) => (
               <button
                 key={line.id}
-                onClick={() => addCart({ id: randomId(), capacity: 6, line })}
+                onClick={() => g.addCart({ id: randomId(), capacity: 6, line })}
               >
                 Add Cart to Line {line.id}
               </button>
             ))}
 
             <div>
-              perkAvailableLines: {gameData.perkAvailableLines}
+              points: {g.points}
               <br />
-              perkCartUpgrades: {gameData.perkCartUpgrades}
+              round: {g.round}
               <br />
-              perkStationUpgrades: {gameData.perkStationUpgrades}
+              perkAvailableLines: {g.perkAvailableLines}
+              <br />
+              perkCartUpgrades: {g.perkCartUpgrades}
+              <br />
+              perkStationUpgrades: {g.perkStationUpgrades}
               <br />
             </div>
             <div
@@ -82,15 +75,15 @@ export default function Game() {
               className="board"
               style={{ width: BOARD_SIZE, height: BOARD_SIZE }}
             >
-              <RailwaysRenderer lines={lines} />
-              <StationsRenderer stations={stations} cargos={cargos} />
-              <CartsRenderer carts={carts} cargos={cargos} />
+              <RailwaysRenderer lines={g.lines} />
+              <StationsRenderer stations={g.stations} cargos={g.cargos} />
+              <CartsRenderer carts={g.carts} cargos={g.cargos} />
               {isEditing && (
                 <LineEditor
-                  stations={stations}
-                  availableLines={gameData.perkAvailableLines}
+                  stations={g.stations}
+                  availableLines={g.perkAvailableLines}
                   onLineCreate={(line: Line) => {
-                    addLine(line);
+                    g.addLine(line);
                     setIsEditing(false);
                   }}
                 />
