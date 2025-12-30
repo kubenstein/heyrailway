@@ -4,13 +4,15 @@ import { Station, Line, Cargo, Cart } from '../lib/types';
 export type GameData = {
   round: number;
   running: boolean;
+  perkCartUpgrades: number;
+  perkStationUpgrades: number;
+  perkAvailableLines: number;
   cartSpeedPxPerSec: number;
   cargoSpawningFrequencyMs: number;
   stationSpawningFrequencyMs: number;
 };
 
 interface GameControllerProps {
-  gameData: GameData;
   isEditing: boolean;
   stations: Station[];
   lines: Line[];
@@ -20,13 +22,25 @@ interface GameControllerProps {
 }
 
 export default function GameController({
-  gameData,
   isEditing,
+  lines,
   onGameDataUpdate,
 }: GameControllerProps) {
   const [clock, setClock] = useState(1);
   const clockIntervalId = useRef(0);
+  const prevLineCount = useRef(lines.length);
+  const [gameData, setGameData] = useState<GameData>({
+    round: 1,
+    running: true,
+    perkCartUpgrades: 0,
+    perkStationUpgrades: 0,
+    perkAvailableLines: 2,
+    cartSpeedPxPerSec: 5,
+    cargoSpawningFrequencyMs: 10000,
+    stationSpawningFrequencyMs: 35000,
+  });
 
+  // clock actions
   const startTime = () => {
     clearInterval(clockIntervalId.current);
     clockIntervalId.current = setInterval(() => {
@@ -38,17 +52,35 @@ export default function GameController({
     clearInterval(clockIntervalId.current);
   };
 
+  // effects
+  // make sure to clear interval on unmount
   useEffect(() => {
-    if (isEditing) {
-      stopTime();
-    } else {
-      startTime();
-    }
-    onGameDataUpdate({ ...gameData, running: !isEditing });
-
     return () => clearInterval(clockIntervalId.current);
+  }, []);
+
+  // propagate gameData change
+  useEffect(() => {
+    onGameDataUpdate(gameData);
+  }, [gameData]);
+
+  // handle isEditing changes
+  useEffect(() => {
+    isEditing ? stopTime() : startTime();
+    setGameData((prevGameData) => ({ ...prevGameData, running: !isEditing }));
   }, [isEditing]);
 
+  // handle adding new line
+  useEffect(() => {
+    if (lines.length > prevLineCount.current) {
+      setGameData((prevGameData) => ({
+        ...prevGameData,
+        perkAvailableLines: prevGameData.perkAvailableLines - 1,
+      }));
+    }
+    prevLineCount.current = lines.length;
+  }, [lines]);
+
+  // handle clock changes
   useEffect(() => {
     let changed = false;
     const newGameData: GameData = { ...gameData };
@@ -56,6 +88,9 @@ export default function GameController({
     if (clock % 60 === 0) {
       changed = true;
       newGameData.round += 1;
+      newGameData.perkCartUpgrades += 1;
+      newGameData.perkStationUpgrades += 1;
+      newGameData.perkAvailableLines += 1;
     }
 
     if (clock % 130 === 0) {
@@ -63,7 +98,7 @@ export default function GameController({
       newGameData.cargoSpawningFrequencyMs *= 0.9;
     }
 
-    if (changed) onGameDataUpdate(newGameData);
+    if (changed) setGameData(newGameData);
   }, [clock]);
 
   return null;

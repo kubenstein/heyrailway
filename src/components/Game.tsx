@@ -19,17 +19,11 @@ export default function Game() {
   const [carts, setCarts] = useState<Cart[]>([]);
   const [cargos, setCargos] = useState<Cargo[]>([]);
   const [stations, setStations] = useState<Station[]>([]);
-  const [gameData, setGameData] = useState<GameData>({
-    round: 1,
-    running: true,
-    cartSpeedPxPerSec: 5,
-    cargoSpawningFrequencyMs: 10000,
-    stationSpawningFrequencyMs: 35000,
-  });
+  const [gameData, setGameData] = useState<GameData | null>(null);
 
   // callbacks
-  const onGameDataUpdate = (gameData: GameData) => {
-    setGameData(gameData);
+  const onGameDataUpdate = (newGameData: GameData) => {
+    setGameData(newGameData);
   };
 
   const onStationCreate = (station: Station) => {
@@ -116,6 +110,14 @@ export default function Game() {
         </button>
       ))}
 
+      <div>
+        perkAvailableLines: {gameData?.perkAvailableLines || 0}
+        <br />
+        perkCartUpgrades: {gameData?.perkCartUpgrades || 0}
+        <br />
+        perkStationUpgrades: {gameData?.perkStationUpgrades || 0}
+        <br />
+      </div>
       <div
         ref={boardEl}
         className="board"
@@ -125,35 +127,15 @@ export default function Game() {
         <StationsRenderer stations={stations} cargos={cargos} />
         <CartsRenderer carts={carts} cargos={cargos} />
         {isEditing && (
-          <LineEditor stations={stations} onLineCreate={onLineCreate} />
+          <LineEditor
+            stations={stations}
+            availableLines={gameData?.perkAvailableLines || 0}
+            onLineCreate={onLineCreate}
+          />
         )}
       </div>
 
-      <CartsMovement
-        enabled={gameData.running}
-        speedPxPerSec={gameData.cartSpeedPxPerSec}
-        carts={carts}
-        lines={lines}
-        onCartPositionUpdate={(cart, position) =>
-          nonReactCartPositionUpdater(boardEl.current!, cart, position)
-        }
-        onArriveToStation={onArriveToStation}
-      />
-      <CargoSpawner
-        enabled={gameData.running}
-        frequencyMs={gameData.cargoSpawningFrequencyMs}
-        stations={stations}
-        lines={lines}
-        onCargoSpawn={onCargoCreate}
-      />
-      <StationSpawner
-        enabled={gameData.running}
-        initialStations={3}
-        frequencyMs={gameData.stationSpawningFrequencyMs}
-        onStationSpawn={onStationCreate}
-      />
       <GameController
-        gameData={gameData}
         isEditing={isEditing}
         stations={stations}
         lines={lines}
@@ -161,6 +143,42 @@ export default function Game() {
         carts={carts}
         onGameDataUpdate={onGameDataUpdate}
       />
+
+      {gameData && (
+        <>
+          <CartsMovement
+            enabled={gameData.running}
+            speedPxPerSec={gameData.cartSpeedPxPerSec}
+            carts={carts}
+            lines={lines}
+            onCartPositionUpdate={(cart, position) =>
+              nonReactCartPositionUpdater(boardEl.current!, cart, position)
+            }
+            onArriveToStation={onArriveToStation}
+          />
+          <CargoSpawner
+            enabled={gameData.running}
+            frequencyMs={gameData.cargoSpawningFrequencyMs}
+            stations={stations}
+            lines={lines}
+            onCargoSpawn={onCargoCreate}
+          />
+          <StationSpawner
+            enabled={gameData.running}
+            initialStations={3}
+            frequencyMs={gameData.stationSpawningFrequencyMs}
+            onStationSpawn={onStationCreate}
+          />
+          <GameController
+            isEditing={isEditing}
+            stations={stations}
+            lines={lines}
+            cargos={cargos}
+            carts={carts}
+            onGameDataUpdate={onGameDataUpdate}
+          />
+        </>
+      )}
     </main>
   );
 }
