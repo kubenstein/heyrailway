@@ -69,6 +69,7 @@ export default function Game() {
               <br />
               perkStationUpgrades: {g.perkStationUpgrades}
               <br />
+              {g.lost && <strong>GAME OVER</strong>}
             </div>
             <div
               ref={boardEl}

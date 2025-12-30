@@ -3,6 +3,7 @@ import { Station, Line, Cargo, Cart } from '../lib/types';
 import { dropDeliverLoadCargos } from './CargoSpawner';
 
 type GameState = {
+  lost: boolean;
   lines: Line[];
   carts: Cart[];
   cargos: Cargo[];
@@ -45,8 +46,23 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         perkAvailableLines: state.perkAvailableLines - 1,
       };
 
-    case 'ADD_CARGO':
-      return { ...state, cargos: [...state.cargos, action.cargo] };
+    case 'ADD_CARGO': {
+      const newState = { ...state, cargos: [...state.cargos, action.cargo] };
+
+      const stationOcupation = state.cargos.filter(
+        (c) => c.stationId === action.cargo.stationId
+      ).length;
+      const stationCapacity = state.stations.find(
+        (s) => s.id === action.cargo.stationId
+      )!.capacity;
+
+      if (stationOcupation > stationCapacity) {
+        newState.lost = true;
+        newState.running = false;
+      }
+
+      return newState;
+    }
 
     case 'ADD_CART':
       return { ...state, carts: [...state.carts, action.cart] };
@@ -101,6 +117,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
 };
 
 const initialState: GameState = {
+  lost: false,
   lines: [],
   carts: [],
   cargos: [],
@@ -113,24 +130,11 @@ const initialState: GameState = {
   perkStationUpgrades: 0,
   perkAvailableLines: 2,
   cartSpeedPxPerSec: 5,
-  cargoSpawningFrequencyMs: 10000,
+  cargoSpawningFrequencyMs: 1000,
   stationSpawningFrequencyMs: 35000,
 };
 
-export type RenderProps = {
-  lines: Line[];
-  carts: Cart[];
-  cargos: Cargo[];
-  stations: Station[];
-  points: number;
-  round: number;
-  running: boolean;
-  perkCartUpgrades: number;
-  perkStationUpgrades: number;
-  perkAvailableLines: number;
-  cartSpeedPxPerSec: number;
-  cargoSpawningFrequencyMs: number;
-  stationSpawningFrequencyMs: number;
+export type RenderProps = GameState & {
   addStation: (station: Station) => void;
   addLine: (line: Line) => void;
   addCart: (cart: Cart) => void;

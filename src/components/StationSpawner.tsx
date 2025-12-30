@@ -19,6 +19,7 @@ export default function StationSpawner(props: StationSpawnerProps) {
   const spawnStation = (cargoType = randomCargoType()) => {
     const newStation = {
       id: randomId(),
+      capacity: 20,
       position: {
         x: Math.floor(Math.random() * 100),
         y: Math.floor(Math.random() * 100),
