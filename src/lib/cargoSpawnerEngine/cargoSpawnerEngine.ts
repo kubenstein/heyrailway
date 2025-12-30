@@ -51,7 +51,7 @@ export default class CargoSpawnerEngine {
     clearInterval(this.timeIntervalId || 0);
     if (this.enabled) {
       this.timeIntervalId = setInterval(
-        this.spawn.bind(this),
+        this.spawnCargos.bind(this),
         this.frequencyMs
       );
     }
@@ -63,13 +63,22 @@ export default class CargoSpawnerEngine {
     clearInterval(this.timeIntervalId || 0);
     if (this.enabled) {
       this.timeIntervalId = setInterval(
-        this.spawn.bind(this),
+        this.spawnCargos.bind(this),
         this.frequencyMs
       );
     }
   }
 
-  private spawn() {
+  private spawnCargos() {
+    if (this.graph.size === 0) return;
+
+    // spawn cargo for each connected station
+    this.graph
+      .filterNodes((node) => this.graph.degree(node) > 0)
+      .forEach(() => this.spawnCargo());
+  }
+
+  private spawnCargo() {
     if (this.graph.size === 0) return;
 
     const tmpGraph = this.graph.copy();
