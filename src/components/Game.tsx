@@ -6,133 +6,92 @@ import LineEditor from './LineEditor';
 import CartsMovement, { nonReactCartPositionUpdater } from './CartsMovement';
 import CargoSpawner from './CargoSpawner';
 import StationSpawner from './StationSpawner';
-import { Line, Station, Cart, Cargo } from '../lib/types';
 import randomId from '../lib/randomId';
-import deepCopy from '../lib/deepCopy';
 import { BOARD_SIZE } from '../lib/board';
+import GameController from './GameController';
+import { Line } from '../lib/types';
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [lines, setLines] = useState<Line[]>([]);
-  const [carts, setCarts] = useState<Cart[]>([]);
-  const [cargos, setCargos] = useState<Cargo[]>([]);
-  const [stations, setStations] = useState<Station[]>([]);
 
-  // callbacks
-  const onStationCreate = (station: Station) => {
-    setStations((prevStations) => [...prevStations, station]);
-  };
-
-  const onCargoCreate = (cargo: Cargo) => {
-    setCargos((prevCargos) => [...prevCargos, cargo]);
-  };
-
-  const onLineCreate = (line: Line) => {
-    setLines([...lines, line]);
-    setIsEditing(false);
-  };
-
-  const onArriveToStation = (
-    cart: Cart,
-    station: Station,
-    cartNextStation: Station
-  ) => {
-    setCargos((prevCargos) =>
-      dropRemoveLoadCargos(prevCargos, cart, station, cartNextStation)
-    );
-  };
-
-  // actions
-  const addCart = (line: Line) => {
-    const newCart: Cart = {
-      id: randomId(),
-      line,
-    };
-    setCarts([...carts, newCart]);
-  };
-
-  // support
-  const dropRemoveLoadCargos = (
-    prevCargos: Cargo[],
-    cart: Cart,
-    station: Station,
-    cartNextStation: Station
-  ) => {
-    const newCargos = deepCopy(prevCargos);
-    return (
-      newCargos
-        // drop cargos
-        .map((cargo) => {
-          if (cargo.cartId !== cart.id) return cargo; // not this cart
-          if (cargo.stationIdsRoute[0] !== station.id) return cargo; // not this station
-
-          cargo.stationId = station.id;
-          cargo.cartId = null;
-          cargo.stationIdsRoute.shift();
-          return cargo;
-        })
-        // remove cargos that reached destination
-        .filter((cargo) => cargo.stationIdsRoute.length !== 0)
-        // load cargos
-        .map((cargo) => {
-          if (cargo.stationId !== station.id) return cargo; // not this station
-          if (cargo.stationIdsRoute[0] !== cartNextStation.id) return cargo; // not going to cart next station
-
-          cargo.cartId = cart.id;
-          cargo.stationId = null;
-          return cargo;
-        })
-    );
-  };
-
-  // render
   return (
     <main className="app">
       <button onClick={() => setIsEditing(!isEditing)}>
         {isEditing ? 'Cancel Editing' : 'Start Editing'}
       </button>
-      {lines.map((line) => (
-        <button key={line.id} onClick={() => addCart(line)}>
-          Add Cart to Line {line.id}
-        </button>
-      ))}
 
-      <div
-        ref={boardEl}
-        className="board"
-        style={{ width: BOARD_SIZE, height: BOARD_SIZE }}
-      >
-        <RailwaysRenderer lines={lines} />
-        <StationsRenderer stations={stations} cargos={cargos} />
-        <CartsRenderer carts={carts} cargos={cargos} />
-        {isEditing && (
-          <LineEditor stations={stations} onLineCreate={onLineCreate} />
+      <GameController
+        isEditing={isEditing}
+        render={(g) => (
+          <div>
+            <CartsMovement
+              enabled={g.running}
+              speedPxPerSec={g.cartSpeedPxPerSec}
+              carts={g.carts}
+              lines={g.lines}
+              onCartPositionUpdate={(cart, position) =>
+                nonReactCartPositionUpdater(boardEl.current!, cart, position)
+              }
+              onArriveToStation={g.onArriveToStation}
+            />
+            <CargoSpawner
+              enabled={g.running}
+              frequencyMs={g.cargoSpawningFrequencyMs}
+              stations={g.stations}
+              lines={g.lines}
+              onCargoSpawn={g.addCargo}
+            />
+            <StationSpawner
+              enabled={g.running}
+              initialStations={3}
+              frequencyMs={g.stationSpawningFrequencyMs}
+              onStationSpawn={g.addStation}
+            />
+
+            {g.lines.map((line) => (
+              <button
+                key={line.id}
+                onClick={() => g.addCart({ id: randomId(), capacity: 6, line })}
+              >
+                Add Cart to Line {line.id}
+              </button>
+            ))}
+
+            <div>
+              points: {g.points}
+              <br />
+              round: {g.round}
+              <br />
+              perkAvailableLines: {g.perkAvailableLines}
+              <br />
+              perkCartUpgrades: {g.perkCartUpgrades}
+              <br />
+              perkStationUpgrades: {g.perkStationUpgrades}
+              <br />
+              {g.lost && <strong>GAME OVER</strong>}
+            </div>
+            <div
+              ref={boardEl}
+              className="board"
+              style={{ width: BOARD_SIZE, height: BOARD_SIZE }}
+            >
+              <RailwaysRenderer lines={g.lines} />
+              <StationsRenderer stations={g.stations} cargos={g.cargos} />
+              <CartsRenderer carts={g.carts} cargos={g.cargos} />
+              {isEditing && (
+                <LineEditor
+                  stations={g.stations}
+                  availableLines={g.perkAvailableLines}
+                  onLineCreate={(line: Line) => {
+                    g.addLine(line);
+                    setIsEditing(false);
+                  }}
+                />
+              )}
+            </div>
+          </div>
         )}
-      </div>
-
-      <CartsMovement
-        enabled={!isEditing}
-        speedPxPerSec={5}
-        carts={carts}
-        lines={lines}
-        onCartPositionUpdate={(cart, position) =>
-          nonReactCartPositionUpdater(boardEl.current!, cart, position)
-        }
-        onArriveToStation={onArriveToStation}
-      />
-      <CargoSpawner
-        frequencyMs={1000}
-        enabled={!isEditing}
-        stations={stations}
-        lines={lines}
-        onCargoSpawn={onCargoCreate}
-      />
-      <StationSpawner
-        initialStations={3}
-        frequencyMs={60000}
-        enabled={!isEditing}
-        onStationSpawn={onStationCreate}
       />
     </main>
   );

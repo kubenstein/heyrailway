@@ -6,11 +6,13 @@ import { eToBoardPoint } from '../lib/board';
 
 interface LineEditorProps {
   stations: Station[];
+  availableLines: number;
   onLineCreate: (line: Line) => void;
 }
 
 export default function LineEditor({
   stations,
+  availableLines,
   onLineCreate,
 }: LineEditorProps) {
   const [lineStations, setLineStations] = useState<Station[]>([]);
@@ -50,7 +52,11 @@ export default function LineEditor({
       : null;
   const appliedLine: Line = { id: 'editor', stations: lineStations };
 
-  return (
+  return availableLines <= 0 ? (
+    <div className="line-editor-info">
+      No available lines left. Please upgrade to add more lines.
+    </div>
+  ) : (
     <div
       className="line-editor"
       onClick={onClick}

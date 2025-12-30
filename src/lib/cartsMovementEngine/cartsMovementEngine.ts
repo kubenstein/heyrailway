@@ -73,6 +73,10 @@ export default class CartsMovementEngine {
     this.cmeCarts.push(createCmeCart(cart, this.cmeLines));
   }
 
+  setSpeed(speedPxPerSec: number) {
+    this.speedPxPerSec = speedPxPerSec;
+  }
+
   setEnabled(enabled: boolean) {
     this.enabled = enabled;
     if (enabled) {

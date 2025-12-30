@@ -19,6 +19,7 @@ export default function StationSpawner(props: StationSpawnerProps) {
   const spawnStation = (cargoType = randomCargoType()) => {
     const newStation = {
       id: randomId(),
+      capacity: 20,
       position: {
         x: Math.floor(Math.random() * 100),
         y: Math.floor(Math.random() * 100),
@@ -32,10 +33,11 @@ export default function StationSpawner(props: StationSpawnerProps) {
     clearInterval(timeoutId.current);
     if (!props.enabled) return;
     timeoutId.current = setInterval(spawnStation, props.frequencyMs);
-  }, [props.enabled]);
+  }, [props.enabled, props.frequencyMs]);
 
   useEffect(() => {
     if (!props.enabled || hasSpawnedInitial.current) return;
+
     hasSpawnedInitial.current = true;
     for (let i = 0; i < props.initialStations; i++)
       spawnStation(cargoTypes[i % 3]);
