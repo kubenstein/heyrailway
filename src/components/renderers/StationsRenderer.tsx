@@ -4,11 +4,13 @@ import { pointToBoardPoint } from '../../lib/board';
 interface StationsRendererProps {
   stations: Station[];
   cargos: Cargo[];
+  onStationClick: (station: Station) => void;
 }
 
 export default function StationsRenderer({
   stations,
   cargos,
+  onStationClick,
 }: StationsRendererProps) {
   const renderStation = (station: Station) => {
     const { x, y } = pointToBoardPoint(station.position);
@@ -39,6 +41,7 @@ export default function StationsRenderer({
         key={`station-group-${station.id}`}
         className="board-anchor"
         style={{ transform: `translate(${x}px, ${y}px)` }}
+        onClick={() => onStationClick(station)}
       >
         <div
           className={`station-shape station-shape--${station.cargoType.toLowerCase()}`}

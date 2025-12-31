@@ -25,6 +25,7 @@ type GameAction =
   | { type: 'ADD_LINE'; line: Line }
   | { type: 'ADD_CARGO'; cargo: Cargo }
   | { type: 'ADD_CART'; cart: Cart }
+  | { type: 'UPGRADE_STATION'; station: Station }
   | {
       type: 'ARRIVE_AT_STATION';
       cart: Cart;
@@ -66,6 +67,19 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
 
     case 'ADD_CART':
       return { ...state, carts: [...state.carts, action.cart] };
+
+    case 'UPGRADE_STATION': {
+      const upgradedStations = state.stations.map((station) =>
+        station.id === action.station.id
+          ? { ...station, capacity: Math.floor(station.capacity * 1.2) }
+          : station
+      );
+      return {
+        ...state,
+        stations: upgradedStations,
+        perkStationUpgrades: state.perkStationUpgrades - 1,
+      };
+    }
 
     case 'ARRIVE_AT_STATION': {
       const newCargos = dropDeliverLoadCargos(
@@ -139,6 +153,7 @@ export type RenderProps = GameState & {
   addLine: (line: Line) => void;
   addCart: (cart: Cart) => void;
   addCargo: (cargo: Cargo) => void;
+  upgradeStation: (station: Station) => void;
   onArriveToStation: (
     cart: Cart,
     station: Station,
@@ -196,6 +211,9 @@ export default function GameController({
         },
         addCargo: (cargo: Cargo) => {
           dispatch({ type: 'ADD_CARGO', cargo });
+        },
+        upgradeStation: (station: Station) => {
+          dispatch({ type: 'UPGRADE_STATION', station });
         },
         onArriveToStation: (
           cart: Cart,
