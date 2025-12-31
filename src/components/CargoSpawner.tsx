@@ -29,16 +29,25 @@ export default function CargoSpawner(props: CargoSpawnerProps) {
   );
 
   useEffect(() => {
+    // add new lines
     props.lines
       .filter((line) => !lineIds.current.includes(line.id))
       .forEach((line) => spawningEngine.addLine(line, props.cargos));
+
+    // remove removed lines
+    lineIds.current
+      .filter((lineId) => !props.lines.find(({ id }) => id === lineId))
+      .forEach((lineId) => spawningEngine.removeLine(lineId, props.cargos));
+
     lineIds.current = props.lines.map(({ id }) => id);
   }, [props.lines, spawningEngine]);
 
   useEffect(() => {
+    // add new station
     props.stations
       .filter((station) => !stationIds.current.includes(station.id))
       .forEach((station) => spawningEngine.addStation(station));
+
     stationIds.current = props.stations.map(({ id }) => id);
   }, [props.stations, spawningEngine]);
 

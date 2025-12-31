@@ -28,8 +28,6 @@ export type cmeLine = {
 interface CartsMovementEngineProps {
   enabled: boolean;
   speedPxPerSec: number;
-  carts: Cart[];
-  lines: Line[];
   onCartPositionUpdate: (cart: Cart, position: Point) => void;
   onArriveToStation: (
     cart: Cart,
@@ -40,8 +38,6 @@ interface CartsMovementEngineProps {
 
 export default class CartsMovementEngine {
   private enabled: boolean = false;
-  private carts: Cart[] = [];
-  private lines: Line[] = [];
   private cmeLines: cmeLine[] = [];
   private cmeCarts: cmeCart[] = [];
   private speedPxPerSec: number;
@@ -58,19 +54,27 @@ export default class CartsMovementEngine {
     this.onArriveToStation = props.onArriveToStation;
     this.speedPxPerSec = props.speedPxPerSec;
 
-    props.lines.forEach((line) => this.addLine(line));
-    props.carts.forEach((cart) => this.addCart(cart));
     this.setEnabled(props.enabled);
   }
 
   addLine(line: Line) {
-    this.lines.push(line);
     this.cmeLines.push(createCmeLine(line, this.speedPxPerSec));
   }
 
+  removeLine(lineId: Line['id']) {
+    this.cmeLines = this.cmeLines.filter(
+      (cmeLine) => cmeLine.line.id !== lineId
+    );
+  }
+
   addCart(cart: Cart) {
-    this.carts.push(cart);
     this.cmeCarts.push(createCmeCart(cart, this.cmeLines));
+  }
+
+  removeCart(cartId: Cart['id']) {
+    this.cmeCarts = this.cmeCarts.filter(
+      (cmeCart) => cmeCart.cart.id !== cartId
+    );
   }
 
   setSpeed(speedPxPerSec: number) {

@@ -51,15 +51,30 @@ export default function Game() {
               onStationSpawn={g.addStation}
             />
 
+            <br />
             {g.lines.map((line) => (
-              <button
-                key={line.id}
-                onClick={() => g.addCart({ id: randomId(), capacity: 6, line })}
-              >
-                Add Cart to Line {line.id}
-              </button>
+              <div key={line.id}>
+                line {line.id}:
+                <button
+                  onClick={() => {
+                    if (isEditing) return;
+                    g.addCart({ id: randomId(), capacity: 6, line });
+                  }}
+                >
+                  Add Cart
+                </button>
+                <button
+                  onClick={() => {
+                    if (isEditing) return;
+                    g.removeLine(line);
+                  }}
+                >
+                  Remove Line
+                </button>
+                <br />
+              </div>
             ))}
-
+            <hr />
             <div>
               points: {g.points}
               <br />
@@ -85,8 +100,12 @@ export default function Game() {
                 onStationClick={(station: Station) => {
                   if (isEditing) return;
                   if (g.perkStationUpgrades <= 0) return;
-                  if (!confirm('do you want to upgrade this station?')) return;
-                  g.upgradeStation(station);
+
+                  setIsEditing(true);
+                  if (!confirm('do you want to upgrade this station?')) {
+                    g.upgradeStation(station);
+                  }
+                  setIsEditing(false);
                 }}
               />
               <CartsRenderer
@@ -95,8 +114,12 @@ export default function Game() {
                 onCartClick={(cart: Cart) => {
                   if (isEditing) return;
                   if (g.perkCartUpgrades <= 0) return;
-                  if (!confirm('do you want to upgrade this cart?')) return;
-                  g.upgradeCart(cart);
+
+                  setIsEditing(true);
+                  if (confirm('do you want to upgrade this cart?')) {
+                    g.upgradeCart(cart);
+                  }
+                  setIsEditing(false);
                 }}
               />
               {isEditing && (

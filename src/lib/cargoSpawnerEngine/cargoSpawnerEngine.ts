@@ -14,6 +14,8 @@ interface CargoSpawnerEngineProps {
 export default class CargoSpawnerEngine {
   private enabled: boolean = false;
   private frequencyMs: number;
+  private stations: Station[] = [];
+  private lines: Line[] = [];
   private graph: Graph = new Graph();
   private timeIntervalId: number | null = null;
   private onCargoSpawn: (cargo: Cargo) => void;
@@ -28,30 +30,32 @@ export default class CargoSpawnerEngine {
   }
 
   addLine(line: Line, allCargos: Cargo[]) {
-    for (let i = 0; i < line.stations.length - 1; i++) {
-      const segmentStartStation = line.stations[i];
-      const segmentEndStation = line.stations[i + 1];
-      if (
-        this.graph.hasUndirectedEdge(
-          segmentStartStation.id,
-          segmentEndStation.id
-        )
-      )
-        continue;
+    this.lines.push(line);
+    this.addLineToGraph(this.graph, line);
 
-      this.graph.addUndirectedEdge(
-        segmentStartStation.id,
-        segmentEndStation.id
-      );
-    }
-
-    // Reroute cargos that might be affected by new line
+    // Reroute cargos that were stuck, maybe they can be routed now
     this.rerouteStuckCargos(allCargos);
   }
 
+  removeLine(line: Line | null, allCargos: Cargo[]) {
+    if (!line) return;
+
+    this.lines = this.lines.filter(({ id }) => id !== line.id);
+
+    // rebuild whole graph from exisitng lines
+    this.graph = new Graph();
+    this.stations.forEach(({ id, cargoType }) => {
+      this.graph.addNode(id, { cargoType });
+    });
+    this.lines.forEach((line) => this.addLineToGraph(this.graph, line));
+
+    // Reroute all cargos
+    this.rerouteAllCargos(allCargos);
+  }
+
   addStation(station: Station) {
+    this.stations.push(station);
     const { id, cargoType } = station;
-    if (this.graph.hasNode(id)) return;
     this.graph.addNode(id, { cargoType });
   }
 
@@ -79,6 +83,7 @@ export default class CargoSpawnerEngine {
     }
   }
 
+  // spawning
   private spawnCargos() {
     this.graph.nodes().forEach(() => this.spawnCargo());
   }
@@ -105,6 +110,7 @@ export default class CargoSpawnerEngine {
     this.onCargoSpawn(newCargo);
   }
 
+  // rerouting
   private rerouteStuckCargos(allCargos: Cargo[]) {
     allCargos
       .filter((cargo) => cargo.stationIdsRoute[0] === 'NO_PATH')
@@ -123,7 +129,31 @@ export default class CargoSpawnerEngine {
       });
   }
 
+  private rerouteAllCargos(allCargos: Cargo[]) {
+    allCargos.forEach((cargo) => {
+      const stationIdsRoute = this.findRoute(cargo.stationId, cargo.cargoType);
+      if (!stationIdsRoute) return;
+
+      const updatedCargo: Cargo = {
+        ...cargo,
+        stationIdsRoute,
+      };
+      this.onCargoReroute(updatedCargo);
+    });
+  }
+
   // support
+  private addLineToGraph(graph: Graph, line: Line) {
+    for (let i = 0; i < line.stations.length - 1; i++) {
+      const segStartStation = line.stations[i];
+      const segEndStation = line.stations[i + 1];
+      if (!graph.hasUndirectedEdge(segStartStation.id, segEndStation.id)) {
+        graph.addUndirectedEdge(segStartStation.id, segEndStation.id);
+      }
+    }
+  }
+
+  // pathfinding
   private findRoute(startStationId: string | null, cargoType: string) {
     if (!startStationId) return null;
 
