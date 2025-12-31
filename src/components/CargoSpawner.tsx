@@ -8,7 +8,9 @@ interface CargoSpawnerProps {
   frequencyMs: number;
   stations: Station[];
   lines: Line[];
+  cargos: Cargo[];
   onCargoSpawn: (cargo: Cargo) => void;
+  onCargoReroute: (cargo: Cargo) => void;
 }
 
 export default function CargoSpawner(props: CargoSpawnerProps) {
@@ -29,7 +31,7 @@ export default function CargoSpawner(props: CargoSpawnerProps) {
   useEffect(() => {
     props.lines
       .filter((line) => !lineIds.current.includes(line.id))
-      .forEach((line) => spawningEngine.addLine(line));
+      .forEach((line) => spawningEngine.addLine(line, props.cargos));
     lineIds.current = props.lines.map(({ id }) => id);
   }, [props.lines, spawningEngine]);
 
