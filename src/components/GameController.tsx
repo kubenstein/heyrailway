@@ -13,11 +13,14 @@ type GameState = {
   round: number;
   running: boolean;
   perkCartUpgrades: number;
+  perkCartUpgradeFactor: number;
   perkStationUpgrades: number;
+  perkStationUpgradeFactor: number;
   perkAvailableLines: number;
   cartSpeedPxPerSec: number;
   cargoSpawningFrequencyMs: number;
   stationSpawningFrequencyMs: number;
+  cargoSpawningFrequencyReductionFactor: number;
 };
 
 type GameAction =
@@ -25,6 +28,8 @@ type GameAction =
   | { type: 'ADD_LINE'; line: Line }
   | { type: 'ADD_CARGO'; cargo: Cargo }
   | { type: 'ADD_CART'; cart: Cart }
+  | { type: 'UPGRADE_STATION'; station: Station }
+  | { type: 'UPGRADE_CART'; cart: Cart }
   | {
       type: 'ARRIVE_AT_STATION';
       cart: Cart;
@@ -67,6 +72,40 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     case 'ADD_CART':
       return { ...state, carts: [...state.carts, action.cart] };
 
+    case 'UPGRADE_STATION': {
+      const upgradedStations = state.stations.map((station) =>
+        station.id === action.station.id
+          ? {
+              ...station,
+              capacity: Math.floor(
+                station.capacity * state.perkStationUpgradeFactor
+              ),
+            }
+          : station
+      );
+      return {
+        ...state,
+        stations: upgradedStations,
+        perkStationUpgrades: state.perkStationUpgrades - 1,
+      };
+    }
+
+    case 'UPGRADE_CART': {
+      const upgradedCarts = state.carts.map((cart) =>
+        cart.id === action.cart.id
+          ? {
+              ...cart,
+              capacity: Math.floor(cart.capacity * state.perkCartUpgradeFactor),
+            }
+          : cart
+      );
+      return {
+        ...state,
+        carts: upgradedCarts,
+        perkCartUpgrades: state.perkCartUpgrades - 1,
+      };
+    }
+
     case 'ARRIVE_AT_STATION': {
       const newCargos = dropDeliverLoadCargos(
         state.cargos,
@@ -105,7 +144,9 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       if (newClock % 130 === 0) {
         nextState = {
           ...nextState,
-          cargoSpawningFrequencyMs: nextState.cargoSpawningFrequencyMs * 0.9,
+          cargoSpawningFrequencyMs:
+            nextState.cargoSpawningFrequencyMs *
+            nextState.cargoSpawningFrequencyReductionFactor,
         };
       }
 
@@ -127,11 +168,14 @@ const initialState: GameState = {
   round: 1,
   running: true,
   perkCartUpgrades: 0,
+  perkCartUpgradeFactor: 2,
   perkStationUpgrades: 0,
+  perkStationUpgradeFactor: 1.2,
   perkAvailableLines: 2,
   cartSpeedPxPerSec: 5,
-  cargoSpawningFrequencyMs: 1000,
+  cargoSpawningFrequencyMs: 10000,
   stationSpawningFrequencyMs: 35000,
+  cargoSpawningFrequencyReductionFactor: 0.9,
 };
 
 export type RenderProps = GameState & {
@@ -139,6 +183,8 @@ export type RenderProps = GameState & {
   addLine: (line: Line) => void;
   addCart: (cart: Cart) => void;
   addCargo: (cargo: Cargo) => void;
+  upgradeStation: (station: Station) => void;
+  upgradeCart: (cart: Cart) => void;
   onArriveToStation: (
     cart: Cart,
     station: Station,
@@ -196,6 +242,12 @@ export default function GameController({
         },
         addCargo: (cargo: Cargo) => {
           dispatch({ type: 'ADD_CARGO', cargo });
+        },
+        upgradeStation: (station: Station) => {
+          dispatch({ type: 'UPGRADE_STATION', station });
+        },
+        upgradeCart: (cart: Cart) => {
+          dispatch({ type: 'UPGRADE_CART', cart });
         },
         onArriveToStation: (
           cart: Cart,

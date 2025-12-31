@@ -3,9 +3,14 @@ import { Cargo, Cart } from '../../lib/types';
 interface CartsRendererProps {
   carts: Cart[];
   cargos: Cargo[];
+  onCartClick: (cart: Cart) => void;
 }
 
-export default function CartsRenderer({ carts, cargos }: CartsRendererProps) {
+export default function CartsRenderer({
+  carts,
+  cargos,
+  onCartClick,
+}: CartsRendererProps) {
   return carts.map((cart) => {
     const cargoShapes = cargos
       .filter((cargo) => cargo.cartId === cart.id)
@@ -32,6 +37,7 @@ export default function CartsRenderer({ carts, cargos }: CartsRendererProps) {
         id={`cart-${cart.id}`}
         className="board-anchor"
         style={{ transform: 'translate(0px, 0px)' }}
+        onClick={() => onCartClick(cart)}
       >
         <div className="cart-shape" />
         {cargoShapes}

@@ -9,7 +9,7 @@ import StationSpawner from './StationSpawner';
 import randomId from '../lib/randomId';
 import { BOARD_SIZE } from '../lib/board';
 import GameController from './GameController';
-import { Line } from '../lib/types';
+import { Cart, Line, Station } from '../lib/types';
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
@@ -77,8 +77,26 @@ export default function Game() {
               style={{ width: BOARD_SIZE, height: BOARD_SIZE }}
             >
               <RailwaysRenderer lines={g.lines} />
-              <StationsRenderer stations={g.stations} cargos={g.cargos} />
-              <CartsRenderer carts={g.carts} cargos={g.cargos} />
+              <StationsRenderer
+                stations={g.stations}
+                cargos={g.cargos}
+                onStationClick={(station: Station) => {
+                  if (isEditing) return;
+                  if (g.perkStationUpgrades <= 0) return;
+                  if (!confirm('do you want to upgrade this station?')) return;
+                  g.upgradeStation(station);
+                }}
+              />
+              <CartsRenderer
+                carts={g.carts}
+                cargos={g.cargos}
+                onCartClick={(cart: Cart) => {
+                  if (isEditing) return;
+                  if (g.perkCartUpgrades <= 0) return;
+                  if (!confirm('do you want to upgrade this cart?')) return;
+                  g.upgradeCart(cart);
+                }}
+              />
               {isEditing && (
                 <LineEditor
                   stations={g.stations}
