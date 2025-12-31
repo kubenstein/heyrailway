@@ -40,7 +40,9 @@ export default function Game() {
               frequencyMs={g.cargoSpawningFrequencyMs}
               stations={g.stations}
               lines={g.lines}
+              cargos={g.cargos}
               onCargoSpawn={g.addCargo}
+              onCargoReroute={g.rerouteCargo}
             />
             <StationSpawner
               enabled={g.running}

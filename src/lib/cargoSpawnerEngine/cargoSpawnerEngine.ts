@@ -7,9 +7,8 @@ import randomCargoType from '../randomCargoType';
 interface CargoSpawnerEngineProps {
   enabled: boolean;
   frequencyMs: number;
-  stations: Station[];
-  lines: Line[];
   onCargoSpawn: (cargo: Cargo) => void;
+  onCargoReroute: (cargo: Cargo) => void;
 }
 
 export default class CargoSpawnerEngine {
@@ -18,17 +17,17 @@ export default class CargoSpawnerEngine {
   private graph: Graph = new Graph();
   private timeIntervalId: number | null = null;
   private onCargoSpawn: (cargo: Cargo) => void;
+  private onCargoReroute: (cargo: Cargo) => void;
 
   constructor(props: CargoSpawnerEngineProps) {
     this.onCargoSpawn = props.onCargoSpawn;
+    this.onCargoReroute = props.onCargoReroute;
     this.frequencyMs = props.frequencyMs;
 
-    props.lines.forEach((line) => this.addLine(line));
-    props.stations.forEach((station) => this.addStation(station));
     this.setEnabled(props.enabled);
   }
 
-  addLine(line: Line) {
+  addLine(line: Line, allCargos: Cargo[]) {
     for (let i = 0; i < line.stations.length - 1; i++) {
       const segmentStartStation = line.stations[i];
       const segmentEndStation = line.stations[i + 1];
@@ -45,6 +44,9 @@ export default class CargoSpawnerEngine {
         segmentEndStation.id
       );
     }
+
+    // Reroute cargos that might be affected by new line
+    this.rerouteStuckCargos(allCargos);
   }
 
   addStation(station: Station) {
@@ -82,17 +84,50 @@ export default class CargoSpawnerEngine {
   }
 
   private spawnCargo() {
-    const tmpGraph = this.graph.copy();
-
-    // pick random destination cargo type
     const cargoType = randomCargoType();
 
     // pick random station with different cargo type from destination
-    const connectedStations = tmpGraph.filterNodes(
+    const connectedStations = this.graph.filterNodes(
       (_node, attrs) => attrs.cargoType !== cargoType
     );
     const startStationId =
       connectedStations[Math.floor(Math.random() * connectedStations.length)];
+
+    const stationIdsRoute = this.findRoute(startStationId, cargoType);
+
+    const newCargo: Cargo = {
+      id: randomId(),
+      cargoType,
+      stationId: startStationId,
+      stationIdsRoute: stationIdsRoute || ['NO_PATH'],
+      cartId: null,
+    };
+    this.onCargoSpawn(newCargo);
+  }
+
+  private rerouteStuckCargos(allCargos: Cargo[]) {
+    allCargos
+      .filter((cargo) => cargo.stationIdsRoute[0] === 'NO_PATH')
+      .forEach((cargo) => {
+        const stationIdsRoute = this.findRoute(
+          cargo.stationId,
+          cargo.cargoType
+        );
+        if (!stationIdsRoute) return;
+
+        const updatedCargo: Cargo = {
+          ...cargo,
+          stationIdsRoute,
+        };
+        this.onCargoReroute(updatedCargo);
+      });
+  }
+
+  // support
+  private findRoute(startStationId: string | null, cargoType: string) {
+    if (!startStationId) return null;
+
+    const tmpGraph = this.graph.copy();
 
     // find path to any station that accepts this cargo type
     tmpGraph.addNode('fakeDestination');
@@ -105,23 +140,12 @@ export default class CargoSpawnerEngine {
       'fakeDestination'
     );
 
-    // clean up path
-    let stationIdsRoute: string[] = [];
     if (fullStationIdsRoute) {
       // remove start and fake destination stations
-      stationIdsRoute = fullStationIdsRoute.slice(1, -1);
-    } else {
-      // no path found this happens if there is no line connected to start station
-      stationIdsRoute = ['NO_PATH'];
+      return fullStationIdsRoute.slice(1, -1);
     }
 
-    const newCargo: Cargo = {
-      id: randomId(),
-      cargoType,
-      stationId: startStationId,
-      stationIdsRoute,
-      cartId: null,
-    };
-    this.onCargoSpawn(newCargo);
+    // no path found this happens if there is no line connected to start station
+    return null;
   }
 }
