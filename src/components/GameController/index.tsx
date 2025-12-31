@@ -2,7 +2,7 @@ import { useEffect, useRef, useReducer, JSX } from 'react';
 import { Station, Line, Cargo, Cart } from '../../lib/types';
 import { dropDeliverLoadCargos } from '../CargoSpawner';
 
-type GameState = {
+export type GameState = {
   lost: boolean;
   lines: Line[];
   carts: Cart[];

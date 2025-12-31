@@ -11,6 +11,7 @@ import { BOARD_CELL_SIZE, BOARD_SIZE } from '../../lib/board';
 import GameController from '../GameController';
 import { Cart, Line, Station } from '../../lib/types';
 import styles from './Game.module.css';
+import Header from '../Header';
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
@@ -18,10 +19,6 @@ export default function Game() {
 
   return (
     <div className={styles.game}>
-      <button onClick={() => setIsEditing(!isEditing)}>
-        {isEditing ? 'Cancel Editing' : 'Start Editing'}
-      </button>
-
       <GameController
         isEditing={isEditing}
         render={(g) => (
@@ -75,20 +72,13 @@ export default function Game() {
                 <br />
               </div>
             ))}
-            <hr />
-            <div>
-              points: {g.points}
-              <br />
-              round: {g.round}
-              <br />
-              perkAvailableLines: {g.perkAvailableLines}
-              <br />
-              perkCartUpgrades: {g.perkCartUpgrades}
-              <br />
-              perkStationUpgrades: {g.perkStationUpgrades}
-              <br />
-              {g.lost && <strong>GAME OVER</strong>}
-            </div>
+
+            <div>{g.lost && <strong>GAME OVER</strong>}</div>
+            <Header
+              gameState={g}
+              isEditing={isEditing}
+              onEditClick={() => setIsEditing((v) => !v)}
+            />
             <div className={styles.boardWrapper}>
               <div
                 ref={boardEl}
