@@ -32,6 +32,14 @@ export default class CargoSpawnerEngine {
     for (let i = 0; i < line.stations.length - 1; i++) {
       const segmentStartStation = line.stations[i];
       const segmentEndStation = line.stations[i + 1];
+      if (
+        this.graph.hasUndirectedEdge(
+          segmentStartStation.id,
+          segmentEndStation.id
+        )
+      )
+        continue;
+
       this.graph.addUndirectedEdge(
         segmentStartStation.id,
         segmentEndStation.id
