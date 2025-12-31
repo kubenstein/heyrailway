@@ -51,15 +51,30 @@ export default function Game() {
               onStationSpawn={g.addStation}
             />
 
+            <br />
             {g.lines.map((line) => (
-              <button
-                key={line.id}
-                onClick={() => g.addCart({ id: randomId(), capacity: 6, line })}
-              >
-                Add Cart to Line {line.id}
-              </button>
+              <div key={line.id}>
+                line {line.id}:
+                <button
+                  onClick={() => {
+                    if (isEditing) return;
+                    g.addCart({ id: randomId(), capacity: 6, line });
+                  }}
+                >
+                  Add Cart
+                </button>
+                <button
+                  onClick={() => {
+                    if (isEditing) return;
+                    g.removeLine(line);
+                  }}
+                >
+                  Remove Line
+                </button>
+                <br />
+              </div>
             ))}
-
+            <hr />
             <div>
               points: {g.points}
               <br />

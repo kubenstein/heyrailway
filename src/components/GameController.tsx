@@ -26,6 +26,7 @@ type GameState = {
 type GameAction =
   | { type: 'ADD_STATION'; station: Station }
   | { type: 'ADD_LINE'; line: Line }
+  | { type: 'REMOVE_LINE'; line: Line }
   | { type: 'ADD_CARGO'; cargo: Cargo }
   | { type: 'REROUTE_CARGO'; cargo: Cargo }
   | { type: 'ADD_CART'; cart: Cart }
@@ -51,6 +52,22 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         lines: [...state.lines, action.line],
         perkAvailableLines: state.perkAvailableLines - 1,
       };
+
+    case 'REMOVE_LINE': {
+      const removedCartIds = state.carts
+        .filter((cart) => cart.line.id === action.line.id)
+        .map((cart) => cart.id);
+
+      return {
+        ...state,
+        lines: state.lines.filter((line) => line.id !== action.line.id),
+        carts: state.carts.filter((cart) => cart.line.id !== action.line.id),
+        cargos: state.cargos.filter(
+          (cargo) => !(cargo.cartId && removedCartIds.includes(cargo.cartId))
+        ),
+        perkAvailableLines: state.perkAvailableLines + 1,
+      };
+    }
 
     case 'ADD_CARGO': {
       const newState = { ...state, cargos: [...state.cargos, action.cargo] };
@@ -191,6 +208,7 @@ const initialState: GameState = {
 export type RenderProps = GameState & {
   addStation: (station: Station) => void;
   addLine: (line: Line) => void;
+  removeLine: (line: Line) => void;
   addCart: (cart: Cart) => void;
   addCargo: (cargo: Cargo) => void;
   rerouteCargo: (cargo: Cargo) => void;
@@ -247,6 +265,9 @@ export default function GameController({
         },
         addLine: (line: Line) => {
           dispatch({ type: 'ADD_LINE', line });
+        },
+        removeLine: (line: Line) => {
+          dispatch({ type: 'REMOVE_LINE', line });
         },
         addCart: (cart: Cart) => {
           dispatch({ type: 'ADD_CART', cart });
