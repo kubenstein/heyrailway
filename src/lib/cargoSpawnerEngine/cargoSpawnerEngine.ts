@@ -78,48 +78,42 @@ export default class CargoSpawnerEngine {
   }
 
   private spawnCargos() {
-    if (this.graph.size === 0) return;
-
-    // spawn cargo for each connected station
-    this.graph
-      .filterNodes((node) => this.graph.degree(node) > 0)
-      .forEach(() => this.spawnCargo());
+    this.graph.nodes().forEach(() => this.spawnCargo());
   }
 
   private spawnCargo() {
-    if (this.graph.size === 0) return;
-
     const tmpGraph = this.graph.copy();
 
     // pick random destination cargo type
     const cargoType = randomCargoType();
 
-    // pick random connected station with different cargo type from destination
+    // pick random station with different cargo type from destination
     const connectedStations = tmpGraph.filterNodes(
-      (node, attrs) =>
-        tmpGraph.degree(node) > 0 && attrs.cargoType !== cargoType
+      (_node, attrs) => attrs.cargoType !== cargoType
     );
     const startStationId =
       connectedStations[Math.floor(Math.random() * connectedStations.length)];
-    if (!startStationId) return;
 
     // find path to any station that accepts this cargo type
     tmpGraph.addNode('fakeDestination');
     tmpGraph
-      .filterNodes(
-        (node, attrs) =>
-          tmpGraph.degree(node) > 0 && attrs.cargoType === cargoType
-      )
+      .filterNodes((_node, attrs) => attrs.cargoType === cargoType)
       .forEach((node) => tmpGraph.addUndirectedEdge(node, 'fakeDestination'));
     const fullStationIdsRoute = bidirectional(
       tmpGraph,
       startStationId,
       'fakeDestination'
     );
-    // no path found - this may happen if there is no station with matching cargo type
-    if (!fullStationIdsRoute) return;
-    // remove start and fake destination
-    const stationIdsRoute = fullStationIdsRoute.slice(1, -1);
+
+    // clean up path
+    let stationIdsRoute: string[] = [];
+    if (fullStationIdsRoute) {
+      // remove start and fake destination stations
+      stationIdsRoute = fullStationIdsRoute.slice(1, -1);
+    } else {
+      // no path found this happens if there is no line connected to start station
+      stationIdsRoute = ['NO_PATH'];
+    }
 
     const newCargo: Cargo = {
       id: randomId(),
