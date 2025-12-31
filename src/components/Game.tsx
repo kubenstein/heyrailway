@@ -85,8 +85,12 @@ export default function Game() {
                 onStationClick={(station: Station) => {
                   if (isEditing) return;
                   if (g.perkStationUpgrades <= 0) return;
-                  if (!confirm('do you want to upgrade this station?')) return;
-                  g.upgradeStation(station);
+
+                  setIsEditing(true);
+                  if (!confirm('do you want to upgrade this station?')) {
+                    g.upgradeStation(station);
+                  }
+                  setIsEditing(false);
                 }}
               />
               <CartsRenderer
@@ -95,8 +99,12 @@ export default function Game() {
                 onCartClick={(cart: Cart) => {
                   if (isEditing) return;
                   if (g.perkCartUpgrades <= 0) return;
-                  if (!confirm('do you want to upgrade this cart?')) return;
-                  g.upgradeCart(cart);
+
+                  setIsEditing(true);
+                  if (confirm('do you want to upgrade this cart?')) {
+                    g.upgradeCart(cart);
+                  }
+                  setIsEditing(false);
                 }}
               />
               {isEditing && (
