@@ -98,7 +98,7 @@ export default function Game() {
                     if (g.perkStationUpgrades <= 0) return;
 
                     setIsEditing(true);
-                    if (!confirm('do you want to upgrade this station?')) {
+                    if (confirm('do you want to upgrade this station?')) {
                       g.upgradeStation(station);
                     }
                     setIsEditing(false);
