@@ -26,7 +26,6 @@ export default function StationsRenderer({
 
   const renderStation = (station: Station) => {
     const { x, y } = pointToBoardPoint(station.position);
-
     const cargoShapes = cargos
       .filter((cargo) => cargo.stationId === station.id)
       .map((cargo, index) => {

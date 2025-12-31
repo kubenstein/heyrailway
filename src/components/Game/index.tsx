@@ -7,7 +7,7 @@ import CartsMovement, { nonReactCartPositionUpdater } from '../CartsMovement';
 import CargoSpawner from '../CargoSpawner';
 import StationSpawner from '../StationSpawner';
 import randomId from '../../lib/randomId';
-import { BOARD_SIZE } from '../../lib/board';
+import { BOARD_CELL_SIZE, BOARD_SIZE } from '../../lib/board';
 import GameController from '../GameController';
 import { Cart, Line, Station } from '../../lib/types';
 import styles from './Game.module.css';
@@ -17,7 +17,7 @@ export default function Game() {
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <main className={styles.app}>
+    <div className={styles.game}>
       <button onClick={() => setIsEditing(!isEditing)}>
         {isEditing ? 'Cancel Editing' : 'Start Editing'}
       </button>
@@ -25,7 +25,7 @@ export default function Game() {
       <GameController
         isEditing={isEditing}
         render={(g) => (
-          <div>
+          <>
             <CartsMovement
               enabled={g.running}
               speedPxPerSec={g.cartSpeedPxPerSec}
@@ -89,54 +89,61 @@ export default function Game() {
               <br />
               {g.lost && <strong>GAME OVER</strong>}
             </div>
-            <div
-              ref={boardEl}
-              className={styles.board}
-              style={{ width: BOARD_SIZE, height: BOARD_SIZE }}
-            >
-              <RailwaysRenderer lines={g.lines} />
-              <StationsRenderer
-                stations={g.stations}
-                cargos={g.cargos}
-                onStationClick={(station: Station) => {
-                  if (isEditing) return;
-                  if (g.perkStationUpgrades <= 0) return;
-
-                  setIsEditing(true);
-                  if (!confirm('do you want to upgrade this station?')) {
-                    g.upgradeStation(station);
-                  }
-                  setIsEditing(false);
+            <div className={styles.boardWrapper}>
+              <div
+                ref={boardEl}
+                className={styles.board}
+                style={{
+                  backgroundSize: `${BOARD_CELL_SIZE}px ${BOARD_CELL_SIZE}px`,
+                  width: BOARD_SIZE * BOARD_CELL_SIZE,
+                  height: BOARD_SIZE * BOARD_CELL_SIZE,
                 }}
-              />
-              <CartsRenderer
-                carts={g.carts}
-                cargos={g.cargos}
-                onCartClick={(cart: Cart) => {
-                  if (isEditing) return;
-                  if (g.perkCartUpgrades <= 0) return;
-
-                  setIsEditing(true);
-                  if (confirm('do you want to upgrade this cart?')) {
-                    g.upgradeCart(cart);
-                  }
-                  setIsEditing(false);
-                }}
-              />
-              {isEditing && (
-                <LineEditor
+              >
+                <RailwaysRenderer lines={g.lines} />
+                <StationsRenderer
                   stations={g.stations}
-                  availableLines={g.perkAvailableLines}
-                  onLineCreate={(line: Line) => {
-                    g.addLine(line);
+                  cargos={g.cargos}
+                  onStationClick={(station: Station) => {
+                    if (isEditing) return;
+                    if (g.perkStationUpgrades <= 0) return;
+
+                    setIsEditing(true);
+                    if (!confirm('do you want to upgrade this station?')) {
+                      g.upgradeStation(station);
+                    }
                     setIsEditing(false);
                   }}
                 />
-              )}
+                <CartsRenderer
+                  carts={g.carts}
+                  cargos={g.cargos}
+                  onCartClick={(cart: Cart) => {
+                    if (isEditing) return;
+                    if (g.perkCartUpgrades <= 0) return;
+
+                    setIsEditing(true);
+                    if (confirm('do you want to upgrade this cart?')) {
+                      g.upgradeCart(cart);
+                    }
+                    setIsEditing(false);
+                  }}
+                />
+                {isEditing && (
+                  <LineEditor
+                    lines={g.lines}
+                    stations={g.stations}
+                    availableLines={g.perkAvailableLines}
+                    onLineCreate={(line: Line) => {
+                      g.addLine(line);
+                      setIsEditing(false);
+                    }}
+                  />
+                )}
+              </div>
             </div>
-          </div>
+          </>
         )}
       />
-    </main>
+    </div>
   );
 }

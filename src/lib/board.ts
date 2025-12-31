@@ -1,8 +1,8 @@
 import type { MouseEvent } from 'react';
 import type { Point } from './types';
 
-export const BOARD_CELL_SIZE = 20;
-export const BOARD_SIZE = 2000;
+export const BOARD_CELL_SIZE = 30;
+export const BOARD_SIZE = 50;
 
 export function pointToBoardPoint(point: Point): Point {
   return {

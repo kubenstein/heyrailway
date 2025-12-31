@@ -56,7 +56,14 @@ export default function CartsRenderer({
         style={{ transform: 'translate(0px, 0px)' }}
         onClick={() => onCartClick(cart)}
       >
-        <div className={styles.cartShape} />
+        <div
+          className={styles.cartShape}
+          style={
+            {
+              '--local-color': `var(--line-color-${cart.line.id})`,
+            } as React.CSSProperties
+          }
+        />
         {cargoShapes}
       </div>
     );

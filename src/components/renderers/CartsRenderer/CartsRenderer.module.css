@@ -14,7 +14,8 @@
   width: 16px;
   height: 16px;
   border-radius: 9999px;
-  background: orange;
+  background-color: var(--local-color);
+  box-shadow: 0 0 15px var(--local-color);
 }
 
 .cargoShapeCart {

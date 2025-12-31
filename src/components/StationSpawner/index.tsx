@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { BOARD_SIZE } from '../../lib/board';
 import { CargoType, Station } from '../../lib/types';
 import randomId from '../../lib/randomId';
 import randomCargoType from '../../lib/randomCargoType';
@@ -21,8 +22,8 @@ export default function StationSpawner(props: StationSpawnerProps) {
       id: randomId(),
       capacity: 20,
       position: {
-        x: Math.floor(Math.random() * 100),
-        y: Math.floor(Math.random() * 100),
+        x: Math.floor(Math.random() * BOARD_SIZE),
+        y: Math.floor(Math.random() * BOARD_SIZE),
       },
       cargoType,
     };

@@ -1,14 +1,21 @@
 :root {
-  font-family:
-    system-ui,
-    -apple-system,
-    Segoe UI,
-    Roboto,
-    Helvetica,
-    Arial,
-    sans-serif;
+  font-family: Tahoma, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+
+  --background-color: #0f111a;
+  --background-accent-color: #2C2E36;
+  --line-color--1: #FFFFFF;
+  --line-color-0: #FF0000;
+  --line-color-1: #0000FF;
+  --line-color-2: #008000;
+  --line-color-3: #FFFF00;
+  --line-color-4: #800080;
+  --line-color-5: #FFA500;
+  --line-color-6: #FFC0CB;
+  --line-color-7: #00FFFF;
+  --line-color-8: #FF00FF;
+  --line-color-9: #00FF00;
 }
 
 body {
