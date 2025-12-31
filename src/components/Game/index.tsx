@@ -56,14 +56,6 @@ export default function Game() {
                 <button
                   onClick={() => {
                     if (isEditing) return;
-                    g.addCart({ id: randomId(), capacity: 6, line });
-                  }}
-                >
-                  Add Cart
-                </button>
-                <button
-                  onClick={() => {
-                    if (isEditing) return;
                     g.removeLine(line);
                   }}
                 >
@@ -125,6 +117,7 @@ export default function Game() {
                     availableLines={g.perkAvailableLines}
                     onLineCreate={(line: Line) => {
                       g.addLine(line);
+                      g.addCart({ id: randomId(), capacity: 6, line });
                       setIsEditing(false);
                     }}
                   />
