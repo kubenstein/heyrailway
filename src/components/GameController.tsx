@@ -13,11 +13,14 @@ type GameState = {
   round: number;
   running: boolean;
   perkCartUpgrades: number;
+  perkCartUpgradeFactor: number;
   perkStationUpgrades: number;
+  perkStationUpgradeFactor: number;
   perkAvailableLines: number;
   cartSpeedPxPerSec: number;
   cargoSpawningFrequencyMs: number;
   stationSpawningFrequencyMs: number;
+  cargoSpawningFrequencyReductionFactor: number;
 };
 
 type GameAction =
@@ -72,7 +75,12 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     case 'UPGRADE_STATION': {
       const upgradedStations = state.stations.map((station) =>
         station.id === action.station.id
-          ? { ...station, capacity: Math.floor(station.capacity * 1.2) }
+          ? {
+              ...station,
+              capacity: Math.floor(
+                station.capacity * state.perkStationUpgradeFactor
+              ),
+            }
           : station
       );
       return {
@@ -85,7 +93,10 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     case 'UPGRADE_CART': {
       const upgradedCarts = state.carts.map((cart) =>
         cart.id === action.cart.id
-          ? { ...cart, capacity: Math.floor(cart.capacity * 2) }
+          ? {
+              ...cart,
+              capacity: Math.floor(cart.capacity * state.perkCartUpgradeFactor),
+            }
           : cart
       );
       return {
@@ -133,7 +144,9 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       if (newClock % 130 === 0) {
         nextState = {
           ...nextState,
-          cargoSpawningFrequencyMs: nextState.cargoSpawningFrequencyMs * 0.9,
+          cargoSpawningFrequencyMs:
+            nextState.cargoSpawningFrequencyMs *
+            nextState.cargoSpawningFrequencyReductionFactor,
         };
       }
 
@@ -155,11 +168,14 @@ const initialState: GameState = {
   round: 1,
   running: true,
   perkCartUpgrades: 0,
+  perkCartUpgradeFactor: 2,
   perkStationUpgrades: 0,
+  perkStationUpgradeFactor: 1.2,
   perkAvailableLines: 2,
   cartSpeedPxPerSec: 5,
   cargoSpawningFrequencyMs: 10000,
   stationSpawningFrequencyMs: 35000,
+  cargoSpawningFrequencyReductionFactor: 0.9,
 };
 
 export type RenderProps = GameState & {
