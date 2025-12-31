@@ -158,7 +158,7 @@ const initialState: GameState = {
   perkStationUpgrades: 0,
   perkAvailableLines: 2,
   cartSpeedPxPerSec: 5,
-  cargoSpawningFrequencyMs: 1000,
+  cargoSpawningFrequencyMs: 10000,
   stationSpawningFrequencyMs: 35000,
 };
 
