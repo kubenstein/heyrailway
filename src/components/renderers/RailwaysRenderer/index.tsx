@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
-import { Line, Point } from '../../lib/types';
-import { pointToBoardPoint } from '../../lib/board';
+import { Line, Point } from '../../../lib/types';
+import { pointToBoardPoint } from '../../../lib/board';
+import styles from './RailwaysRenderer.module.css';
 
 const typesToStyle = {
   red: {
@@ -110,5 +111,5 @@ function renderSegment(start: Point, end: Point, type: TYPES) {
     style.backgroundImage = `repeating-linear-gradient(to right, ${color} 0 5px, transparent 5px 10px)`;
   }
 
-  return <div className="rail-segment" style={style} />;
+  return <div className={styles.railSegment} style={style} />;
 }

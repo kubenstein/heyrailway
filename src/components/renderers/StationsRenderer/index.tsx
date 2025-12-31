@@ -1,5 +1,6 @@
-import { Cargo, Station } from '../../lib/types';
-import { pointToBoardPoint } from '../../lib/board';
+import { Cargo, CargoType, Station } from '../../../lib/types';
+import { pointToBoardPoint } from '../../../lib/board';
+import styles from './StationsRenderer.module.css';
 
 interface StationsRendererProps {
   stations: Station[];
@@ -12,6 +13,17 @@ export default function StationsRenderer({
   cargos,
   onStationClick,
 }: StationsRendererProps) {
+  const typeToShapeClass = (cargoType: CargoType) => {
+    switch (cargoType) {
+      case 'CIRCLE':
+        return styles.circle;
+      case 'TRIANGLE':
+        return styles.triangle;
+      default:
+        return undefined;
+    }
+  };
+
   const renderStation = (station: Station) => {
     const { x, y } = pointToBoardPoint(station.position);
 
@@ -21,31 +33,41 @@ export default function StationsRenderer({
         const cargoOffsetX = (index % 5) * 10 - 20; // 5 per row, spaced 10px
         const cargoOffsetY = 20 + Math.floor(index / 5) * 10;
 
+        const cargoClassName = [
+          styles.cargoShapeStation,
+          typeToShapeClass(cargo.cargoType),
+        ]
+          .filter(Boolean)
+          .join(' ');
+
         return (
           <div
             key={`cargo-${cargo.id}`}
-            className="board-anchor"
+            className={styles.boardAnchor}
             style={{
               transform: `translate(${cargoOffsetX}px, ${cargoOffsetY}px)`,
             }}
           >
-            <div
-              className={`cargo-shape cargo-shape--station cargo-shape--${cargo.cargoType.toLowerCase()}`}
-            />
+            <div className={cargoClassName} />
           </div>
         );
       });
 
+    const stationClassName = [
+      styles.stationShape,
+      typeToShapeClass(station.cargoType),
+    ]
+      .filter(Boolean)
+      .join(' ');
+
     return (
       <div
         key={`station-group-${station.id}`}
-        className="board-anchor"
+        className={styles.boardAnchor}
         style={{ transform: `translate(${x}px, ${y}px)` }}
         onClick={() => onStationClick(station)}
       >
-        <div
-          className={`station-shape station-shape--${station.cargoType.toLowerCase()}`}
-        />
+        <div className={stationClassName} />
         {cargoShapes}
       </div>
     );

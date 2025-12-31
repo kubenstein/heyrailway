@@ -1,8 +1,9 @@
 import { useState, MouseEvent } from 'react';
-import { LineRenderer, SegmentRenderer } from './renderers/RailwaysRenderer';
-import { Point, Line, Station } from '../lib/types';
-import randomId from '../lib/randomId';
-import { eToBoardPoint } from '../lib/board';
+import { LineRenderer, SegmentRenderer } from '../renderers/RailwaysRenderer';
+import { Point, Line, Station } from '../../lib/types';
+import randomId from '../../lib/randomId';
+import { eToBoardPoint } from '../../lib/board';
+import styles from './LineEditor.module.css';
 
 interface LineEditorProps {
   stations: Station[];
@@ -53,12 +54,12 @@ export default function LineEditor({
   const appliedLine: Line = { id: 'editor', stations: lineStations };
 
   return availableLines <= 0 ? (
-    <div className="line-editor-info">
+    <div className={styles.info}>
       No available lines left. Please upgrade to add more lines.
     </div>
   ) : (
     <div
-      className="line-editor"
+      className={styles.lineEditor}
       onClick={onClick}
       onMouseMove={onMouseMove}
       onDoubleClick={onDoubleClick}

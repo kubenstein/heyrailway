@@ -1,0 +1,17 @@
+.lineEditor {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  user-select: none;
+}
+
+.info {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.85);
+}

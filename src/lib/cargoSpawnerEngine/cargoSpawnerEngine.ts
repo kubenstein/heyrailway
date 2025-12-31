@@ -37,10 +37,10 @@ export default class CargoSpawnerEngine {
     this.rerouteStuckCargos(allCargos);
   }
 
-  removeLine(line: Line | null, allCargos: Cargo[]) {
-    if (!line) return;
+  removeLine(lineId: Line['id'] | null, allCargos: Cargo[]) {
+    if (!lineId) return;
 
-    this.lines = this.lines.filter(({ id }) => id !== line.id);
+    this.lines = this.lines.filter(({ id }) => id !== lineId);
 
     // rebuild whole graph from exisitng lines
     this.graph = new Graph();

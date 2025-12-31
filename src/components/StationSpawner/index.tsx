@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { CargoType, Station } from '../lib/types';
-import randomId from '../lib/randomId';
-import randomCargoType from '../lib/randomCargoType';
+import { CargoType, Station } from '../../lib/types';
+import randomId from '../../lib/randomId';
+import randomCargoType from '../../lib/randomCargoType';
 
 const cargoTypes: CargoType[] = ['TRIANGLE', 'CIRCLE', 'SQUARE'];
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Point, Station, Cart, Line } from '../lib/types';
-import CartsMovementEngine from '../lib/cartsMovementEngine/cartsMovementEngine';
-import { pointToBoardPoint } from '../lib/board';
+import { Point, Station, Cart, Line } from '../../lib/types';
+import CartsMovementEngine from '../../lib/cartsMovementEngine/cartsMovementEngine';
+import { pointToBoardPoint } from '../../lib/board';
 
 interface CartsMovementProps {
   enabled: boolean;

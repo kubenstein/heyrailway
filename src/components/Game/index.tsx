@@ -1,22 +1,23 @@
 import { useState, useRef } from 'react';
-import StationsRenderer from './renderers/StationsRenderer';
-import RailwaysRenderer from './renderers/RailwaysRenderer';
-import CartsRenderer from './renderers/CartsRenderer';
-import LineEditor from './LineEditor';
-import CartsMovement, { nonReactCartPositionUpdater } from './CartsMovement';
-import CargoSpawner from './CargoSpawner';
-import StationSpawner from './StationSpawner';
-import randomId from '../lib/randomId';
-import { BOARD_SIZE } from '../lib/board';
-import GameController from './GameController';
-import { Cart, Line, Station } from '../lib/types';
+import StationsRenderer from '../renderers/StationsRenderer';
+import RailwaysRenderer from '../renderers/RailwaysRenderer';
+import CartsRenderer from '../renderers/CartsRenderer';
+import LineEditor from '../LineEditor';
+import CartsMovement, { nonReactCartPositionUpdater } from '../CartsMovement';
+import CargoSpawner from '../CargoSpawner';
+import StationSpawner from '../StationSpawner';
+import randomId from '../../lib/randomId';
+import { BOARD_SIZE } from '../../lib/board';
+import GameController from '../GameController';
+import { Cart, Line, Station } from '../../lib/types';
+import styles from './Game.module.css';
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <main className="app">
+    <main className={styles.app}>
       <button onClick={() => setIsEditing(!isEditing)}>
         {isEditing ? 'Cancel Editing' : 'Start Editing'}
       </button>
@@ -90,7 +91,7 @@ export default function Game() {
             </div>
             <div
               ref={boardEl}
-              className="board"
+              className={styles.board}
               style={{ width: BOARD_SIZE, height: BOARD_SIZE }}
             >
               <RailwaysRenderer lines={g.lines} />

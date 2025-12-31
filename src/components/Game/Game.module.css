@@ -1,0 +1,13 @@
+.app {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.board {
+  position: relative;
+  overflow: hidden;
+  background: white;
+  border: 1px solid #d0d7de;
+}

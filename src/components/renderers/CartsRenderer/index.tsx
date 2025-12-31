@@ -1,4 +1,5 @@
-import { Cargo, Cart } from '../../lib/types';
+import { Cargo, Cart, CargoType } from '../../../lib/types';
+import styles from './CartsRenderer.module.css';
 
 interface CartsRendererProps {
   carts: Cart[];
@@ -11,6 +12,17 @@ export default function CartsRenderer({
   cargos,
   onCartClick,
 }: CartsRendererProps) {
+  const typeToShapeClass = (cargoType: CargoType) => {
+    switch (cargoType) {
+      case 'CIRCLE':
+        return styles.circle;
+      case 'TRIANGLE':
+        return styles.triangle;
+      default:
+        return undefined;
+    }
+  };
+
   return carts.map((cart) => {
     const cargoShapes = cargos
       .filter((cargo) => cargo.cartId === cart.id)
@@ -18,15 +30,20 @@ export default function CartsRenderer({
         const cargoX = (index % 3) * 6 - 6;
         const cargoY = 12 + Math.floor(index / 3) * 6;
 
+        const cargoClassName = [
+          styles.cargoShapeCart,
+          typeToShapeClass(cargo.cargoType),
+        ]
+          .filter(Boolean)
+          .join(' ');
+
         return (
           <div
             key={`cart-cargo-${cargo.id}`}
-            className="board-anchor"
+            className={styles.boardAnchor}
             style={{ transform: `translate(${cargoX}px, ${cargoY}px)` }}
           >
-            <div
-              className={`cargo-shape cargo-shape--cart cargo-shape--${cargo.cargoType.toLowerCase()}`}
-            />
+            <div className={cargoClassName} />
           </div>
         );
       });
@@ -35,11 +52,11 @@ export default function CartsRenderer({
       <div
         key={`cart-group-${cart.id}`}
         id={`cart-${cart.id}`}
-        className="board-anchor"
+        className={styles.boardAnchor}
         style={{ transform: 'translate(0px, 0px)' }}
         onClick={() => onCartClick(cart)}
       >
-        <div className="cart-shape" />
+        <div className={styles.cartShape} />
         {cargoShapes}
       </div>
     );
