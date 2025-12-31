@@ -52,14 +52,13 @@ export default function Game() {
             <br />
             {g.lines.map((line) => (
               <div key={line.id}>
-                line {line.id}:
                 <button
                   onClick={() => {
                     if (isEditing) return;
                     g.removeLine(line);
                   }}
                 >
-                  Remove Line
+                  {line.id}: Remove Line
                 </button>
                 <br />
               </div>
