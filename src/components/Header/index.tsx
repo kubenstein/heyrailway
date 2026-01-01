@@ -45,7 +45,7 @@ export default function Header({
             <span className={styles.counter}>{g.perkAvailableLines}</span>
           </span>
           <span>
-            Cart Upgrades:{' '}
+            Cart Adds/Upgrades:{' '}
             <span className={styles.counter}>{g.perkCartUpgrades}</span>
           </span>
           <span>
@@ -58,6 +58,14 @@ export default function Header({
         className={`${styles.editModeMenu} ${editMode !== 'idle' ? styles.opened : ''}`}
       >
         <button
+          className={`${styles.btn} ${editMode === 'addLine' ? styles.active : ''}`}
+          disabled={g.perkAvailableLines <= 0}
+          onClick={() => onEditModeChange('addLine')}
+        >
+          Add Line
+        </button>
+
+        <button
           className={`${styles.btn} ${editMode === 'editLine' ? styles.active : ''}`}
           onClick={() => onEditModeChange('editLine')}
         >
@@ -65,11 +73,11 @@ export default function Header({
         </button>
 
         <button
-          className={`${styles.btn} ${editMode === 'addLine' ? styles.active : ''}`}
-          disabled={g.perkAvailableLines <= 0}
-          onClick={() => onEditModeChange('addLine')}
+          className={`${styles.btn} ${editMode === 'addCart' ? styles.active : ''}`}
+          disabled={g.perkCartUpgrades <= 0}
+          onClick={() => onEditModeChange('addCart')}
         >
-          Add Line
+          Add Cart
         </button>
 
         <button

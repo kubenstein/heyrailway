@@ -34,13 +34,6 @@ export const gameReducer = (
     case 'ADD_STATION':
       return { ...state, stations: [...state.stations, action.station] };
 
-    case 'ADD_LINE':
-      return {
-        ...state,
-        lines: [...state.lines, action.line],
-        perkAvailableLines: state.perkAvailableLines - 1,
-      };
-
     case 'REMOVE_LINE': {
       const removedCartIds = state.carts
         .filter((cart) => cart.line.id === action.line.id)
@@ -53,7 +46,7 @@ export const gameReducer = (
         cargos: state.cargos.filter(
           (cargo) => !(cargo.cartId && removedCartIds.includes(cargo.cartId))
         ),
-        perkAvailableLines: state.perkAvailableLines + 1,
+        perkAvailableLines: state.perkAvailableLines + removedCartIds.length,
       };
     }
 
@@ -85,7 +78,19 @@ export const gameReducer = (
     }
 
     case 'ADD_CART':
-      return { ...state, carts: [...state.carts, action.cart] };
+      return {
+        ...state,
+        carts: [...state.carts, action.cart],
+        perkCartUpgrades: state.perkCartUpgrades - 1,
+      };
+
+    case 'ADD_LINE':
+      return {
+        ...state,
+        lines: [...state.lines, action.line],
+        perkAvailableLines: state.perkAvailableLines - 1,
+        perkCartUpgrades: state.perkCartUpgrades + 1, // as we instantly add a cart when adding a line, we dont want to deplete the cart upgrade perk
+      };
 
     case 'UPGRADE_STATION': {
       const upgradedStations = state.stations.map((station) =>

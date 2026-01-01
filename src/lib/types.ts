@@ -2,6 +2,7 @@ export type EditMode =
   | 'idle'
   | 'addLine'
   | 'editLine'
+  | 'addCart'
   | 'upgrateStation'
   | 'upgradeCart';
 

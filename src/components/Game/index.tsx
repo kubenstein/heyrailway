@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import StationsRenderer from '../renderers/StationsRenderer';
 import RailwaysRenderer from '../renderers/RailwaysRenderer';
 import CartsRenderer from '../renderers/CartsRenderer';
@@ -12,6 +12,7 @@ import GameOverOverlay from '../GameOverOverlay';
 import LineToRemoveConfirm from '../LineToRemoveConfirm';
 import StationUpgradeConfirm from '../StationUpgradeConfirm';
 import CartUpgradeConfirm from '../CartUpgradeConfirm';
+import AddCartToLineConfirm from '../AddCartToLineConfirm';
 import randomId from '../../lib/randomId';
 import { BOARD_CELL_SIZE, BOARD_SIZE } from '../../lib/board';
 import { Cart, Line, Station, EditMode } from '../../lib/types';
@@ -22,10 +23,19 @@ export default function Game() {
   const [editMode, setEditMode] = useState<EditMode>('idle');
   const [lineToHighlight, setLineToHighlight] = useState<Line | null>(null);
   const [lineToRemove, setLineToRemove] = useState<Line | null>(null);
+  const [addCartToLine, setAddCartToLine] = useState<Line | null>(null);
   const [cartToUpgrade, setCartToUpgrade] = useState<Cart | null>(null);
   const [stationToUpgrade, setStationToUpgrade] = useState<Station | null>(
     null
   );
+
+  useEffect(() => {
+    setLineToHighlight(null);
+    setLineToRemove(null);
+    setCartToUpgrade(null);
+    setStationToUpgrade(null);
+    setAddCartToLine(null);
+  }, [editMode]);
 
   return (
     <div className={styles.game}>
@@ -79,18 +89,18 @@ export default function Game() {
               >
                 <RailwaysRenderer
                   lines={g.lines}
-                  hoverable={editMode === 'editLine'}
+                  hoverable={['editLine', 'addCart'].includes(editMode)}
                   lineToHighlight={lineToHighlight}
                   onMouseEnterLine={(line: Line) => {
-                    if (editMode !== 'editLine') return;
+                    if (!['editLine', 'addCart'].includes(editMode)) return;
                     setLineToHighlight(line);
                   }}
-                  onMouseLeaveLine={() => {
-                    setLineToHighlight(null);
-                  }}
+                  onMouseLeaveLine={() => setLineToHighlight(null)}
                   onLineClick={(line: Line) => {
-                    if (editMode !== 'editLine') return;
-                    setLineToRemove(line);
+                    if (!['editLine', 'addCart'].includes(editMode)) return;
+                    setLineToHighlight(line);
+                    if (editMode === 'editLine') setLineToRemove(line);
+                    if (editMode === 'addCart') setAddCartToLine(line);
                   }}
                 />
                 <StationsRenderer
@@ -132,6 +142,13 @@ export default function Game() {
                 />
               )}
 
+              <AddCartToLineConfirm
+                line={addCartToLine}
+                onConfirmClick={(line: Line) => {
+                  g.addCart({ id: randomId(), capacity: 6, line });
+                  setAddCartToLine(null);
+                }}
+              />
               <LineToRemoveConfirm
                 lineToRemove={lineToRemove}
                 onConfirmClick={(line: Line) => {
