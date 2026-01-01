@@ -13,10 +13,12 @@ import randomId from '../../lib/randomId';
 import { BOARD_CELL_SIZE, BOARD_SIZE } from '../../lib/board';
 import { Cart, Line, Station, EditMode } from '../../lib/types';
 import styles from './Game.module.css';
+import LineToRemoveConfirm from '../LineToRemoveConfirm';
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
   const [editMode, setEditMode] = useState<EditMode>('idle');
+  const [lineToRemove, setLineToRemove] = useState<Line | null>(null);
 
   return (
     <div className={styles.game}>
@@ -53,7 +55,10 @@ export default function Game() {
             <Header
               gameState={g}
               editMode={editMode}
-              onEditModeChange={setEditMode}
+              onEditModeChange={(newEditMode: EditMode) => {
+                setEditMode(newEditMode);
+                setLineToRemove(null);
+              }}
             />
             <div className={styles.boardWrapper}>
               <div
@@ -70,9 +75,7 @@ export default function Game() {
                   lines={g.lines}
                   onLineClick={(line: Line) => {
                     if (editMode !== 'editLine') return;
-                    if (confirm('Do you want to remove this line?')) {
-                      g.removeLine(line);
-                    }
+                    setLineToRemove(line);
                   }}
                 />
                 <StationsRenderer
@@ -119,6 +122,14 @@ export default function Game() {
                   onRestartGameClick={() => g.restartGame()}
                 />
               )}
+
+              <LineToRemoveConfirm
+                lineToRemove={lineToRemove}
+                onConfirmClick={(line: Line) => {
+                  g.removeLine(line);
+                  setLineToRemove(null);
+                }}
+              />
             </div>
           </React.Fragment>
         )}
