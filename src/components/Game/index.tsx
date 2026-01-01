@@ -9,16 +9,22 @@ import StationSpawner from '../StationSpawner';
 import Header from '../Header';
 import GameController from '../GameController';
 import GameOverOverlay from '../GameOverOverlay';
+import LineToRemoveConfirm from '../LineToRemoveConfirm';
+import StationUpgradeConfirm from '../StationUpgradeConfirm';
+import CartUpgradeConfirm from '../CartUpgradeConfirm';
 import randomId from '../../lib/randomId';
 import { BOARD_CELL_SIZE, BOARD_SIZE } from '../../lib/board';
 import { Cart, Line, Station, EditMode } from '../../lib/types';
 import styles from './Game.module.css';
-import LineToRemoveConfirm from '../LineToRemoveConfirm';
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
   const [editMode, setEditMode] = useState<EditMode>('idle');
   const [lineToRemove, setLineToRemove] = useState<Line | null>(null);
+  const [cartToUpgrade, setCartToUpgrade] = useState<Cart | null>(null);
+  const [stationToUpgrade, setStationToUpgrade] = useState<Station | null>(
+    null
+  );
 
   return (
     <div className={styles.game}>
@@ -85,10 +91,7 @@ export default function Game() {
                   onStationClick={(station: Station) => {
                     if (editMode !== 'upgrateStation') return;
                     if (g.perkStationUpgrades <= 0) return;
-
-                    if (confirm('Do you want to upgrade this station?')) {
-                      g.upgradeStation(station);
-                    }
+                    setStationToUpgrade(station);
                   }}
                 />
                 <CartsRenderer
@@ -98,10 +101,7 @@ export default function Game() {
                   onCartClick={(cart: Cart) => {
                     if (editMode !== 'upgradeCart') return;
                     if (g.perkCartUpgrades <= 0) return;
-
-                    if (confirm('Do you want to upgrade this cart?')) {
-                      g.upgradeCart(cart);
-                    }
+                    setCartToUpgrade(cart);
                   }}
                 />
                 {editMode === 'addLine' && (
@@ -128,6 +128,20 @@ export default function Game() {
                 onConfirmClick={(line: Line) => {
                   g.removeLine(line);
                   setLineToRemove(null);
+                }}
+              />
+              <StationUpgradeConfirm
+                stationToUpgrade={stationToUpgrade}
+                onConfirmClick={(station: Station) => {
+                  g.upgradeStation(station);
+                  setStationToUpgrade(null);
+                }}
+              />
+              <CartUpgradeConfirm
+                cartToUpgrade={cartToUpgrade}
+                onConfirmClick={(cart: Cart) => {
+                  g.upgradeCart(cart);
+                  setCartToUpgrade(null);
                 }}
               />
             </div>
