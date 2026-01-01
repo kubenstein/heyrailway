@@ -9,6 +9,10 @@ type LineSegment = {
 
 const pathCache: Map<Line['id'], SVGPathElement> = new Map();
 
+export const resetCache = () => {
+  pathCache.clear();
+};
+
 export const pointOnLineAtProgress = (progress: number, cmeLine: cmeLine) => {
   const path = pathCache.get(cmeLine.line.id)!;
   const totalLength = path.getTotalLength();

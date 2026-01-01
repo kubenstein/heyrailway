@@ -3,6 +3,7 @@ import {
   createCmeLine,
   createCmeCart,
   pointOnLineAtProgress,
+  resetCache,
 } from './geometryHelpers';
 
 export type cmeCart = {
@@ -53,7 +54,7 @@ export default class CartsMovementEngine {
     this.onCartPositionUpdate = props.onCartPositionUpdate;
     this.onArriveToStation = props.onArriveToStation;
     this.speedPxPerSec = props.speedPxPerSec;
-
+    resetCache();
     this.setEnabled(props.enabled);
   }
 

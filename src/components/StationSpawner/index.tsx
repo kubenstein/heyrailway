@@ -32,18 +32,19 @@ export default function StationSpawner(props: StationSpawnerProps) {
 
   useEffect(() => {
     clearInterval(timeoutId.current);
-    if (!props.enabled) return;
-    timeoutId.current = setInterval(spawnStation, props.frequencyMs);
+    if (props.enabled) {
+      timeoutId.current = setInterval(spawnStation, props.frequencyMs);
+    }
+    return () => clearInterval(timeoutId.current);
   }, [props.enabled, props.frequencyMs]);
 
   useEffect(() => {
     if (!props.enabled || hasSpawnedInitial.current) return;
 
     hasSpawnedInitial.current = true;
-    for (let i = 0; i < props.initialStations; i++)
+    for (let i = 0; i < props.initialStations; i++) {
       spawnStation(cargoTypes[i % 3]);
-
-    return () => clearInterval(timeoutId.current);
+    }
   }, []);
 
   return null;

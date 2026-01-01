@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import StationsRenderer from '../renderers/StationsRenderer';
 import RailwaysRenderer from '../renderers/RailwaysRenderer';
 import CartsRenderer from '../renderers/CartsRenderer';
@@ -6,12 +6,13 @@ import LineEditor from '../LineEditor';
 import CartsMovement, { nonReactCartPositionUpdater } from '../CartsMovement';
 import CargoSpawner from '../CargoSpawner';
 import StationSpawner from '../StationSpawner';
+import Header from '../Header';
+import GameController from '../GameController';
+import GameOverOverlay from '../GameOverOverlay';
 import randomId from '../../lib/randomId';
 import { BOARD_CELL_SIZE, BOARD_SIZE } from '../../lib/board';
-import GameController from '../GameController';
 import { Cart, Line, Station, EditMode } from '../../lib/types';
 import styles from './Game.module.css';
-import Header from '../Header';
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
@@ -22,7 +23,7 @@ export default function Game() {
       <GameController
         editMode={editMode}
         render={(g) => (
-          <>
+          <React.Fragment key={g.gameId}>
             <CartsMovement
               enabled={g.running}
               speedPxPerSec={g.cartSpeedPxPerSec}
@@ -49,7 +50,6 @@ export default function Game() {
               onStationSpawn={g.addStation}
             />
 
-            <div>{g.lost && <strong>GAME OVER</strong>}</div>
             <Header
               gameState={g}
               editMode={editMode}
@@ -112,8 +112,15 @@ export default function Game() {
                   />
                 )}
               </div>
+
+              {g.lost && (
+                <GameOverOverlay
+                  gameState={g}
+                  onRestartGameClick={() => g.restartGame()}
+                />
+              )}
             </div>
-          </>
+          </React.Fragment>
         )}
       />
     </div>

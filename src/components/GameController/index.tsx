@@ -1,8 +1,9 @@
 import { useEffect, useRef, useReducer, JSX } from 'react';
 import { Station, Line, Cargo, Cart, EditMode } from '../../lib/types';
-import { dropDeliverLoadCargos } from '../CargoSpawner';
+import { gameReducer } from './gameReducer';
 
 export type GameState = {
+  gameId: string;
   lost: boolean;
   lines: Line[];
   carts: Cart[];
@@ -23,169 +24,10 @@ export type GameState = {
   cargoSpawningFrequencyReductionFactor: number;
 };
 
-type GameAction =
-  | { type: 'ADD_STATION'; station: Station }
-  | { type: 'ADD_LINE'; line: Line }
-  | { type: 'REMOVE_LINE'; line: Line }
-  | { type: 'ADD_CARGO'; cargo: Cargo }
-  | { type: 'REROUTE_CARGO'; cargo: Cargo }
-  | { type: 'ADD_CART'; cart: Cart }
-  | { type: 'UPGRADE_STATION'; station: Station }
-  | { type: 'UPGRADE_CART'; cart: Cart }
-  | {
-      type: 'ARRIVE_AT_STATION';
-      cart: Cart;
-      station: Station;
-      cartNextStation: Station;
-    }
-  | { type: 'SET_RUNNING'; isRunning: boolean }
-  | { type: 'TICK_CLOCK' };
-
-const gameReducer = (state: GameState, action: GameAction): GameState => {
-  switch (action.type) {
-    case 'ADD_STATION':
-      return { ...state, stations: [...state.stations, action.station] };
-
-    case 'ADD_LINE':
-      return {
-        ...state,
-        lines: [...state.lines, action.line],
-        perkAvailableLines: state.perkAvailableLines - 1,
-      };
-
-    case 'REMOVE_LINE': {
-      const removedCartIds = state.carts
-        .filter((cart) => cart.line.id === action.line.id)
-        .map((cart) => cart.id);
-
-      return {
-        ...state,
-        lines: state.lines.filter((line) => line.id !== action.line.id),
-        carts: state.carts.filter((cart) => cart.line.id !== action.line.id),
-        cargos: state.cargos.filter(
-          (cargo) => !(cargo.cartId && removedCartIds.includes(cargo.cartId))
-        ),
-        perkAvailableLines: state.perkAvailableLines + 1,
-      };
-    }
-
-    case 'ADD_CARGO': {
-      const newState = { ...state, cargos: [...state.cargos, action.cargo] };
-
-      const stationOcupation = state.cargos.filter(
-        (c) => c.stationId === action.cargo.stationId
-      ).length;
-      const stationCapacity = state.stations.find(
-        (s) => s.id === action.cargo.stationId
-      )!.capacity;
-
-      if (stationOcupation > stationCapacity) {
-        newState.lost = true;
-        newState.running = false;
-      }
-
-      return newState;
-    }
-
-    case 'REROUTE_CARGO': {
-      return {
-        ...state,
-        cargos: state.cargos.map((cargo) =>
-          cargo.id === action.cargo.id ? action.cargo : cargo
-        ),
-      };
-    }
-
-    case 'ADD_CART':
-      return { ...state, carts: [...state.carts, action.cart] };
-
-    case 'UPGRADE_STATION': {
-      const upgradedStations = state.stations.map((station) =>
-        station.id === action.station.id
-          ? {
-              ...station,
-              capacity: Math.floor(
-                station.capacity * state.perkStationUpgradeFactor
-              ),
-            }
-          : station
-      );
-      return {
-        ...state,
-        stations: upgradedStations,
-        perkStationUpgrades: state.perkStationUpgrades - 1,
-      };
-    }
-
-    case 'UPGRADE_CART': {
-      const upgradedCarts = state.carts.map((cart) =>
-        cart.id === action.cart.id
-          ? {
-              ...cart,
-              capacity: Math.floor(cart.capacity * state.perkCartUpgradeFactor),
-            }
-          : cart
-      );
-      return {
-        ...state,
-        carts: upgradedCarts,
-        perkCartUpgrades: state.perkCartUpgrades - 1,
-      };
-    }
-
-    case 'ARRIVE_AT_STATION': {
-      const newCargos = dropDeliverLoadCargos(
-        state.cargos,
-        action.cart,
-        action.station,
-        action.cartNextStation
-      );
-      const deliveredCargosCount = state.cargos.length - newCargos.length;
-      return {
-        ...state,
-        cargos: newCargos,
-        points: state.points + deliveredCargosCount,
-      };
-    }
-
-    case 'SET_RUNNING':
-      return {
-        ...state,
-        running: action.isRunning,
-      };
-
-    case 'TICK_CLOCK': {
-      const newClock = state.clock + 1;
-      let nextState: GameState = { ...state, clock: newClock };
-
-      if (newClock % 60 === 0) {
-        nextState = {
-          ...nextState,
-          round: nextState.round + 1,
-          perkCartUpgrades: nextState.perkCartUpgrades + 1,
-          perkStationUpgrades: nextState.perkStationUpgrades + 1,
-          perkAvailableLines: nextState.perkAvailableLines + 1,
-        };
-      }
-
-      if (newClock % 130 === 0) {
-        nextState = {
-          ...nextState,
-          cargoSpawningFrequencyMs:
-            nextState.cargoSpawningFrequencyMs *
-            nextState.cargoSpawningFrequencyReductionFactor,
-        };
-      }
-
-      return nextState;
-    }
-    default:
-      return state;
-  }
-};
-
-const initialState: GameState = {
+export const initialState: GameState = {
+  gameId: 'would-love-to-join-your-team',
   lost: false,
+  running: true,
   lines: [],
   carts: [],
   cargos: [],
@@ -193,7 +35,6 @@ const initialState: GameState = {
   clock: 1,
   points: 0,
   round: 1,
-  running: true,
   perkCartUpgrades: 0,
   perkCartUpgradeFactor: 2,
   perkStationUpgrades: 0,
@@ -206,6 +47,7 @@ const initialState: GameState = {
 };
 
 export type RenderProps = GameState & {
+  restartGame: () => void;
   addStation: (station: Station) => void;
   addLine: (line: Line) => void;
   removeLine: (line: Line) => void;
@@ -232,14 +74,19 @@ export default function GameController({
 }: GameControllerProps) {
   const clockIntervalId = useRef(0);
 
+  const stateRef = useRef<GameState>(initialState);
   const [state, dispatch] = useReducer(gameReducer, initialState);
+  stateRef.current = state;
 
   // clock actions
   const startTime = () => {
     clearInterval(clockIntervalId.current);
-    clockIntervalId.current = setInterval(() => {
-      dispatch({ type: 'TICK_CLOCK' });
-    }, 1000);
+    clockIntervalId.current = setInterval(() => timeTick(), 1000);
+  };
+
+  const timeTick = () => {
+    if (stateRef.current.lost) return stopTime();
+    dispatch({ type: 'TICK_CLOCK' });
   };
 
   const stopTime = () => {
@@ -261,6 +108,9 @@ export default function GameController({
     <>
       {render({
         ...state,
+        restartGame: () => {
+          dispatch({ type: 'RESTART_GAME' });
+        },
         addStation: (station: Station) => {
           dispatch({ type: 'ADD_STATION', station });
         },

@@ -18,10 +18,10 @@ export default function CargoSpawner(props: CargoSpawnerProps) {
   const lineIds = useRef<Line['id'][]>([]);
   const stationIds = useRef<Station['id'][]>([]);
 
-  useEffect(
-    () => spawningEngine.setEnabled(props.enabled),
-    [props.enabled, spawningEngine]
-  );
+  useEffect(() => {
+    spawningEngine.setEnabled(props.enabled);
+    return () => spawningEngine.setEnabled(false);
+  }, [props.enabled, spawningEngine]);
 
   useEffect(
     () => spawningEngine.setFrequency(props.frequencyMs),
