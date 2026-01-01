@@ -17,11 +17,13 @@ import randomId from '../../lib/randomId';
 import { BOARD_CELL_SIZE, BOARD_SIZE } from '../../lib/board';
 import { Cart, Line, Station, EditMode } from '../../lib/types';
 import styles from './Game.module.css';
+import CartDetailsModal from '../CartDetailsModal';
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
   const [editMode, setEditMode] = useState<EditMode>('idle');
   const [lineToHighlight, setLineToHighlight] = useState<Line | null>(null);
+  const [cartDetails, setCartDetails] = useState<Cart | null>(null);
   const [lineToRemove, setLineToRemove] = useState<Line | null>(null);
   const [addCartToLine, setAddCartToLine] = useState<Line | null>(null);
   const [cartToUpgrade, setCartToUpgrade] = useState<Cart | null>(null);
@@ -35,6 +37,7 @@ export default function Game() {
     setCartToUpgrade(null);
     setStationToUpgrade(null);
     setAddCartToLine(null);
+    setCartDetails(null);
   }, [editMode]);
 
   return (
@@ -114,13 +117,18 @@ export default function Game() {
                   }}
                 />
                 <CartsRenderer
-                  editMode={editMode}
+                  hoverable={['idle', 'upgradeCart'].includes(editMode)}
+                  highlightAll={editMode === 'upgradeCart'}
+                  cartToHighlight={cartDetails}
                   carts={g.carts}
                   cargos={g.cargos}
                   onCartClick={(cart: Cart) => {
-                    if (editMode !== 'upgradeCart') return;
-                    if (g.perkCartUpgrades <= 0) return;
-                    setCartToUpgrade(cart);
+                    if (editMode === 'upgradeCart' && g.perkCartUpgrades > 0) {
+                      setCartToUpgrade(cart);
+                    }
+                    if (editMode === 'idle') {
+                      setCartDetails(cart);
+                    }
                   }}
                 />
                 {editMode === 'addLine' && (
@@ -168,6 +176,12 @@ export default function Game() {
                 onConfirmClick={(cart: Cart) => {
                   g.upgradeCart(cart);
                   setCartToUpgrade(null);
+                }}
+              />
+              <CartDetailsModal
+                cart={cartDetails}
+                onCloseClick={() => {
+                  setCartDetails(null);
                 }}
               />
             </div>

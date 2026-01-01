@@ -1,15 +1,19 @@
-import { Cargo, Cart, CargoType, EditMode } from '../../../lib/types';
+import { Cargo, Cart, CargoType } from '../../../lib/types';
 import styles from './CartsRenderer.module.css';
 
 interface CartsRendererProps {
-  editMode: EditMode;
+  hoverable: boolean;
+  highlightAll: boolean;
+  cartToHighlight: Cart | null;
   carts: Cart[];
   cargos: Cargo[];
   onCartClick: (cart: Cart) => void;
 }
 
 export default function CartsRenderer({
-  editMode,
+  hoverable,
+  highlightAll,
+  cartToHighlight,
   carts,
   cargos,
   onCartClick,
@@ -50,7 +54,11 @@ export default function CartsRenderer({
 
     const cartClassName = [
       styles.cartShape,
-      editMode === 'upgradeCart' ? styles.editMode : '',
+      hoverable ? styles.hoverable : '',
+      highlightAll ? styles.highlighted : '',
+      cartToHighlight && cartToHighlight.id === cart.id
+        ? styles.highlighted
+        : '',
     ].join(' ');
 
     return (
