@@ -1,24 +1,33 @@
 import type { CSSProperties } from 'react';
-import { Line, Point, EditMode } from '../../../lib/types';
+import { Line, Point } from '../../../lib/types';
 import { pointToBoardPoint } from '../../../lib/board';
 import styles from './RailwaysRenderer.module.css';
 
 type LineSegment = { start: Point; end: Point };
 
 interface RailwaysRendererProps {
-  editMode: EditMode;
   lines: Line[];
+  lineToHighlight: Line | null;
+  hoverable: boolean;
+  onMouseEnterLine: (line: Line) => void;
+  onMouseLeaveLine: (line: Line) => void;
   onLineClick: (line: Line) => void;
 }
 
 export default function RailwaysRenderer({
-  editMode,
   lines,
+  hoverable,
+  lineToHighlight,
+  onMouseEnterLine,
+  onMouseLeaveLine,
   onLineClick,
 }: RailwaysRendererProps) {
   return lines.map((line) => (
     <LineRenderer
-      editMode={editMode}
+      hoverable={hoverable}
+      highLight={line.id === lineToHighlight?.id}
+      onMouseEnterLine={onMouseEnterLine}
+      onMouseLeaveLine={onMouseLeaveLine}
       key={`line-${line.id}`}
       line={line}
       onLineClick={onLineClick}
@@ -27,14 +36,20 @@ export default function RailwaysRenderer({
 }
 
 interface LineRendererProps {
-  editMode: EditMode;
   line: Line;
+  hoverable: boolean;
+  highLight: boolean;
+  onMouseEnterLine?: (line: Line) => void;
+  onMouseLeaveLine?: (line: Line) => void;
   onLineClick?: (line: Line) => void;
 }
 
 export function LineRenderer({
-  editMode,
   line,
+  hoverable,
+  highLight,
+  onMouseEnterLine,
+  onMouseLeaveLine,
   onLineClick,
 }: LineRendererProps) {
   if (line.stations.length < 2) return null;
@@ -50,9 +65,13 @@ export function LineRenderer({
   return (
     <div
       onClick={() => onLineClick?.(line)}
-      className={`${styles.line} ${
-        editMode === 'editLine' ? styles.editMode : ''
-      }`}
+      onMouseEnter={() => onMouseEnterLine?.(line)}
+      onMouseLeave={() => onMouseLeaveLine?.(line)}
+      className={`
+        ${styles.line}
+        ${highLight ? styles.highLight : ''}
+        ${hoverable ? styles.hoverable : ''}
+      `}
       style={
         { '--local-color': `var(--line-color-${line.id})` } as CSSProperties
       }

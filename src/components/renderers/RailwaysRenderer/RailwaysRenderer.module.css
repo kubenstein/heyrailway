@@ -1,5 +1,4 @@
 .line {
-
   .railSegment {
     position: absolute;
     left: 0;
@@ -9,25 +8,26 @@
     box-shadow: 0 0 10px var(--local-color), 0 0 20px var(--local-color), 0 0 30px var(--local-color);
     background-image: repeating-linear-gradient(to right, var(--local-color) 0px, var(--local-color) 10px, transparent 5px, transparent 15px);
     transition: box-shadow 0.2s ease, background-image 0.2s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: -10px;
+      width: 100%;
+      height: 20px;
+    }
   }
 
-  &.editMode {
-    .railSegment {
-      &::before {
-        cursor: pointer;
-        content: '';
-        position: absolute;
-        left: 0;
-        top: -10px;
-        width: 100%;
-        height: 20px;
-      }
+  &.hoverable {
+    .railSegment::before {
+      cursor: pointer;
     }
+  }
 
-    &:hover {
-      .railSegment {
-        padding: 1px;
-      }
+  &.highLight {
+    .railSegment {
+      padding: 1px;
     }
   }
 }

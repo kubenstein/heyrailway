@@ -20,6 +20,7 @@ import styles from './Game.module.css';
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
   const [editMode, setEditMode] = useState<EditMode>('idle');
+  const [lineToHighlight, setLineToHighlight] = useState<Line | null>(null);
   const [lineToRemove, setLineToRemove] = useState<Line | null>(null);
   const [cartToUpgrade, setCartToUpgrade] = useState<Cart | null>(null);
   const [stationToUpgrade, setStationToUpgrade] = useState<Station | null>(
@@ -77,8 +78,16 @@ export default function Game() {
                 }}
               >
                 <RailwaysRenderer
-                  editMode={editMode}
                   lines={g.lines}
+                  hoverable={editMode === 'editLine'}
+                  lineToHighlight={lineToHighlight}
+                  onMouseEnterLine={(line: Line) => {
+                    if (editMode !== 'editLine') return;
+                    setLineToHighlight(line);
+                  }}
+                  onMouseLeaveLine={() => {
+                    setLineToHighlight(null);
+                  }}
                   onLineClick={(line: Line) => {
                     if (editMode !== 'editLine') return;
                     setLineToRemove(line);
