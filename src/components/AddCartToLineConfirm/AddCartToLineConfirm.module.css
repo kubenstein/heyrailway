@@ -1,7 +1,7 @@
 .wrapper {
-  position: absolute;
+  position: fixed;
   width: 100%;
-  top: 0;
+  top: var(--gap2);
   left: 0;
 
   .modal {
