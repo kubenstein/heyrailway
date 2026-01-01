@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Station } from '../../lib/types';
+import { Station } from '../../../lib/types';
 import styles from './StationUpgradeConfirm.module.css';
 
 interface StationUpgradeConfirmProps {

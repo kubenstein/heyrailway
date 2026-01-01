@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Line } from '../../lib/types';
+import { Line } from '../../../lib/types';
 import styles from './AddCartToLineConfirm.module.css';
 
 interface AddCartToLineConfirmProps {

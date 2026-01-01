@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Cart } from '../../lib/types';
+import { Cart } from '../../../lib/types';
 import styles from './CartUpgradeConfirm.module.css';
 
 interface CartUpgradeConfirmProps {
