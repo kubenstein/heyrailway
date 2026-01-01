@@ -1,13 +1,15 @@
-import { Cargo, Cart, CargoType } from '../../../lib/types';
+import { Cargo, Cart, CargoType, EditMode } from '../../../lib/types';
 import styles from './CartsRenderer.module.css';
 
 interface CartsRendererProps {
+  editMode: EditMode;
   carts: Cart[];
   cargos: Cargo[];
   onCartClick: (cart: Cart) => void;
 }
 
 export default function CartsRenderer({
+  editMode,
   carts,
   cargos,
   onCartClick,
@@ -33,9 +35,7 @@ export default function CartsRenderer({
         const cargoClassName = [
           styles.cargoShapeCart,
           typeToShapeClass(cargo.cargoType),
-        ]
-          .filter(Boolean)
-          .join(' ');
+        ].join(' ');
 
         return (
           <div
@@ -48,16 +48,20 @@ export default function CartsRenderer({
         );
       });
 
+    const cartClassName = [
+      styles.cartShape,
+      editMode === 'upgradeCart' ? styles.editMode : '',
+    ].join(' ');
+
     return (
       <div
         key={`cart-group-${cart.id}`}
         id={`cart-${cart.id}`}
         className={styles.boardAnchor}
-        style={{ transform: 'translate(0px, 0px)' }}
         onClick={() => onCartClick(cart)}
       >
         <div
-          className={styles.cartShape}
+          className={cartClassName}
           style={
             {
               '--local-color': `var(--line-color-${cart.line.id})`,

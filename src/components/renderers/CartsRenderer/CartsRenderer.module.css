@@ -4,6 +4,7 @@
   top: 0;
   width: 0;
   height: 0;
+  transform: translate(-100px, -100px);
   will-change: transform;
 }
 
@@ -16,6 +17,12 @@
   border-radius: 9999px;
   background-color: var(--local-color);
   box-shadow: 0 0 15px var(--local-color);
+  transition: transform 0.2s ease;
+
+  &.editMode {
+    cursor: pointer;
+    transform: scale(2);
+  }
 }
 
 .cargoShapeCart {

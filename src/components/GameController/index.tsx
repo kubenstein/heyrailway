@@ -1,5 +1,5 @@
 import { useEffect, useRef, useReducer, JSX } from 'react';
-import { Station, Line, Cargo, Cart } from '../../lib/types';
+import { Station, Line, Cargo, Cart, EditMode } from '../../lib/types';
 import { dropDeliverLoadCargos } from '../CargoSpawner';
 
 export type GameState = {
@@ -222,12 +222,12 @@ export type RenderProps = GameState & {
 };
 
 interface GameControllerProps {
-  isEditing: boolean;
+  editMode: EditMode;
   render?: (renderProps: RenderProps) => JSX.Element;
 }
 
 export default function GameController({
-  isEditing,
+  editMode,
   render,
 }: GameControllerProps) {
   const clockIntervalId = useRef(0);
@@ -249,10 +249,11 @@ export default function GameController({
   // effects
   // handle isEditing changes
   useEffect(() => {
-    isEditing ? stopTime() : startTime();
-    dispatch({ type: 'SET_RUNNING', isRunning: !isEditing });
+    const isRunning = editMode === 'idle';
+    isRunning ? startTime() : stopTime();
+    dispatch({ type: 'SET_RUNNING', isRunning });
     return () => clearInterval(clockIntervalId.current);
-  }, [isEditing]);
+  }, [editMode]);
 
   // render
   if (!render) return null;

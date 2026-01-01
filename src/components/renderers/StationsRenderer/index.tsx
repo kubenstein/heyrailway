@@ -1,14 +1,16 @@
-import { Cargo, CargoType, Station } from '../../../lib/types';
+import { Cargo, CargoType, Station, EditMode } from '../../../lib/types';
 import { pointToBoardPoint } from '../../../lib/board';
 import styles from './StationsRenderer.module.css';
 
 interface StationsRendererProps {
+  editMode: EditMode;
   stations: Station[];
   cargos: Cargo[];
   onStationClick: (station: Station) => void;
 }
 
 export default function StationsRenderer({
+  editMode,
   stations,
   cargos,
   onStationClick,
@@ -55,9 +57,8 @@ export default function StationsRenderer({
     const stationClassName = [
       styles.stationShape,
       typeToShapeClass(station.cargoType),
-    ]
-      .filter(Boolean)
-      .join(' ');
+      editMode === 'upgrateStation' ? styles.editMode : '',
+    ].join(' ');
 
     return (
       <div

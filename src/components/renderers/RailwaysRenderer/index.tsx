@@ -1,25 +1,42 @@
 import type { CSSProperties } from 'react';
-import { Line, Point } from '../../../lib/types';
+import { Line, Point, EditMode } from '../../../lib/types';
 import { pointToBoardPoint } from '../../../lib/board';
 import styles from './RailwaysRenderer.module.css';
 
 type LineSegment = { start: Point; end: Point };
 
 interface RailwaysRendererProps {
+  editMode: EditMode;
   lines: Line[];
+  onLineClick: (line: Line) => void;
 }
 
-export default function RailwaysRenderer({ lines }: RailwaysRendererProps) {
+export default function RailwaysRenderer({
+  editMode,
+  lines,
+  onLineClick,
+}: RailwaysRendererProps) {
   return lines.map((line) => (
-    <LineRenderer key={`line-${line.id}`} line={line} />
+    <LineRenderer
+      editMode={editMode}
+      key={`line-${line.id}`}
+      line={line}
+      onLineClick={onLineClick}
+    />
   ));
 }
 
 interface LineRendererProps {
+  editMode: EditMode;
   line: Line;
+  onLineClick?: (line: Line) => void;
 }
 
-export function LineRenderer({ line }: LineRendererProps) {
+export function LineRenderer({
+  editMode,
+  line,
+  onLineClick,
+}: LineRendererProps) {
   if (line.stations.length < 2) return null;
 
   const segments: LineSegment[] = [];
@@ -32,6 +49,10 @@ export function LineRenderer({ line }: LineRendererProps) {
 
   return (
     <div
+      onClick={() => onLineClick?.(line)}
+      className={`${styles.line} ${
+        editMode === 'editLine' ? styles.editMode : ''
+      }`}
       style={
         { '--local-color': `var(--line-color-${line.id})` } as CSSProperties
       }
@@ -80,13 +101,8 @@ function renderSegment(start: Point, end: Point) {
   const thickness = 1;
   const style: CSSProperties = {
     transform: `translate(${bStart.x}px, ${bStart.y - thickness / 2}px) rotate(${angle}rad)`,
-    transformOrigin: '0 50%',
     width: length,
     height: thickness,
-    boxShadow:
-      '0 0 10px var(--local-color), 0 0 20px var(--local-color), 0 0 30px var(--local-color)',
-    backgroundImage:
-      'repeating-linear-gradient(to right, var(--local-color) 0px, var(--local-color) 10px, transparent 5px, transparent 15px)',
   };
 
   return <div className={styles.railSegment} style={style} />;

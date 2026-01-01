@@ -7,14 +7,12 @@ import styles from './LineEditor.module.css';
 interface LineEditorProps {
   lines: Line[];
   stations: Station[];
-  availableLines: number;
   onLineCreate: (line: Line) => void;
 }
 
 export default function LineEditor({
   stations,
   lines,
-  availableLines,
   onLineCreate,
 }: LineEditorProps) {
   const [lineStations, setLineStations] = useState<Station[]>([]);
@@ -76,18 +74,14 @@ export default function LineEditor({
     ],
   };
 
-  return availableLines <= 0 ? (
-    <div className={styles.info}>
-      No available lines left. Please upgrade to add more lines.
-    </div>
-  ) : (
+  return (
     <div
       className={styles.lineEditor}
       onClick={onClick}
       onMouseMove={onMouseMove}
       onDoubleClick={onDoubleClick}
     >
-      <LineRenderer line={editingLine} />
+      <LineRenderer line={editingLine} editMode="addLine" />
     </div>
   );
 }

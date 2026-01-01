@@ -9,18 +9,18 @@ import StationSpawner from '../StationSpawner';
 import randomId from '../../lib/randomId';
 import { BOARD_CELL_SIZE, BOARD_SIZE } from '../../lib/board';
 import GameController from '../GameController';
-import { Cart, Line, Station } from '../../lib/types';
+import { Cart, Line, Station, EditMode } from '../../lib/types';
 import styles from './Game.module.css';
 import Header from '../Header';
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [editMode, setEditMode] = useState<EditMode>('idle');
 
   return (
     <div className={styles.game}>
       <GameController
-        isEditing={isEditing}
+        editMode={editMode}
         render={(g) => (
           <>
             <CartsMovement
@@ -49,26 +49,11 @@ export default function Game() {
               onStationSpawn={g.addStation}
             />
 
-            <br />
-            {g.lines.map((line) => (
-              <div key={line.id}>
-                <button
-                  onClick={() => {
-                    if (isEditing) return;
-                    g.removeLine(line);
-                  }}
-                >
-                  {line.id}: Remove Line
-                </button>
-                <br />
-              </div>
-            ))}
-
             <div>{g.lost && <strong>GAME OVER</strong>}</div>
             <Header
               gameState={g}
-              isEditing={isEditing}
-              onEditClick={() => setIsEditing((v) => !v)}
+              editMode={editMode}
+              onEditModeChange={setEditMode}
             />
             <div className={styles.boardWrapper}>
               <div
@@ -80,44 +65,49 @@ export default function Game() {
                   height: BOARD_SIZE * BOARD_CELL_SIZE,
                 }}
               >
-                <RailwaysRenderer lines={g.lines} />
+                <RailwaysRenderer
+                  editMode={editMode}
+                  lines={g.lines}
+                  onLineClick={(line: Line) => {
+                    if (editMode !== 'editLine') return;
+                    if (confirm('Do you want to remove this line?')) {
+                      g.removeLine(line);
+                    }
+                  }}
+                />
                 <StationsRenderer
+                  editMode={editMode}
                   stations={g.stations}
                   cargos={g.cargos}
                   onStationClick={(station: Station) => {
-                    if (isEditing) return;
+                    if (editMode !== 'upgrateStation') return;
                     if (g.perkStationUpgrades <= 0) return;
 
-                    setIsEditing(true);
-                    if (confirm('do you want to upgrade this station?')) {
+                    if (confirm('Do you want to upgrade this station?')) {
                       g.upgradeStation(station);
                     }
-                    setIsEditing(false);
                   }}
                 />
                 <CartsRenderer
+                  editMode={editMode}
                   carts={g.carts}
                   cargos={g.cargos}
                   onCartClick={(cart: Cart) => {
-                    if (isEditing) return;
+                    if (editMode !== 'upgradeCart') return;
                     if (g.perkCartUpgrades <= 0) return;
 
-                    setIsEditing(true);
-                    if (confirm('do you want to upgrade this cart?')) {
+                    if (confirm('Do you want to upgrade this cart?')) {
                       g.upgradeCart(cart);
                     }
-                    setIsEditing(false);
                   }}
                 />
-                {isEditing && (
+                {editMode === 'addLine' && (
                   <LineEditor
                     lines={g.lines}
                     stations={g.stations}
-                    availableLines={g.perkAvailableLines}
                     onLineCreate={(line: Line) => {
                       g.addLine(line);
                       g.addCart({ id: randomId(), capacity: 6, line });
-                      setIsEditing(false);
                     }}
                   />
                 )}
