@@ -168,6 +168,7 @@ export default function Game() {
                   />
                 )}
                 <BoardDragger
+                  boardEl={boardEl}
                   onBoardMove={(delta) =>
                     setBoardPosition((prev) => ({
                       x: prev.x + delta.x,

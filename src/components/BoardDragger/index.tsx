@@ -1,14 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Point } from '../../lib/types';
-import styles from './BoardDragger.module.css';
 
 interface BoardDraggerProps {
+  boardEl: React.RefObject<HTMLElement | null>;
   onBoardMove: (delta: Point) => void;
   currentScale: number;
   onScaleChange: (newScale: number) => void;
 }
 
 export default function BoardDragger({
+  boardEl,
   onBoardMove,
   currentScale,
   onScaleChange,
@@ -17,19 +18,22 @@ export default function BoardDragger({
   const startPos = useRef<Point>({ x: 0, y: 0 });
   const lastPos = useRef<Point>({ x: 0, y: 0 });
 
-  useEffect(() => {
-    const onMouseMove = (e: MouseEvent) => {
+  const onMouseMove = useCallback(
+    (e: MouseEvent) => {
       if (!isDragging) return;
       const deltaX = e.clientX - lastPos.current.x;
       const deltaY = e.clientY - lastPos.current.y;
       lastPos.current = { x: e.clientX, y: e.clientY };
       onBoardMove({ x: deltaX, y: deltaY });
-    };
+    },
+    [isDragging, onBoardMove]
+  );
 
-    const onMouseUp = () => {
-      setIsDragging(false);
-    };
+  const onMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
 
+  useEffect(() => {
     if (isDragging) {
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
@@ -39,26 +43,36 @@ export default function BoardDragger({
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
-  }, [isDragging, onBoardMove]);
+  }, [isDragging, onMouseMove, onMouseUp]);
 
-  const onMouseDown = (e: React.MouseEvent) => {
+  const onMouseDown = useCallback((e: MouseEvent) => {
     setIsDragging(true);
     startPos.current = { x: e.clientX, y: e.clientY };
     lastPos.current = { x: e.clientX, y: e.clientY };
-  };
+  }, []);
 
-  const onWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
-    const newScale = Math.max(0.1, Math.min(5, currentScale * zoomFactor));
-    onScaleChange(newScale);
-  };
-
-  return (
-    <div
-      className={styles.boardDrag}
-      onMouseDown={onMouseDown}
-      onWheel={onWheel}
-    />
+  const onWheel = useCallback(
+    (e: WheelEvent) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+      const newScale = Math.max(0.1, Math.min(5, currentScale * zoomFactor));
+      onScaleChange(newScale);
+    },
+    [currentScale, onScaleChange]
   );
+
+  useEffect(() => {
+    const el = boardEl.current;
+    if (!el) return;
+
+    el.addEventListener('mousedown', onMouseDown);
+    el.addEventListener('wheel', onWheel);
+
+    return () => {
+      el.removeEventListener('mousedown', onMouseDown);
+      el.removeEventListener('wheel', onWheel);
+    };
+  }, [boardEl, onMouseDown, onWheel]);
+
+  return null;
 }
