@@ -27,9 +27,12 @@ export default function StationsRenderer({
       (cargo) => cargo.stationId === station.id
     );
 
+    const emergency = stationCargos.length / station.capacity > 0.75;
+
     const stationWrapperClass = [
       styles.stationWrapper,
       getTypeClass(station.cargoType),
+      emergency ? styles.emergency : '',
       hoverable ? styles.hoverable : '',
       highlightAll ? styles.highlighted : '',
       stationToHighlight && stationToHighlight.id === station.id

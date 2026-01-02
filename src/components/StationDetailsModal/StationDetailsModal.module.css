@@ -31,6 +31,11 @@
   position: relative;
   padding: var(--gap) var(--gap) var(--gap) var(--gap3);
   background-color: var(--secondary-color);
+  transition: background-color 2s ease;
+
+  &.emergency {
+    background-color: var(--primary-alert-color);
+  }
 
   strong {
     font-size: var(--header-font-size);

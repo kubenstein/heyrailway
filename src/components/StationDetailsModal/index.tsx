@@ -28,11 +28,17 @@ export default function StationDetailsModal({
     ? gameState.cargos.filter((c) => c.stationId === stationId)
     : [];
 
+  const emergency = station ? cargos.length / station.capacity > 0.75 : false;
+
+  const headerClass = [styles.header, emergency ? styles.emergency : ''].join(
+    ' '
+  );
+
   return (
     <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
       {station && (
         <div className={styles.modalContent}>
-          <div className={styles.header}>
+          <div className={headerClass}>
             <button className={styles.closeBtn} onClick={onClose}>
               ×
             </button>

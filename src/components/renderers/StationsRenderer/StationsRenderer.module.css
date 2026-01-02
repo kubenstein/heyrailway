@@ -10,7 +10,6 @@
 
 .stationWrapper {
   --local-size: 24px;
-  --local-color: blue;
 
   position: absolute;
   top: calc(var(--local-size) * -1);
@@ -27,29 +26,45 @@
   }
 
   &.hoverable {
+    cursor: pointer;
+
     &:hover {
       transform: scale(1.2) translateX(-50%);
-    }
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: calc(var(--local-size) * -1/2);
-      top: calc(var(--local-size) * -1/2);
-      width: calc(var(--local-size) * 2);
-      height: calc(var(--local-size) * 2);
-      cursor: pointer;
     }
   }
 
   .stationBody {
+    position: relative;
     width: var(--local-size);
     height: var(--local-size);
     flex-shrink: 0;
     padding: calc(var(--gap) / 2);
     border: 1px solid var(--primary-border);
     border-radius: var(--primary-border-radius);
-    background: var(--primary-accent-color) center / 80% no-repeat url('/assets/station.png');
+    background: var(--primary-accent-color) center / 80% no-repeat;
+    transition: background-color 2s ease;
+
+    /* flames */
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: calc(100% - var(--local-size) * 2);
+      left: -58%;
+      width: 100px;
+      height: 120px;
+      background: url('/assets/flames.png') center / contain no-repeat;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 2s ease;
+    }
+  }
+
+  &.emergency .stationBody {
+    background-color: var(--primary-alert-color);
+
+    &::before {
+      opacity: 0.15;
+    }
   }
 
   &.cargoTypeReact .stationBody {
