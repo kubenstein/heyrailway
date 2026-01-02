@@ -43,6 +43,7 @@ export default function Game() {
     setStationToUpgrade(null);
     setAddCartToLine(null);
     setCartDetails(null);
+    setStationDetails(null);
   }, [editMode]);
 
   return (
