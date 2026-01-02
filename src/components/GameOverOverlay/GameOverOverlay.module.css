@@ -39,6 +39,11 @@
     strong {
       font-size: var(--header-font-size);
     }
+
+    em {
+      font-weight: bold;
+      font-size: 120%;
+    }
   }
 
   &.show {
