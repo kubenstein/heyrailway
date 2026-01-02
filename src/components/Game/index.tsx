@@ -73,7 +73,7 @@ export default function Game() {
             <StationSpawner
               enabled={g.running}
               round={g.round}
-              initialStations={3}
+              initialStations={2}
               frequencyMs={g.stationSpawningFrequencyMs}
               onStationSpawn={g.addStation}
             />
@@ -115,6 +115,7 @@ export default function Game() {
                 />
                 <StationsRenderer
                   hoverable={['idle', 'upgrateStation'].includes(editMode)}
+                  stationToHighlight={stationDetails}
                   highlightAll={editMode === 'upgrateStation'}
                   stations={g.stations}
                   cargos={g.cargos}

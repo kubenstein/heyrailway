@@ -68,12 +68,14 @@ export default function StationsRenderer({
 // support
 const getTypeClass = (cargoType: CargoType) => {
   switch (cargoType) {
-    case 'TRIANGLE':
-      return styles.cargoTypeTriangle;
-    case 'SQUARE':
-      return styles.cargoTypeSquare;
-    case 'CIRCLE':
-      return styles.cargoTypeCircle;
+    case 'DB':
+      return styles.cargoTypeDB;
+    case 'GATEWAY':
+      return styles.cargoTypeGateway;
+    case 'REACT':
+      return styles.cargoTypeReact;
+    case 'REDIS':
+      return styles.cargoTypeRedis;
     default:
       return '';
   }

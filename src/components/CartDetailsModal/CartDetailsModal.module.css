@@ -44,8 +44,14 @@
   em {
     color: var(--primary-accent-ink)
   }
-}
 
+  .cargosWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    margin: calc(var(--gap) / 2) 0;
+    gap: calc(var(--gap) / 2);
+  }
+}
 
 .closeBtn {
   position: absolute;

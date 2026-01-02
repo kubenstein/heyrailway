@@ -35,6 +35,14 @@
   strong {
     font-size: var(--header-font-size);
   }
+
+  .typeExplanation {
+    display: flex;
+    margin-top: calc(var(--gap) / 2);
+    font-size: var(--primary-font-size);
+    align-items: center;
+    gap: calc(var(--gap) / 2);
+  }
 }
 
 .content {
@@ -43,6 +51,13 @@
 
   em {
     color: var(--primary-accent-ink)
+  }
+
+  .cargosWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    margin: calc(var(--gap) / 2) 0;
+    gap: calc(var(--gap) / 2);
   }
 }
 

@@ -1,18 +1,23 @@
 .cargo {
-  width: 4px;
-  height: 4px;
-  background: red;
+  --local-size: 12px;
 
-  &.cargoTypeCircle {
-    border-radius: 50%;
+  width: var(--local-size);
+  height: var(--local-size);
+  background-size: cover;
+
+  &.cargoTypeReact {
+    background-image: url('/assets/react.png');
   }
 
-  &.cargoTypeTriangle {
-    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    border-radius: 0;
+  &.cargoTypeDB {
+    background-image: url('/assets/postgres.png');
   }
 
-  &.cargoTypeSquare {
-    border-radius: 0;
+  &.cargoTypeGateway {
+    background-image: url('/assets/gateway.png');
+  }
+
+  &.cargoTypeRedis {
+    background-image: url('/assets/redis.png');
   }
 }

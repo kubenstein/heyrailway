@@ -89,7 +89,10 @@ export default class CargoSpawnerEngine {
   }
 
   private spawnCargo() {
-    const cargoType = randomCargoType();
+    const availableCargoTypes = [
+      ...new Set(this.stations.map((s) => s.cargoType)),
+    ];
+    const cargoType = randomCargoType(availableCargoTypes);
 
     // pick random station with different cargo type from destination
     const connectedStations = this.graph.filterNodes(

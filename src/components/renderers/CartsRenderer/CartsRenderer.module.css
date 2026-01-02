@@ -10,7 +10,7 @@
 }
 
 .cartWrapper {
-  --local-size: 16px;
+  --local-size: calc(var(--gap) * 2/3);
 
   position: absolute;
   top: calc(var(--local-size) * -1/2);
@@ -19,16 +19,16 @@
   align-items: center;
   will-change: transform;
   transform: scale(1) translateX(-50%);
-  transform-origin: 50% calc(var(--local-size) * 1/2);
+  transform-origin: 0 calc(var(--local-size) * 1/2);
   transition: transform 0.2s ease;
 
   &.highlighted {
-    transform: scale(2) translateX(calc(var(--local-size) * -1/4));
+    transform: scale(2) translateX(-50%);
   }
 
   &.hoverable {
     &:hover {
-      transform: scale(2) translateX(calc(var(--local-size) * -1/4));
+      transform: scale(2) translateX(-50%);
     }
 
     &::before {
@@ -42,7 +42,6 @@
     }
   }
 
-
   .cartBody {
     width: var(--local-size);
     height: var(--local-size);
@@ -55,10 +54,11 @@
   .cargosWrapper {
     display: flex;
     flex-wrap: wrap;
-    gap: 2px;
-    max-width: 22px;
+    gap: 3px;
+    width: 100rem;
+    max-width: calc(var(--local-size) * 3);
     justify-content: center;
-    margin-top: 5px;
+    margin-top: calc(var(--local-size) / 3);
     flex-shrink: 0;
   }
 }

@@ -4,7 +4,7 @@ import { CargoType, Station } from '../../lib/types';
 import randomId from '../../lib/randomId';
 import randomCargoType from '../../lib/randomCargoType';
 
-const cargoTypes: CargoType[] = ['TRIANGLE', 'CIRCLE', 'SQUARE'];
+const cargoTypes: CargoType[] = ['DB', 'REACT', 'GATEWAY', 'REDIS'];
 
 interface StationSpawnerProps {
   round: number;
@@ -51,7 +51,7 @@ export default function StationSpawner({
 
     hasSpawnedInitial.current = true;
     for (let i = 0; i < initialStations; i++) {
-      spawnStation(cargoTypes[i % 3]);
+      spawnStation(cargoTypes[i % cargoTypes.length]);
     }
   }, []);
 

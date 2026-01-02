@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Cart } from '../../lib/types';
 import { GameState } from '../GameController';
 import styles from './CartDetailsModal.module.css';
+import CargoRenderer from '../renderers/CargoRenderer';
 
 interface CartDetailsModalProps {
   gameState: GameState;
@@ -46,11 +47,17 @@ export default function CartDetailsModal({
             Points gained: <em>{cart.points}</em>
             <br />
             <br />
-            Cargo:
+            Cargos ({cargos.length}):
             <br />
-            {cargos.map((cargo) => (
-              <div key={cargo.id}>{cargo.cargoType}</div>
-            ))}
+            <div className={styles.cargosWrapper}>
+              {cargos.map((cargo) => (
+                <CargoRenderer
+                  key={cargo.id}
+                  type={cargo.cargoType}
+                  size={32}
+                />
+              ))}
+            </div>
           </div>
         </div>
       )}
