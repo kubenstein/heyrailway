@@ -14,6 +14,7 @@ export type Station = {
   position: Point;
   cargoType: CargoType;
   capacity: number;
+  createdAt: number;
 };
 export type Line = {
   id: LineId;

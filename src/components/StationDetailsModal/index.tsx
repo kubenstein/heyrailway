@@ -1,49 +1,48 @@
 import { useEffect, useState } from 'react';
-import { Cart } from '../../lib/types';
+import { Station } from '../../lib/types';
 import { GameState } from '../GameController';
-import styles from './CartDetailsModal.module.css';
+import styles from './StationDetailsModal.module.css';
 
-interface CartDetailsModalProps {
+interface StationDetailsModalProps {
   gameState: GameState;
-  cartId: Cart['id'] | null;
+  stationId: Station['id'] | null;
   onClose: () => void;
 }
 
-export default function CartDetailsModal({
+export default function StationDetailsModal({
   gameState,
-  cartId,
+  stationId,
   onClose,
-}: CartDetailsModalProps) {
+}: StationDetailsModalProps) {
   const [slideIn, setSlideIn] = useState(false);
 
   useEffect(() => {
-    const timeout = setTimeout(() => setSlideIn(!!cartId), 100);
+    const timeout = setTimeout(() => setSlideIn(!!stationId), 100);
     return () => clearTimeout(timeout);
-  }, [cartId]);
+  }, [stationId]);
 
-  const cart = cartId && gameState.carts.find((c) => c.id === cartId);
-  const cargos = cartId
-    ? gameState.cargos.filter((c) => c.cartId === cartId)
+  const station =
+    stationId && gameState.stations.find((s) => s.id === stationId);
+  const cargos = stationId
+    ? gameState.cargos.filter((c) => c.stationId === stationId)
     : [];
 
   return (
     <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
-      {cart && (
+      {station && (
         <div className={styles.modalContent}>
           <div className={styles.header}>
             <button className={styles.closeBtn} onClick={onClose}>
               ×
             </button>
-            <strong>Cart Details</strong>
+            <strong>Station Details</strong>
           </div>
           <div className={styles.content}>
-            Cart id: <em>{cart.id}</em>
+            Station id: <em>{station.id}</em>
             <br />
-            capacity: <em>{cart.capacity}</em>
+            capacity: <em>{station.capacity}</em>
             <br />
-            Age: <em>{gameState.round - cart.createdAt} rounds</em>
-            <br />
-            Points gained: <em>{cart.points}</em>
+            Age: <em>{gameState.round - station.createdAt} rounds</em>
             <br />
             <br />
             Cargo:

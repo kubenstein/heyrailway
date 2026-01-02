@@ -19,12 +19,14 @@ import { BOARD_CELL_SIZE, BOARD_SIZE } from '../../lib/board';
 import { Cart, Line, Station, EditMode, Point } from '../../lib/types';
 import styles from './Game.module.css';
 import CartDetailsModal from '../CartDetailsModal';
+import StationDetailsModal from '../StationDetailsModal';
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
   const [editMode, setEditMode] = useState<EditMode>('idle');
   const [lineToHighlight, setLineToHighlight] = useState<Line | null>(null);
   const [cartDetails, setCartDetails] = useState<Cart | null>(null);
+  const [stationDetails, setStationDetails] = useState<Station | null>(null);
   const [lineToRemove, setLineToRemove] = useState<Line | null>(null);
   const [addCartToLine, setAddCartToLine] = useState<Line | null>(null);
   const [cartToUpgrade, setCartToUpgrade] = useState<Cart | null>(null);
@@ -70,6 +72,7 @@ export default function Game() {
             />
             <StationSpawner
               enabled={g.running}
+              round={g.round}
               initialStations={3}
               frequencyMs={g.stationSpawningFrequencyMs}
               onStationSpawn={g.addStation}
@@ -111,13 +114,22 @@ export default function Game() {
                   }}
                 />
                 <StationsRenderer
-                  editMode={editMode}
+                  hoverable={['idle', 'upgrateStation'].includes(editMode)}
+                  highlightAll={editMode === 'upgrateStation'}
                   stations={g.stations}
                   cargos={g.cargos}
                   onStationClick={(station: Station) => {
-                    if (editMode !== 'upgrateStation') return;
-                    if (g.perkStationUpgrades <= 0) return;
-                    setStationToUpgrade(station);
+                    if (
+                      editMode === 'upgrateStation' &&
+                      g.perkStationUpgrades > 0
+                    ) {
+                      setStationToUpgrade(station);
+                    }
+
+                    if (editMode === 'idle') {
+                      setCartDetails(null);
+                      setStationDetails(station);
+                    }
                   }}
                 />
                 <CartsRenderer
@@ -131,6 +143,7 @@ export default function Game() {
                       setCartToUpgrade(cart);
                     }
                     if (editMode === 'idle') {
+                      setStationDetails(null);
                       setCartDetails(cart);
                     }
                   }}
@@ -210,9 +223,12 @@ export default function Game() {
               <CartDetailsModal
                 gameState={g}
                 cartId={cartDetails?.id || null}
-                onCloseClick={() => {
-                  setCartDetails(null);
-                }}
+                onClose={() => setCartDetails(null)}
+              />
+              <StationDetailsModal
+                gameState={g}
+                stationId={stationDetails?.id || null}
+                onClose={() => setStationDetails(null)}
               />
             </div>
           </React.Fragment>

@@ -17,8 +17,15 @@
   background: blue;
   transition: transform 0.2s ease;
 
-  &.editMode {
+  &.hoverable {
     cursor: pointer;
+
+    &:hover {
+      transform: scale(2);
+    }
+  }
+
+  &.highlightAll {
     transform: scale(2);
   }
 }
