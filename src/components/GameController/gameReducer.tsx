@@ -134,9 +134,15 @@ export const gameReducer = (
         action.cartNextStation
       );
       const deliveredCargosCount = state.cargos.length - newCargos.length;
+      const newCarts = state.carts.map((cart) =>
+        cart.id === action.cart.id
+          ? { ...cart, points: cart.points + deliveredCargosCount }
+          : cart
+      );
       return {
         ...state,
         cargos: newCargos,
+        carts: newCarts,
         points: state.points + deliveredCargosCount,
       };
     }

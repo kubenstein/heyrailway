@@ -19,7 +19,13 @@ export type Line = {
   id: LineId;
   stations: Station[];
 };
-export type Cart = { id: string; line: Line; capacity: number };
+export type Cart = {
+  id: string;
+  line: Line;
+  capacity: number;
+  createdAt: number;
+  points: number;
+};
 export type Cargo = {
   id: string;
   cargoType: CargoType;

@@ -137,7 +137,13 @@ export default function Game() {
                     stations={g.stations}
                     onLineCreate={(line: Line) => {
                       g.addLine(line);
-                      g.addCart({ id: randomId(), capacity: 6, line });
+                      g.addCart({
+                        id: randomId(),
+                        capacity: 6,
+                        line,
+                        points: 0,
+                        createdAt: g.round,
+                      });
                     }}
                   />
                 )}
@@ -153,7 +159,13 @@ export default function Game() {
               <AddCartToLineConfirm
                 line={addCartToLine}
                 onConfirmClick={(line: Line) => {
-                  g.addCart({ id: randomId(), capacity: 6, line });
+                  g.addCart({
+                    id: randomId(),
+                    capacity: 6,
+                    line,
+                    points: 0,
+                    createdAt: g.round,
+                  });
                   setAddCartToLine(null);
                 }}
               />
@@ -179,7 +191,8 @@ export default function Game() {
                 }}
               />
               <CartDetailsModal
-                cart={cartDetails}
+                gameState={g}
+                cartId={cartDetails?.id || null}
                 onCloseClick={() => {
                   setCartDetails(null);
                 }}

@@ -23,7 +23,7 @@ export default function GameOverOverlay({
       <div className={styles.overlay} />
 
       <div className={styles.modal}>
-        <h2>Game Over!</h2>
+        <strong>Game Over!</strong>
         <p>
           Your last until round {g.round} and scored {g.points} points!
         </p>

@@ -5,7 +5,7 @@
 
   --primary-color: #0f111a;
   --primary-accent-color: #3B2457;
-  --secondary-color: #13111C;
+  --secondary-color: #181621;
   --primary-ink: #E5E5E6;
   --primary-accent-ink: #BC96E9;
   --secondary-ink: #868592;
@@ -25,7 +25,9 @@
 
   --gap: 24px;
   --gap2: calc(var(--gap) * 2);
+  --gap3: calc(var(--gap) * 3);
 
+  --header-font-size: 18px;
   --primary-font-size: 16px;
   --secondary-font-size: 14px;
   --tertiary-font-size: 12px;
