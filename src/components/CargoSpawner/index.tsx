@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Station, Line, Cargo, Cart } from '../lib/types';
-import CargoSpawnerEngine from '../lib/cargoSpawnerEngine/cargoSpawnerEngine';
-import deepCopy from '../lib/deepCopy';
+import { Station, Line, Cargo, Cart } from '../../lib/types';
+import CargoSpawnerEngine from '../../lib/cargoSpawnerEngine/cargoSpawnerEngine';
+import deepCopy from '../../lib/deepCopy';
 
 interface CargoSpawnerProps {
   enabled: boolean;
@@ -18,10 +18,10 @@ export default function CargoSpawner(props: CargoSpawnerProps) {
   const lineIds = useRef<Line['id'][]>([]);
   const stationIds = useRef<Station['id'][]>([]);
 
-  useEffect(
-    () => spawningEngine.setEnabled(props.enabled),
-    [props.enabled, spawningEngine]
-  );
+  useEffect(() => {
+    spawningEngine.setEnabled(props.enabled);
+    return () => spawningEngine.setEnabled(false);
+  }, [props.enabled, spawningEngine]);
 
   useEffect(
     () => spawningEngine.setFrequency(props.frequencyMs),

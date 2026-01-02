@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Point, Station, Cart, Line } from '../lib/types';
-import CartsMovementEngine from '../lib/cartsMovementEngine/cartsMovementEngine';
-import { pointToBoardPoint } from '../lib/board';
+import { Point, Station, Cart, Line } from '../../lib/types';
+import CartsMovementEngine from '../../lib/cartsMovementEngine/cartsMovementEngine';
+import { pointToBoardPoint } from '../../lib/board';
 
 interface CartsMovementProps {
   enabled: boolean;
@@ -21,10 +21,10 @@ export default function CartsMovement(props: CartsMovementProps) {
   const lineIds = useRef<Line['id'][]>([]);
   const cartIds = useRef<Cart['id'][]>([]);
 
-  useEffect(
-    () => movementEngine.setEnabled(props.enabled),
-    [props.enabled, movementEngine]
-  );
+  useEffect(() => {
+    movementEngine.setEnabled(props.enabled);
+    return () => movementEngine.setEnabled(false);
+  }, [props.enabled, movementEngine]);
 
   useEffect(
     () => movementEngine.setSpeed(props.speedPxPerSec),

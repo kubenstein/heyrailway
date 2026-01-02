@@ -1,0 +1,23 @@
+.cargo {
+  --local-size: 12px;
+
+  width: var(--local-size);
+  height: var(--local-size);
+  background-size: cover;
+
+  &.cargoTypeReact {
+    background-image: url('/assets/react.png');
+  }
+
+  &.cargoTypeDB {
+    background-image: url('/assets/postgres.png');
+  }
+
+  &.cargoTypeGateway {
+    background-image: url('/assets/gateway.png');
+  }
+
+  &.cargoTypeRedis {
+    background-image: url('/assets/redis.png');
+  }
+}

@@ -1,107 +1,49 @@
 :root {
-  font-family:
-    system-ui,
-    -apple-system,
-    Segoe UI,
-    Roboto,
-    Helvetica,
-    Arial,
-    sans-serif;
+  font-family: Tahoma, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+
+  --primary-color: #0f111a;
+  --primary-accent-color: #3B2457;
+  --primary-alert-color: #F14F00;
+  --secondary-color: #181621;
+  --primary-ink: #E5E5E6;
+  --primary-accent-ink: #BC96E9;
+  --secondary-ink: #868592;
+  --primary-border: #2C2E36;
+
+  --line-color--1: #FFFFFF;
+  --line-color-0: #FF0000;
+  --line-color-1: #0000FF;
+  --line-color-2: #008000;
+  --line-color-3: #FFFF00;
+  --line-color-4: #800080;
+  --line-color-5: #FFA500;
+  --line-color-6: #FFC0CB;
+  --line-color-7: #00FFFF;
+  --line-color-8: #FF00FF;
+  --line-color-9: #00FF00;
+
+  --gap: 24px;
+  --gap2: calc(var(--gap) * 2);
+  --gap3: calc(var(--gap) * 3);
+
+  --header-font-size: 18px;
+  --primary-font-size: 16px;
+  --secondary-font-size: 14px;
+  --tertiary-font-size: 12px;
+
+  --primary-border-radius: 8px;
+
+  --ground-z-index: 1;
+  --main-z-index: 10;
+  --eleveted-z-index: 30;
+  --top-z-index: 50;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-}
-
-.app {
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.board {
-  position: relative;
-  overflow: hidden;
-  background: white;
-  border: 1px solid #d0d7de;
-}
-
-.board-anchor {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 0;
-  height: 0;
-  will-change: transform;
-}
-
-.rail-segment {
-  position: absolute;
-  left: 0;
-  top: 0;
-  pointer-events: none;
-}
-
-.station-shape {
-  position: absolute;
-  left: -8px;
-  top: -8px;
-  width: 16px;
-  height: 16px;
-  background: blue;
-}
-
-.station-shape--circle {
-  border-radius: 9999px;
-}
-
-.station-shape--triangle {
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-}
-
-.cart-shape {
-  position: absolute;
-  left: -8px;
-  top: -8px;
-  width: 16px;
-  height: 16px;
-  border-radius: 9999px;
-  background: orange;
-}
-
-.cargo-shape--station {
-  position: absolute;
-  left: -3px;
-  top: -3px;
-  width: 6px;
-  height: 6px;
-  background: red;
-}
-
-.cargo-shape--cart {
-  position: absolute;
-  left: -2px;
-  top: -2px;
-  width: 4px;
-  height: 4px;
-  background: green;
-}
-
-.cargo-shape--circle {
-  border-radius: 9999px;
-}
-
-.cargo-shape--triangle {
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-}
-
-.line-editor {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  user-select: none;
+  font-size: var(--primary-font-size);
+  background-color: var(--secondary-color);
 }
