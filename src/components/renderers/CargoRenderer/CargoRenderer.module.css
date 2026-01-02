@@ -1,0 +1,18 @@
+.cargo {
+  width: 4px;
+  height: 4px;
+  background: red;
+
+  &.cargoTypeCircle {
+    border-radius: 50%;
+  }
+
+  &.cargoTypeTriangle {
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    border-radius: 0;
+  }
+
+  &.cargoTypeSquare {
+    border-radius: 0;
+  }
+}

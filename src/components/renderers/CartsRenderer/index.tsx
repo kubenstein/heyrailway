@@ -1,4 +1,5 @@
-import { Cargo, Cart, CargoType } from '../../../lib/types';
+import { Cargo, Cart } from '../../../lib/types';
+import CargoRenderer from '../CargoRenderer';
 import styles from './CartsRenderer.module.css';
 
 interface CartsRendererProps {
@@ -18,42 +19,11 @@ export default function CartsRenderer({
   cargos,
   onCartClick,
 }: CartsRendererProps) {
-  const typeToShapeClass = (cargoType: CargoType) => {
-    switch (cargoType) {
-      case 'CIRCLE':
-        return styles.circle;
-      case 'TRIANGLE':
-        return styles.triangle;
-      default:
-        return undefined;
-    }
-  };
-
   return carts.map((cart) => {
-    const cargoShapes = cargos
-      .filter((cargo) => cargo.cartId === cart.id)
-      .map((cargo, index) => {
-        const cargoX = (index % 3) * 6 - 6;
-        const cargoY = 12 + Math.floor(index / 3) * 6;
+    const cartCargos = cargos.filter((cargo) => cargo.cartId === cart.id);
 
-        const cargoClassName = [
-          styles.cargoShapeCart,
-          typeToShapeClass(cargo.cargoType),
-        ].join(' ');
-
-        return (
-          <div
-            key={`cart-cargo-${cargo.id}`}
-            className={styles.boardAnchor}
-            style={{ transform: `translate(${cargoX}px, ${cargoY}px)` }}
-          >
-            <div className={cargoClassName} />
-          </div>
-        );
-      });
-
-    const cartClassName = [
-      styles.cartShape,
+    const cartWrapperClass = [
+      styles.cartWrapper,
       hoverable ? styles.hoverable : '',
       highlightAll ? styles.highlighted : '',
       cartToHighlight && cartToHighlight.id === cart.id
@@ -65,18 +35,29 @@ export default function CartsRenderer({
       <div
         key={`cart-group-${cart.id}`}
         id={`cart-${cart.id}`}
-        className={styles.boardAnchor}
-        onClick={() => onCartClick(cart)}
+        className={styles.cartAnchor}
       >
         <div
-          className={cartClassName}
+          className={cartWrapperClass}
+          onClick={() => onCartClick(cart)}
           style={
             {
               '--local-color': `var(--line-color-${cart.line.id})`,
             } as React.CSSProperties
           }
-        />
-        {cargoShapes}
+        >
+          <div className={styles.cartBody} />
+          {cartCargos.length > 0 && (
+            <div className={styles.cargosWrapper}>
+              {cartCargos.map((cargo) => (
+                <CargoRenderer
+                  key={`cart-cargo-${cargo.id}`}
+                  type={cargo.cargoType}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     );
   });

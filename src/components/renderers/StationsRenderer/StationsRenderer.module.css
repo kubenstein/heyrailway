@@ -1,48 +1,73 @@
-.boardAnchor {
+.stationAnchor {
   position: absolute;
-  left: 0;
   top: 0;
+  left: 0;
   width: 0;
   height: 0;
   will-change: transform;
   z-index: var(--main-z-index);
 }
 
-.stationShape {
+.stationWrapper {
+  --local-size: 20px;
+  --local-color: blue;
+
   position: absolute;
-  left: -8px;
-  top: -8px;
-  width: 16px;
-  height: 16px;
-  background: blue;
+  top: calc(var(--local-size) * -1/2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  will-change: transform;
+  transform: scale(1) translateX(-50%);
   transition: transform 0.2s ease;
 
-  &.hoverable {
-    cursor: pointer;
+  &.highlighted {
+    transform: scale(2) translateX(calc(var(--local-size) * -1/4));
+  }
 
+  &.hoverable {
     &:hover {
-      transform: scale(2);
+      transform: scale(2) translateX(calc(var(--local-size) * -1/4));
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: calc(var(--local-size) * -1/2);
+      top: calc(var(--local-size) * -1/2);
+      width: calc(var(--local-size) * 2);
+      height: calc(var(--local-size) * 2);
+      cursor: pointer;
     }
   }
 
-  &.highlightAll {
-    transform: scale(2);
+  .cargosWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    max-width: 22px;
+    justify-content: center;
+    margin-top: 5px;
+    flex-shrink: 0;
   }
-}
 
-.cargoShapeStation {
-  position: absolute;
-  left: -3px;
-  top: -3px;
-  width: 6px;
-  height: 6px;
-  background: red;
-}
+  .stationBody {
+    width: var(--local-size);
+    height: var(--local-size);
+    background-color: var(--local-color);
+    flex-shrink: 0;
+  }
 
-.circle {
-  border-radius: 9999px;
-}
+  &.cargoTypeCircle .stationBody {
+    border-radius: 50%;
+  }
 
-.triangle {
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  &.cargoTypeTriangle .stationBody {
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    border-radius: 0;
+  }
+
+  &.cargoTypeSquare .stationBody {
+    border-radius: 0;
+  }
 }

@@ -1,10 +1,12 @@
 import { Cargo, CargoType, Station } from '../../../lib/types';
 import { pointToBoardPoint } from '../../../lib/board';
+import CargoRenderer from '../CargoRenderer';
 import styles from './StationsRenderer.module.css';
 
 interface StationsRendererProps {
   hoverable: boolean;
   highlightAll: boolean;
+  stationToHighlight: Station | null;
   stations: Station[];
   cargos: Cargo[];
   onStationClick: (station: Station) => void;
@@ -13,68 +15,66 @@ interface StationsRendererProps {
 export default function StationsRenderer({
   hoverable,
   highlightAll,
+  stationToHighlight,
   stations,
   cargos,
   onStationClick,
 }: StationsRendererProps) {
-  const typeToShapeClass = (cargoType: CargoType) => {
-    switch (cargoType) {
-      case 'CIRCLE':
-        return styles.circle;
-      case 'TRIANGLE':
-        return styles.triangle;
-      default:
-        return undefined;
-    }
-  };
-
-  const renderStation = (station: Station) => {
+  return stations.map((station) => {
     const { x, y } = pointToBoardPoint(station.position);
-    const cargoShapes = cargos
-      .filter((cargo) => cargo.stationId === station.id)
-      .map((cargo, index) => {
-        const cargoOffsetX = (index % 5) * 10 - 20; // 5 per row, spaced 10px
-        const cargoOffsetY = 20 + Math.floor(index / 5) * 10;
 
-        const cargoClassName = [
-          styles.cargoShapeStation,
-          typeToShapeClass(cargo.cargoType),
-        ]
-          .filter(Boolean)
-          .join(' ');
+    const stationCargos = cargos.filter(
+      (cargo) => cargo.stationId === station.id
+    );
 
-        return (
-          <div
-            key={`cargo-${cargo.id}`}
-            className={styles.boardAnchor}
-            style={{
-              transform: `translate(${cargoOffsetX}px, ${cargoOffsetY}px)`,
-            }}
-          >
-            <div className={cargoClassName} />
-          </div>
-        );
-      });
-
-    const stationClassName = [
-      styles.stationShape,
-      typeToShapeClass(station.cargoType),
+    const stationWrapperClass = [
+      styles.stationWrapper,
+      getTypeClass(station.cargoType),
       hoverable ? styles.hoverable : '',
-      highlightAll ? styles.highlightAll : '',
+      highlightAll ? styles.highlighted : '',
+      stationToHighlight && stationToHighlight.id === station.id
+        ? styles.highlighted
+        : '',
     ].join(' ');
 
     return (
       <div
         key={`station-group-${station.id}`}
-        className={styles.boardAnchor}
+        id={`station-${station.id}`}
         style={{ transform: `translate(${x}px, ${y}px)` }}
-        onClick={() => onStationClick(station)}
+        className={styles.stationAnchor}
       >
-        <div className={stationClassName} />
-        {cargoShapes}
+        <div
+          className={stationWrapperClass}
+          onClick={() => onStationClick(station)}
+        >
+          <div className={styles.stationBody} />
+          {stationCargos.length > 0 && (
+            <div className={styles.cargosWrapper}>
+              {stationCargos.map((cargo) => (
+                <CargoRenderer
+                  key={`station-cargo-${cargo.id}`}
+                  type={cargo.cargoType}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     );
-  };
-
-  return <>{stations.map(renderStation)}</>;
+  });
 }
+
+// support
+const getTypeClass = (cargoType: CargoType) => {
+  switch (cargoType) {
+    case 'TRIANGLE':
+      return styles.cargoTypeTriangle;
+    case 'SQUARE':
+      return styles.cargoTypeSquare;
+    case 'CIRCLE':
+      return styles.cargoTypeCircle;
+    default:
+      return '';
+  }
+};

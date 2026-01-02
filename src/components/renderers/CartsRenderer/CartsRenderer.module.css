@@ -1,59 +1,64 @@
-.boardAnchor {
+.cartAnchor {
   position: absolute;
-  left: 0;
   top: 0;
+  left: 0;
   width: 0;
   height: 0;
-  transform: translate(-100px, -100px);
+  transform: translate(-10000px, -10000px);
   will-change: transform;
   z-index: var(--main-z-index);
 }
 
-.cartShape {
+.cartWrapper {
+  --local-size: 16px;
+
   position: absolute;
-  left: -8px;
-  top: -8px;
-  width: 16px;
-  height: 16px;
-  border-radius: 9999px;
-  background-color: var(--local-color);
-  box-shadow: 0 0 15px var(--local-color);
+  top: calc(var(--local-size) * -1/2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  will-change: transform;
+  transform: scale(1) translateX(-50%);
+  transform-origin: 50% calc(var(--local-size) * 1/2);
   transition: transform 0.2s ease;
 
   &.highlighted {
-    transform: scale(2);
+    transform: scale(2) translateX(calc(var(--local-size) * -1/4));
   }
 
   &.hoverable {
     &:hover {
-      transform: scale(2);
+      transform: scale(2) translateX(calc(var(--local-size) * -1/4));
     }
 
     &::before {
       content: '';
       position: absolute;
-      left: -15px;
-      top: -15px;
-      width: 40px;
-      height: 40px;
+      left: calc(var(--local-size) * -1/2);
+      top: calc(var(--local-size) * -1/2);
+      width: calc(var(--local-size) * 2);
+      height: calc(var(--local-size) * 2);
       cursor: pointer;
     }
   }
-}
 
-.cargoShapeCart {
-  position: absolute;
-  left: -2px;
-  top: -2px;
-  width: 4px;
-  height: 4px;
-  background: red;
-}
 
-.circle {
-  border-radius: 9999px;
-}
+  .cartBody {
+    width: var(--local-size);
+    height: var(--local-size);
+    border-radius: 100rem;
+    background-color: var(--local-color);
+    box-shadow: 0 0 var(--local-size) var(--local-color);
+    flex-shrink: 0;
+  }
 
-.triangle {
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  .cargosWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    max-width: 22px;
+    justify-content: center;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
 }
