@@ -2,7 +2,7 @@
   position: fixed;
   font-size: var(--secondary-font-size);
   display: flex;
-  z-index: 17;
+  z-index: var(--eleveted-z-index);
   top: var(--gap3);
   width: 600px;
   box-sizing: border-box;

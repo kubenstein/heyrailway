@@ -11,10 +11,12 @@ export function pointToBoardPoint(point: Point): Point {
   };
 }
 
-export function eToBoardPoint(e: MouseEvent<HTMLElement>): Point {
+export function eToBoardPoint(
+  e: MouseEvent<HTMLElement>,
+  scale: number = 1
+): Point {
   const rect = e.currentTarget.getBoundingClientRect();
-  const x = Math.floor((e.clientX - rect.left) / BOARD_CELL_SIZE);
-  const y = Math.floor((e.clientY - rect.top) / BOARD_CELL_SIZE);
-  const point: Point = { x, y };
-  return point;
+  const x = Math.floor((e.clientX - rect.left) / (BOARD_CELL_SIZE * scale));
+  const y = Math.floor((e.clientY - rect.top) / (BOARD_CELL_SIZE * scale));
+  return { x, y };
 }

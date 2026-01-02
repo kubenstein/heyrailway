@@ -19,17 +19,15 @@ export default function CartUpgradeConfirm({
   }, [cartToUpgrade]);
 
   return (
-    <div className={`${styles.wrapper} ${slideIn ? styles.show : ''}`}>
-      <div className={styles.modal}>
-        <p>Do you want to upgrade this cart?</p>
+    <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
+      <p>Do you want to upgrade this cart?</p>
 
-        <button
-          className={styles.btn}
-          onClick={() => cartToUpgrade && onConfirmClick(cartToUpgrade)}
-        >
-          Upgrade
-        </button>
-      </div>
+      <button
+        className={styles.btn}
+        onClick={() => cartToUpgrade && onConfirmClick(cartToUpgrade)}
+      >
+        Upgrade
+      </button>
     </div>
   );
 }

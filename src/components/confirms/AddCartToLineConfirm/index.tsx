@@ -19,17 +19,15 @@ export default function AddCartToLineConfirm({
   }, [line]);
 
   return (
-    <div className={`${styles.wrapper} ${slideIn ? styles.show : ''}`}>
-      <div className={styles.modal}>
-        <p>Do you want to add cart to this line?</p>
+    <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
+      <p>Do you want to add cart to this line?</p>
 
-        <button
-          className={styles.btn}
-          onClick={() => line && onConfirmClick(line)}
-        >
-          Add
-        </button>
-      </div>
+      <button
+        className={styles.btn}
+        onClick={() => line && onConfirmClick(line)}
+      >
+        Add
+      </button>
     </div>
   );
 }

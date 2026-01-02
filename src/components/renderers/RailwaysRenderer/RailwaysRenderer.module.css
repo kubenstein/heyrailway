@@ -1,6 +1,7 @@
 .line {
   .railSegment {
     position: absolute;
+    z-index: var(--main-z-index);
     left: 0;
     top: 0;
     padding: 0;

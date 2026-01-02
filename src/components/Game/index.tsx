@@ -13,9 +13,10 @@ import LineToRemoveConfirm from '../confirms/LineToRemoveConfirm';
 import StationUpgradeConfirm from '../confirms/StationUpgradeConfirm';
 import CartUpgradeConfirm from '../confirms/CartUpgradeConfirm';
 import AddCartToLineConfirm from '../confirms/AddCartToLineConfirm';
+import BoardDragger from '../BoardDragger';
 import randomId from '../../lib/randomId';
 import { BOARD_CELL_SIZE, BOARD_SIZE } from '../../lib/board';
-import { Cart, Line, Station, EditMode } from '../../lib/types';
+import { Cart, Line, Station, EditMode, Point } from '../../lib/types';
 import styles from './Game.module.css';
 import CartDetailsModal from '../CartDetailsModal';
 
@@ -30,6 +31,8 @@ export default function Game() {
   const [stationToUpgrade, setStationToUpgrade] = useState<Station | null>(
     null
   );
+  const [boardPosition, setBoardPosition] = useState<Point>({ x: 0, y: 0 });
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
     setLineToHighlight(null);
@@ -88,6 +91,7 @@ export default function Game() {
                   backgroundSize: `${BOARD_CELL_SIZE}px ${BOARD_CELL_SIZE}px`,
                   width: BOARD_SIZE * BOARD_CELL_SIZE,
                   height: BOARD_SIZE * BOARD_CELL_SIZE,
+                  transform: `translate(${boardPosition.x}px, ${boardPosition.y}px) scale(${scale})`,
                 }}
               >
                 <RailwaysRenderer
@@ -135,6 +139,7 @@ export default function Game() {
                   <LineEditor
                     lines={g.lines}
                     stations={g.stations}
+                    scale={scale}
                     onLineCreate={(line: Line) => {
                       g.addLine(line);
                       g.addCart({
@@ -147,6 +152,18 @@ export default function Game() {
                     }}
                   />
                 )}
+                <BoardDragger
+                  onBoardMove={(delta) =>
+                    setBoardPosition((prev) => ({
+                      x: prev.x + delta.x,
+                      y: prev.y + delta.y,
+                    }))
+                  }
+                  currentScale={scale}
+                  onScaleChange={(newScale: number) => {
+                    setScale(newScale);
+                  }}
+                />
               </div>
 
               {g.lost && (

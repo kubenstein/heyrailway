@@ -6,6 +6,7 @@
   height: 0;
   transform: translate(-100px, -100px);
   will-change: transform;
+  z-index: var(--main-z-index);
 }
 
 .cartShape {

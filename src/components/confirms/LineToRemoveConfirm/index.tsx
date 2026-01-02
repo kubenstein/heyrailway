@@ -19,17 +19,15 @@ export default function LineToRemoveConfirm({
   }, [lineToRemove]);
 
   return (
-    <div className={`${styles.wrapper} ${slideIn ? styles.show : ''}`}>
-      <div className={styles.modal}>
-        <p>Do you want to remove this line?</p>
+    <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
+      <p>Do you want to remove this line?</p>
 
-        <button
-          className={styles.btn}
-          onClick={() => lineToRemove && onConfirmClick(lineToRemove)}
-        >
-          Remove
-        </button>
-      </div>
+      <button
+        className={styles.btn}
+        onClick={() => lineToRemove && onConfirmClick(lineToRemove)}
+      >
+        Remove
+      </button>
     </div>
   );
 }

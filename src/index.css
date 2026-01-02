@@ -33,6 +33,11 @@
   --tertiary-font-size: 12px;
 
   --primary-border-radius: 8px;
+
+  --ground-z-index: 1;
+  --main-z-index: 10;
+  --eleveted-z-index: 30;
+  --top-z-index: 50;
 }
 
 body {

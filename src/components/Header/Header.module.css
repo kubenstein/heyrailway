@@ -1,4 +1,8 @@
 .headerWrapper {
+  --local-header-z-index: 3;
+  --local-menu-z-index: 2;
+
+  z-index: var(--eleveted-z-index);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -7,7 +11,7 @@
 .header {
   display: flex;
   align-items: center;
-  z-index: 20;
+  z-index: var(--local-header-z-index);
   padding: 0 var(--gap);
   color: var(--primary-ink);
   background-color: var(--primary-color);
@@ -56,7 +60,7 @@
   justify-content: center;
   align-items: center;
   position: relative;
-  z-index: 19;
+  z-index: var(--local-menu-z-index);
   width: 50%;
   gap: var(--gap);
   height: var(--gap2);

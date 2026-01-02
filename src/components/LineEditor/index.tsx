@@ -8,12 +8,14 @@ interface LineEditorProps {
   lines: Line[];
   stations: Station[];
   onLineCreate: (line: Line) => void;
+  scale: number;
 }
 
 export default function LineEditor({
   stations,
   lines,
   onLineCreate,
+  scale,
 }: LineEditorProps) {
   const [lineStations, setLineStations] = useState<Station[]>([]);
   const [hoveringPoint, setHoveringPoint] = useState<Point | null>(null);
@@ -22,7 +24,7 @@ export default function LineEditor({
 
   // actions
   const onClick = (e: MouseEvent<HTMLDivElement>) => {
-    const station = stationAtPoint(eToBoardPoint(e));
+    const station = stationAtPoint(eToBoardPoint(e, scale));
     if (!station) return;
     if (lastStation?.id === station.id) return;
 
@@ -30,7 +32,7 @@ export default function LineEditor({
   };
 
   const onMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    const point = eToBoardPoint(e);
+    const point = eToBoardPoint(e, scale);
     setHoveringPoint(point);
   };
 
@@ -81,7 +83,7 @@ export default function LineEditor({
       onMouseMove={onMouseMove}
       onDoubleClick={onDoubleClick}
     >
-      <LineRenderer line={editingLine} editMode="addLine" />
+      <LineRenderer line={editingLine} />
     </div>
   );
 }

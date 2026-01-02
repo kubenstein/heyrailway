@@ -1,35 +1,26 @@
-.wrapper {
+.modal {
   position: fixed;
-  width: 100%;
-  top: var(--gap2);
-  left: 0;
-
-  .modal {
-    position: fixed;
-    font-size: var(--secondary-font-size);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    z-index: 17;
-    width: 30%;
-    gap: var(--gap);
-    height: var(--gap2);
-    margin: calc(var(--gap2) * -1) auto 0 auto;
-    color: var(--primary-ink);
-    background-color: var(--primary-color);
-    top: -1px;
-    border: 1px solid var(--primary-border);
-    border-top: none;
-    transition: top 0.3s ease;
-    border-bottom-left-radius: var(--primary-border-radius);
-    border-bottom-right-radius: var(--primary-border-radius);
-  }
+  font-size: var(--secondary-font-size);
+  z-index: var(--elvated-behind-z-index);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--gap);
+  height: var(--gap2);
+  color: var(--primary-ink);
+  background-color: var(--primary-color);
+  padding: 0 var(--gap);
+  left: 50%;
+  top: -1px;
+  transform: translate(-50%);
+  border: 1px solid var(--primary-border);
+  border-top: none;
+  transition: top 0.3s ease;
+  border-bottom-left-radius: var(--primary-border-radius);
+  border-bottom-right-radius: var(--primary-border-radius);
 
   &.show {
-    .modal {
-      top: calc(var(--gap2) * 2);
-    }
+    top: calc(var(--gap2) * 2);
   }
 }
 

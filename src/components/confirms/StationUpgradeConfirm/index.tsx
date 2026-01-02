@@ -19,17 +19,15 @@ export default function StationUpgradeConfirm({
   }, [stationToUpgrade]);
 
   return (
-    <div className={`${styles.wrapper} ${slideIn ? styles.show : ''}`}>
-      <div className={styles.modal}>
-        <p>Do you want to upgrade this station?</p>
+    <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
+      <p>Do you want to upgrade this station?</p>
 
-        <button
-          className={styles.btn}
-          onClick={() => stationToUpgrade && onConfirmClick(stationToUpgrade)}
-        >
-          Upgrade
-        </button>
-      </div>
+      <button
+        className={styles.btn}
+        onClick={() => stationToUpgrade && onConfirmClick(stationToUpgrade)}
+      >
+        Upgrade
+      </button>
     </div>
   );
 }

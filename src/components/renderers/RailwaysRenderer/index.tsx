@@ -37,8 +37,8 @@ export default function RailwaysRenderer({
 
 interface LineRendererProps {
   line: Line;
-  hoverable: boolean;
-  highLight: boolean;
+  hoverable?: boolean;
+  highLight?: boolean;
   onMouseEnterLine?: (line: Line) => void;
   onMouseLeaveLine?: (line: Line) => void;
   onLineClick?: (line: Line) => void;
