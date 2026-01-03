@@ -141,17 +141,18 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
       const newClock = state.clock + 1;
       let nextState: GameState = { ...state, clock: newClock };
 
+      const perkKeys = ['perkCartUpgrades', 'perkStationUpgrades', 'perkAvailableLines'] as const;
+      const newPerk = perkKeys[Math.floor(Math.random() * perkKeys.length)];
+
       if (newClock % 60 === 0) {
         nextState = {
           ...nextState,
           round: nextState.round + 1,
-          perkCartUpgrades: nextState.perkCartUpgrades + 1,
-          perkStationUpgrades: nextState.perkStationUpgrades + 1,
-          perkAvailableLines: nextState.perkAvailableLines + 1,
+          [newPerk]: nextState[newPerk] + 1,
         };
       }
 
-      if (newClock % 130 === 0) {
+      if (newClock % 75 === 0) {
         nextState = {
           ...nextState,
           cargoSpawningFrequencyMs:
