@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Station, Line, Cargo, Cart } from '../../lib/types';
-import CargoSpawnerEngine from '../../lib/cargoSpawnerEngine/cargoSpawnerEngine';
-import deepCopy from '../../lib/deepCopy';
+import { Station, Line, Cargo, Cart } from '../../../lib/types';
+import CargoSpawnerEngine from '../../../lib/cargoSpawnerEngine/cargoSpawnerEngine';
+import deepCopy from '../../../lib/deepCopy';
 
 interface CargoSpawnerProps {
   enabled: boolean;

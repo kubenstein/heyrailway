@@ -1,5 +1,5 @@
 import { Station, Line, Cargo, Cart } from '../../lib/types';
-import { dropDeliverLoadCargos } from '../CargoSpawner';
+import { dropDeliverLoadCargos } from '../spawners/CargoSpawner';
 import deepCopy from '../../lib/deepCopy';
 import { GameState, initialState } from '.';
 import randomId from '../../lib/randomId';
