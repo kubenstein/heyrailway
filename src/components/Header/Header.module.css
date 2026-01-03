@@ -59,14 +59,15 @@
 .editModeMenu {
   position: relative;
   display: flex;
-  top: -1px;
+  top: 0;
   z-index: var(--local-menu-z-index);
   gap: var(--gap);
   align-items: center;
   justify-content: center;
-  width: 50%;
-  height: var(--gap2);
+  width: 55%;
+  height: calc(var(--gap2) - 1px);
   margin: calc(var(--gap2) * -1) auto 0 auto;
+  padding: 0 var(--gap);
   color: var(--primary-ink);
   background-color: var(--primary-color);
   transition: top 0.3s ease;

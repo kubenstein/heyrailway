@@ -42,7 +42,6 @@
 }
 
 body {
-  min-height: 100vh;
   margin: 0;
   font-size: var(--primary-font-size);
   background-color: var(--secondary-color);
