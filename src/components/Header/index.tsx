@@ -1,6 +1,5 @@
 import { GameState } from '../GameController';
 import styles from './Header.module.css';
-import logoImage from '../../assets/logo.png';
 import { useEffect } from 'react';
 import { EditMode } from '../../lib/types';
 
@@ -19,7 +18,7 @@ export default function Header({ gameState: g, editMode, onEditModeChange }: Hea
     <div className={styles.headerWrapper}>
       <div className={styles.header}>
         <div className={styles.primary}>
-          <img src={logoImage} className={styles.logoImg} />
+          <div className={styles.logo} />
           <span>Round: {g.round}</span>
           <span>Points: {g.points}</span>
         </div>

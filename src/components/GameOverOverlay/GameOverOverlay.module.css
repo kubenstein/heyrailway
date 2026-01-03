@@ -30,7 +30,7 @@
     padding: 24px 32px;
     color: var(--primary-ink);
     text-align: center;
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
     opacity: 0;
     transition: opacity 0.5s ease;
     border: 2px solid var(--primary-accent-color);
