@@ -73,7 +73,7 @@
     background-color: var(--primary-alert-color);
 
     &::before {
-      opacity: 0.15;
+      opacity: 0.3;
     }
   }
 
