@@ -1,4 +1,5 @@
-import Game from './components/Game';
+import GameApp from './gameApp';
+import './index.css';
 
 export default function App() {
   return (
@@ -8,7 +9,7 @@ export default function App() {
         margin: '2vh 30px',
       }}
     >
-      <Game />;
+      <GameApp />;
     </div>
   );
 }
