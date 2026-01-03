@@ -16,7 +16,7 @@ export type GameAction =
   | { type: 'UPGRADE_CART'; cart: Cart }
   | {
       type: 'ARRIVE_AT_STATION';
-      cart: Cart;
+      cartId: Cart['id'];
       station: Station;
       cartNextStation: Station;
     }
@@ -116,10 +116,11 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
     }
 
     case 'ARRIVE_AT_STATION': {
-      const newCargos = dropDeliverLoadCargos(state.cargos, action.cart, action.station, action.cartNextStation);
+      const cart = state.carts.find((c) => c.id === action.cartId)!;
+      const newCargos = dropDeliverLoadCargos(state.cargos, cart, action.station, action.cartNextStation);
       const deliveredCargosCount = state.cargos.length - newCargos.length;
       const newCarts = state.carts.map((cart) =>
-        cart.id === action.cart.id ? { ...cart, points: cart.points + deliveredCargosCount } : cart
+        cart.id === action.cartId ? { ...cart, points: cart.points + deliveredCargosCount } : cart
       );
       return {
         ...state,

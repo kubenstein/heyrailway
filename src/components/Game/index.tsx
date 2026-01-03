@@ -55,7 +55,9 @@ export default function Game() {
               speedPxPerSec={g.cartSpeedPxPerSec}
               carts={g.carts}
               lines={g.lines}
-              onCartPositionUpdate={(cart, position) => nonReactCartPositionUpdater(boardEl.current!, cart, position)}
+              onCartPositionUpdate={(cartId, position) =>
+                nonReactCartPositionUpdater(boardEl.current!, cartId, position)
+              }
               onArriveToStation={g.onArriveToStation}
             />
             <CargoSpawner

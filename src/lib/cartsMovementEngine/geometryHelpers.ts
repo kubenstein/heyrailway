@@ -71,7 +71,7 @@ export const createCmeLine = (line: Line, speedPxPerSec: number): cmeLine => {
 export const createCmeCart = (cart: Cart, cmeLines: cmeLine[]): cmeCart => {
   const cmeLine = cmeLines.find((cmeLine) => cmeLine.line.id === cart.line.id)!;
   return {
-    cart,
+    cartId: cart.id,
     line: cmeLine,
     nextStation: cmeLine.stations[0],
     progress: 0,

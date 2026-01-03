@@ -60,7 +60,7 @@ export type RenderProps = GameState & {
   rerouteCargo: (cargo: Cargo) => void;
   upgradeStation: (station: Station) => void;
   upgradeCart: (cart: Cart) => void;
-  onArriveToStation: (cart: Cart, station: Station, cartNextStation: Station) => void;
+  onArriveToStation: (cartId: Cart['id'], station: Station, cartNextStation: Station) => void;
 };
 
 interface GameControllerProps {
@@ -114,10 +114,10 @@ export default function GameController({ editMode, render }: GameControllerProps
         rerouteCargo: (cargo: Cargo) => dispatch({ type: 'REROUTE_CARGO', cargo }),
         upgradeStation: (station: Station) => dispatch({ type: 'UPGRADE_STATION', station }),
         upgradeCart: (cart: Cart) => dispatch({ type: 'UPGRADE_CART', cart }),
-        onArriveToStation: (cart: Cart, station: Station, cartNextStation: Station) => {
+        onArriveToStation: (cartId: Cart['id'], station: Station, cartNextStation: Station) => {
           dispatch({
             type: 'ARRIVE_AT_STATION',
-            cart,
+            cartId,
             station,
             cartNextStation,
           });

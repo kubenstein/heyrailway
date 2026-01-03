@@ -8,8 +8,8 @@ interface CartsMovementProps {
   speedPxPerSec: number;
   carts: Cart[];
   lines: Line[];
-  onCartPositionUpdate: (cart: Cart, position: Point) => void;
-  onArriveToStation: (cart: Cart, station: Station, nextStation: Station) => void;
+  onCartPositionUpdate: (cartId: Cart['id'], position: Point) => void;
+  onArriveToStation: (cartId: Cart['id'], station: Station, nextStation: Station) => void;
 }
 
 export default function CartsMovement(props: CartsMovementProps) {
@@ -51,8 +51,8 @@ export default function CartsMovement(props: CartsMovementProps) {
   return null;
 }
 
-export function nonReactCartPositionUpdater(boardEl: HTMLElement, cart: Cart, position: Point) {
-  const cartEl = boardEl.querySelector<HTMLElement>(`#cart-${cart.id}`);
+export function nonReactCartPositionUpdater(boardEl: HTMLElement, cartId: Cart['id'], position: Point) {
+  const cartEl = boardEl.querySelector<HTMLElement>(`#cart-${cartId}`);
   if (!cartEl) return;
   const { x, y } = pointToBoardPoint(position);
   cartEl.style.transform = `translate(${x}px, ${y}px)`;

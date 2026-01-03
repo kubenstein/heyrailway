@@ -2,7 +2,7 @@ import { Cart, Line, Point, Station } from '../types';
 import { createCmeLine, createCmeCart, pointOnLineAtProgress, resetCache } from './geometryHelpers';
 
 export type cmeCart = {
-  cart: Cart;
+  cartId: Cart['id'];
   line: cmeLine;
   nextStation: cmeStation;
   progress: number;
@@ -24,8 +24,8 @@ export type cmeLine = {
 interface CartsMovementEngineProps {
   enabled: boolean;
   speedPxPerSec: number;
-  onCartPositionUpdate: (cart: Cart, position: Point) => void;
-  onArriveToStation: (cart: Cart, station: Station, cartNextStation: Station) => void;
+  onCartPositionUpdate: (cartId: Cart['id'], position: Point) => void;
+  onArriveToStation: (cartId: Cart['id'], station: Station, cartNextStation: Station) => void;
 }
 
 export default class CartsMovementEngine {
@@ -33,8 +33,8 @@ export default class CartsMovementEngine {
   private cmeLines: cmeLine[] = [];
   private cmeCarts: cmeCart[] = [];
   private speedPxPerSec: number;
-  private onCartPositionUpdate: (cart: Cart, position: Point) => void;
-  private onArriveToStation: (cart: Cart, station: Station, cartNextStation: Station) => void;
+  private onCartPositionUpdate: (cartId: Cart['id'], position: Point) => void;
+  private onArriveToStation: (cartId: Cart['id'], station: Station, cartNextStation: Station) => void;
   private gameLoopLastTime: number = 0;
 
   constructor(props: CartsMovementEngineProps) {
@@ -58,7 +58,7 @@ export default class CartsMovementEngine {
   }
 
   removeCart(cartId: Cart['id']) {
-    this.cmeCarts = this.cmeCarts.filter((cmeCart) => cmeCart.cart.id !== cartId);
+    this.cmeCarts = this.cmeCarts.filter((cmeCart) => cmeCart.cartId !== cartId);
   }
 
   setSpeed(speedPxPerSec: number) {
@@ -100,11 +100,11 @@ export default class CartsMovementEngine {
         cart.nextStation = stations[stationIndex + cart.direction];
       }
 
-      this.onArriveToStation(cart.cart, arivedAtStation.station, cart.nextStation.station);
+      this.onArriveToStation(cart.cartId, arivedAtStation.station, cart.nextStation.station);
     }
 
     const newCartPosition = pointOnLineAtProgress(cart.progress, cart.line);
-    this.onCartPositionUpdate(cart.cart, newCartPosition);
+    this.onCartPositionUpdate(cart.cartId, newCartPosition);
   }
 
   // support
