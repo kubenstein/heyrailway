@@ -57,7 +57,7 @@ export default function BoardDragger({ boardEl, onBoardMove, currentScale, onSca
   );
 
   useEffect(() => {
-    const el = boardEl.current;
+    const el = boardEl.current?.parentElement;
     if (!el) return;
 
     el.addEventListener('mousedown', onMouseDown);
