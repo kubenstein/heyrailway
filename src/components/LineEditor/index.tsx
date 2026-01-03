@@ -66,10 +66,11 @@ export default function LineEditor({
       ...(hoveringPoint
         ? [
             {
-              id: 'hovering',
+              id: 'hoveringStation',
               position: hoveringPoint,
               cargoType: 'fake' as CargoType,
               capacity: -1,
+              createdAt: 1,
             },
           ]
         : []),
