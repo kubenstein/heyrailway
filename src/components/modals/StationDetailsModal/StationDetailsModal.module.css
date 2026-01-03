@@ -1,20 +1,20 @@
 .modal {
   position: fixed;
-  font-size: var(--secondary-font-size);
   display: flex;
-  z-index: var(--eleveted-z-index);
   top: var(--gap3);
-  width: 600px;
-  box-sizing: border-box;
-  height: 500px;
-  gap: var(--gap);
-  color: var(--primary-ink);
-  background-color: var(--primary-color);
   right: -100%;
+  z-index: var(--eleveted-z-index);
+  gap: var(--gap);
+  box-sizing: border-box;
+  width: 600px;
+  height: 500px;
+  overflow: hidden;
+  color: var(--primary-ink);
+  font-size: var(--secondary-font-size);
+  background-color: var(--primary-color);
+  transition: right 0.3s ease;
   border: 1px solid var(--primary-border);
   border-right: none;
-  transition: right 0.3s ease;
-  overflow: hidden;
   border-top-left-radius: var(--primary-border-radius);
   border-bottom-left-radius: var(--primary-border-radius);
 
@@ -43,10 +43,10 @@
 
   .typeExplanation {
     display: flex;
+    gap: calc(var(--gap) / 2);
+    align-items: center;
     margin-top: calc(var(--gap) / 2);
     font-size: var(--primary-font-size);
-    align-items: center;
-    gap: calc(var(--gap) / 2);
   }
 }
 
@@ -55,29 +55,38 @@
   font-size: var(--primary-font-size);
 
   em {
-    color: var(--primary-accent-ink)
+    color: var(--primary-accent-ink);
+  }
+
+  .crownIcon {
+    position: relative;
+    display: inline-block;
+    top: 1px;
+    width: 1em;
+    height: 1em;
+    margin-left: calc(var(--gap) / 2);
+    background: url('/assets/crown.png') center / contain no-repeat;
   }
 
   .cargosWrapper {
     display: flex;
     flex-wrap: wrap;
-    margin: calc(var(--gap) / 2) 0;
     gap: calc(var(--gap) / 2);
+    margin: calc(var(--gap) / 2) 0;
   }
 }
 
-
 .closeBtn {
   position: absolute;
-  border: none;
-  padding: var(--gap);
-  font-size: 150%;
-  line-height: 110%;
   top: 0;
   left: 0;
-  cursor: pointer;
-  background-color: transparent;
+  padding: var(--gap);
   color: var(--primary-accent-ink);
+  font-size: 150%;
+  line-height: 110%;
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
 
   &:hover {
     opacity: 1;

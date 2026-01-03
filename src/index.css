@@ -1,28 +1,28 @@
 :root {
+  font-weight: 400;
   font-family: Tahoma, sans-serif;
   line-height: 1.5;
-  font-weight: 400;
 
   --primary-color: #0f111a;
-  --primary-accent-color: #3B2457;
-  --primary-alert-color: #F14F00;
+  --primary-accent-color: #3b2457;
+  --primary-alert-color: #f14f00;
   --secondary-color: #181621;
-  --primary-ink: #E5E5E6;
-  --primary-accent-ink: #BC96E9;
+  --primary-ink: #e5e5e6;
+  --primary-accent-ink: #bc96e9;
   --secondary-ink: #868592;
-  --primary-border: #2C2E36;
+  --primary-border: #2c2e36;
 
-  --line-color--1: #FFFFFF;
-  --line-color-0: #FF0000;
-  --line-color-1: #0000FF;
+  --line-color--1: #ffffff;
+  --line-color-0: #ff0000;
+  --line-color-1: #0000ff;
   --line-color-2: #008000;
-  --line-color-3: #FFFF00;
+  --line-color-3: #ffff00;
   --line-color-4: #800080;
-  --line-color-5: #FFA500;
-  --line-color-6: #FFC0CB;
-  --line-color-7: #00FFFF;
-  --line-color-8: #FF00FF;
-  --line-color-9: #00FF00;
+  --line-color-5: #ffa500;
+  --line-color-6: #ffc0cb;
+  --line-color-7: #00ffff;
+  --line-color-8: #ff00ff;
+  --line-color-9: #00ff00;
 
   --gap: 24px;
   --gap2: calc(var(--gap) * 2);
@@ -42,8 +42,8 @@
 }
 
 body {
-  margin: 0;
   min-height: 100vh;
+  margin: 0;
   font-size: var(--primary-font-size);
   background-color: var(--secondary-color);
 }

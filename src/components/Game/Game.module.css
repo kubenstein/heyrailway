@@ -1,6 +1,6 @@
 .game {
-  border-radius: var(--primary-border-radius);
   overflow: hidden;
+  border-radius: var(--primary-border-radius);
 }
 
 .boardWrapper {

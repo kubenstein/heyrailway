@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "format": "prettier --write .",
-    "lint": "tsc --noEmit && eslint . --ext .ts,.tsx"
+    "lint": "tsc --noEmit && eslint . --ext .ts,.tsx && stylelint \"src/**/*.css\"",
+    "lint:format": "prettier --write . ; stylelint \"src/**/*.css\" --fix"
   },
   "dependencies": {},
   "devDependencies": {
@@ -25,6 +25,9 @@
     "prettier": "^3.7.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "stylelint": "^16.26.1",
+    "stylelint-order": "^7.0.1",
+    "stylelint-prettier": "^5.0.3",
     "typescript": "^5.7.2",
     "vite": "^6.1.0"
   }

@@ -8,12 +8,8 @@ interface CartsMovementProps {
   speedPxPerSec: number;
   carts: Cart[];
   lines: Line[];
-  onCartPositionUpdate: (cart: Cart, position: Point) => void;
-  onArriveToStation: (
-    cart: Cart,
-    station: Station,
-    nextStation: Station
-  ) => void;
+  onCartPositionUpdate: (cartId: Cart['id'], position: Point) => void;
+  onArriveToStation: (cartId: Cart['id'], station: Station, nextStation: Station) => void;
 }
 
 export default function CartsMovement(props: CartsMovementProps) {
@@ -26,16 +22,11 @@ export default function CartsMovement(props: CartsMovementProps) {
     return () => movementEngine.setEnabled(false);
   }, [props.enabled, movementEngine]);
 
-  useEffect(
-    () => movementEngine.setSpeed(props.speedPxPerSec),
-    [props.speedPxPerSec, movementEngine]
-  );
+  useEffect(() => movementEngine.setSpeed(props.speedPxPerSec), [props.speedPxPerSec, movementEngine]);
 
   useEffect(() => {
     // add new lines
-    props.lines
-      .filter((line) => !lineIds.current.includes(line.id))
-      .forEach((line) => movementEngine.addLine(line));
+    props.lines.filter((line) => !lineIds.current.includes(line.id)).forEach((line) => movementEngine.addLine(line));
 
     // remove removed lines
     lineIds.current
@@ -47,9 +38,7 @@ export default function CartsMovement(props: CartsMovementProps) {
 
   useEffect(() => {
     // add new carts
-    props.carts
-      .filter((cart) => !cartIds.current.includes(cart.id))
-      .forEach((cart) => movementEngine.addCart(cart));
+    props.carts.filter((cart) => !cartIds.current.includes(cart.id)).forEach((cart) => movementEngine.addCart(cart));
 
     // remove removed carts
     cartIds.current
@@ -62,12 +51,8 @@ export default function CartsMovement(props: CartsMovementProps) {
   return null;
 }
 
-export function nonReactCartPositionUpdater(
-  boardEl: HTMLElement,
-  cart: Cart,
-  position: Point
-) {
-  const cartEl = boardEl.querySelector<HTMLElement>(`#cart-${cart.id}`);
+export function nonReactCartPositionUpdater(boardEl: HTMLElement, cartId: Cart['id'], position: Point) {
+  const cartEl = boardEl.querySelector<HTMLElement>(`#cart-${cartId}`);
   if (!cartEl) return;
   const { x, y } = pointToBoardPoint(position);
   cartEl.style.transform = `translate(${x}px, ${y}px)`;

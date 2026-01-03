@@ -1,16 +1,14 @@
 import { useEffect, useRef } from 'react';
-import { BOARD_SIZE } from '../../lib/board';
-import { CargoType, Station } from '../../lib/types';
-import randomId from '../../lib/randomId';
-import randomCargoType from '../../lib/randomCargoType';
-
-const cargoTypes: CargoType[] = ['DB', 'REACT', 'GATEWAY', 'REDIS'];
+import { BOARD_SIZE } from '../../../lib/board';
+import { Station } from '../../../lib/types';
+import { cargoTypes, randomCargoType } from '../../../lib/cargoTypes';
 
 interface StationSpawnerProps {
   round: number;
   enabled: boolean;
   frequencyMs: number;
   initialStations: number;
+  initialStationCapacity: number;
   onStationSpawn: (cargo: Station) => void;
 }
 
@@ -19,20 +17,23 @@ export default function StationSpawner({
   enabled,
   frequencyMs,
   initialStations,
+  initialStationCapacity,
   onStationSpawn,
 }: StationSpawnerProps) {
+  const lastStationId = useRef(0);
   const timeoutId = useRef(0);
   const hasSpawnedInitial = useRef(false);
 
   const spawnStation = (cargoType = randomCargoType()) => {
+    lastStationId.current += 1;
     const newStation = {
-      id: randomId(),
+      id: `${lastStationId.current}`,
       cargoType,
-      capacity: 20,
+      capacity: initialStationCapacity,
       createdAt: round,
       position: {
-        x: Math.floor(Math.random() * BOARD_SIZE),
-        y: Math.floor(Math.random() * BOARD_SIZE),
+        x: Math.floor(Math.random() * (BOARD_SIZE - 2)) + 1,
+        y: Math.floor(Math.random() * (BOARD_SIZE - 2)) + 1,
       },
     };
     onStationSpawn(newStation);

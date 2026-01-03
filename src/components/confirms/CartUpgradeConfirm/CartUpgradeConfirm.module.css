@@ -1,23 +1,23 @@
 .modal {
   position: fixed;
-  font-size: var(--secondary-font-size);
-  z-index: var(--elvated-behind-z-index);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--gap);
-  height: var(--gap2);
-  color: var(--primary-ink);
-  background-color: var(--primary-color);
-  padding: 0 var(--gap);
-  left: 50%;
   top: -1px;
+  left: 50%;
+  z-index: var(--elvated-behind-z-index);
+  gap: var(--gap);
+  align-items: center;
+  justify-content: center;
+  height: var(--gap2);
+  padding: 0 var(--gap);
+  color: var(--primary-ink);
+  font-size: var(--secondary-font-size);
+  background-color: var(--primary-color);
   transform: translate(-50%);
+  transition: top 0.3s ease;
   border: 1px solid var(--primary-border);
   border-top: none;
-  transition: top 0.3s ease;
-  border-bottom-left-radius: var(--primary-border-radius);
   border-bottom-right-radius: var(--primary-border-radius);
+  border-bottom-left-radius: var(--primary-border-radius);
 
   &.show {
     top: calc(var(--gap2) * 2);
@@ -25,14 +25,14 @@
 }
 
 .btn {
-  border: none;
-  border-radius: var(--primary-border-radius);
   padding: 8px 16px;
+  color: var(--primary-accent-ink);
   font-size: var(--secondary-font-size);
+  background-color: var(--primary-accent-color);
   cursor: pointer;
   opacity: 0.6;
-  background-color: var(--primary-accent-color);
-  color: var(--primary-accent-ink);
+  border: none;
+  border-radius: var(--primary-border-radius);
 
   &:hover {
     opacity: 1;

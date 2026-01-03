@@ -2,24 +2,24 @@
   position: absolute;
   top: 0;
   left: 0;
+  z-index: var(--main-z-index);
   width: 0;
   height: 0;
   will-change: transform;
-  z-index: var(--main-z-index);
 }
 
 .stationWrapper {
   --local-size: 24px;
 
   position: absolute;
-  top: calc(var(--local-size) * -1);
   display: flex;
+  top: calc(var(--local-size) * -1);
   flex-direction: column;
   align-items: center;
-  will-change: transform;
   transform: scale(1) translateX(-50%);
-  transform-origin: 0 calc(var(--local-size) * 1/2);
+  transform-origin: 0 calc(var(--local-size) * 1 / 2);
   transition: transform 0.2s ease;
+  will-change: transform;
 
   &.highlighted {
     transform: scale(1.2) translateX(-50%);
@@ -35,14 +35,14 @@
 
   .stationBody {
     position: relative;
+    flex-shrink: 0;
     width: var(--local-size);
     height: var(--local-size);
-    flex-shrink: 0;
     padding: calc(var(--gap) / 2);
-    border: 1px solid var(--primary-border);
-    border-radius: var(--primary-border-radius);
     background: var(--primary-accent-color) center / 80% no-repeat;
     transition: background-color 2s ease;
+    border: 1px solid var(--primary-border);
+    border-radius: var(--primary-border-radius);
 
     /* flames */
     &::before {
@@ -53,9 +53,19 @@
       width: 100px;
       height: 120px;
       background: url('/assets/flames.png') center / contain no-repeat;
-      pointer-events: none;
       opacity: 0;
       transition: opacity 2s ease;
+      pointer-events: none;
+    }
+
+    small {
+      position: absolute;
+      display: block;
+      bottom: 0;
+      left: 3px;
+      width: 100%;
+      color: var(--primary-ink);
+      font-size: 8px;
     }
   }
 
@@ -63,7 +73,20 @@
     background-color: var(--primary-alert-color);
 
     &::before {
-      opacity: 0.15;
+      opacity: 0.3;
+    }
+  }
+
+  &.upgraded .stationBody {
+    &::after {
+      content: '';
+      position: absolute;
+      right: 3px;
+      bottom: 2px;
+      width: 10px;
+      height: 10px;
+      background: url('/assets/crown.png') center / contain no-repeat;
+      pointer-events: none;
     }
   }
 
@@ -85,12 +108,12 @@
 
   .cargosWrapper {
     display: flex;
+    flex-shrink: 0;
     flex-wrap: wrap;
     gap: 3px;
+    justify-content: center;
     width: 100rem;
     max-width: calc(var(--gap) * 4);
-    justify-content: center;
     margin-top: calc(var(--gap) / 4);
-    flex-shrink: 0;
   }
 }

@@ -7,10 +7,7 @@ interface AddCartToLineConfirmProps {
   onConfirmClick: (line: Line) => void;
 }
 
-export default function AddCartToLineConfirm({
-  line,
-  onConfirmClick,
-}: AddCartToLineConfirmProps) {
+export default function AddCartToLineConfirm({ line, onConfirmClick }: AddCartToLineConfirmProps) {
   const [slideIn, setSlideIn] = useState(false);
 
   useEffect(() => {
@@ -22,10 +19,7 @@ export default function AddCartToLineConfirm({
     <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
       <p>Do you want to add cart to this line?</p>
 
-      <button
-        className={styles.btn}
-        onClick={() => line && onConfirmClick(line)}
-      >
+      <button className={styles.btn} onClick={() => line && onConfirmClick(line)}>
         Add
       </button>
     </div>

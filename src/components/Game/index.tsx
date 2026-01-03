@@ -4,8 +4,8 @@ import RailwaysRenderer from '../renderers/RailwaysRenderer';
 import CartsRenderer from '../renderers/CartsRenderer';
 import LineEditor from '../LineEditor';
 import CartsMovement, { nonReactCartPositionUpdater } from '../CartsMovement';
-import CargoSpawner from '../CargoSpawner';
-import StationSpawner from '../StationSpawner';
+import CargoSpawner from '../spawners/CargoSpawner';
+import StationSpawner from '../spawners/StationSpawner';
 import Header from '../Header';
 import GameController from '../GameController';
 import GameOverOverlay from '../GameOverOverlay';
@@ -13,13 +13,13 @@ import LineToRemoveConfirm from '../confirms/LineToRemoveConfirm';
 import StationUpgradeConfirm from '../confirms/StationUpgradeConfirm';
 import CartUpgradeConfirm from '../confirms/CartUpgradeConfirm';
 import AddCartToLineConfirm from '../confirms/AddCartToLineConfirm';
+import CartDetailsModal from '../modals/CartDetailsModal';
+import StationDetailsModal from '../modals/StationDetailsModal';
 import BoardDragger from '../BoardDragger';
 import randomId from '../../lib/randomId';
 import { BOARD_CELL_SIZE, BOARD_SIZE } from '../../lib/board';
 import { Cart, Line, Station, EditMode, Point } from '../../lib/types';
 import styles from './Game.module.css';
-import CartDetailsModal from '../CartDetailsModal';
-import StationDetailsModal from '../StationDetailsModal';
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);
@@ -30,9 +30,7 @@ export default function Game() {
   const [lineToRemove, setLineToRemove] = useState<Line | null>(null);
   const [addCartToLine, setAddCartToLine] = useState<Line | null>(null);
   const [cartToUpgrade, setCartToUpgrade] = useState<Cart | null>(null);
-  const [stationToUpgrade, setStationToUpgrade] = useState<Station | null>(
-    null
-  );
+  const [stationToUpgrade, setStationToUpgrade] = useState<Station | null>(null);
   const [boardPosition, setBoardPosition] = useState<Point>({ x: 0, y: 0 });
   const [scale, setScale] = useState(1);
 
@@ -57,8 +55,8 @@ export default function Game() {
               speedPxPerSec={g.cartSpeedPxPerSec}
               carts={g.carts}
               lines={g.lines}
-              onCartPositionUpdate={(cart, position) =>
-                nonReactCartPositionUpdater(boardEl.current!, cart, position)
+              onCartPositionUpdate={(cartId, position) =>
+                nonReactCartPositionUpdater(boardEl.current!, cartId, position)
               }
               onArriveToStation={g.onArriveToStation}
             />
@@ -75,6 +73,7 @@ export default function Game() {
               enabled={g.running}
               round={g.round}
               initialStations={2}
+              initialStationCapacity={g.stationCapacity}
               frequencyMs={g.stationSpawningFrequencyMs}
               onStationSpawn={g.addStation}
             />
@@ -120,14 +119,9 @@ export default function Game() {
                   highlightAll={editMode === 'upgrateStation'}
                   stations={g.stations}
                   cargos={g.cargos}
+                  initialStationCapacity={g.stationCapacity}
                   onStationClick={(station: Station) => {
-                    if (
-                      editMode === 'upgrateStation' &&
-                      g.perkStationUpgrades > 0
-                    ) {
-                      setStationToUpgrade(station);
-                    }
-
+                    if (editMode === 'upgrateStation' && g.perkStationUpgrades > 0) setStationToUpgrade(station);
                     if (editMode === 'idle') {
                       setCartDetails(null);
                       setStationDetails(station);
@@ -140,10 +134,9 @@ export default function Game() {
                   cartToHighlight={cartDetails}
                   carts={g.carts}
                   cargos={g.cargos}
+                  initialCartCapacity={g.cartCapacity}
                   onCartClick={(cart: Cart) => {
-                    if (editMode === 'upgradeCart' && g.perkCartUpgrades > 0) {
-                      setCartToUpgrade(cart);
-                    }
+                    if (editMode === 'upgradeCart' && g.perkCartUpgrades > 0) setCartToUpgrade(cart);
                     if (editMode === 'idle') {
                       setStationDetails(null);
                       setCartDetails(cart);
@@ -159,7 +152,7 @@ export default function Game() {
                       g.addLine(line);
                       g.addCart({
                         id: randomId(),
-                        capacity: 6,
+                        capacity: g.cartCapacity,
                         line,
                         points: 0,
                         createdAt: g.round,
@@ -169,32 +162,20 @@ export default function Game() {
                 )}
                 <BoardDragger
                   boardEl={boardEl}
-                  onBoardMove={(delta) =>
-                    setBoardPosition((prev) => ({
-                      x: prev.x + delta.x,
-                      y: prev.y + delta.y,
-                    }))
-                  }
                   currentScale={scale}
-                  onScaleChange={(newScale: number) => {
-                    setScale(newScale);
-                  }}
+                  onBoardMove={(delta) => setBoardPosition((prev) => ({ x: prev.x + delta.x, y: prev.y + delta.y }))}
+                  onScaleChange={(newScale: number) => setScale(newScale)}
                 />
               </div>
 
-              {g.lost && (
-                <GameOverOverlay
-                  gameState={g}
-                  onRestartGameClick={() => g.restartGame()}
-                />
-              )}
+              {g.lost && <GameOverOverlay gameState={g} onRestartGameClick={() => g.restartGame()} />}
 
               <AddCartToLineConfirm
                 line={addCartToLine}
                 onConfirmClick={(line: Line) => {
                   g.addCart({
                     id: randomId(),
-                    capacity: 6,
+                    capacity: g.cartCapacity,
                     line,
                     points: 0,
                     createdAt: g.round,
@@ -223,11 +204,7 @@ export default function Game() {
                   setCartToUpgrade(null);
                 }}
               />
-              <CartDetailsModal
-                gameState={g}
-                cartId={cartDetails?.id || null}
-                onClose={() => setCartDetails(null)}
-              />
+              <CartDetailsModal gameState={g} cartId={cartDetails?.id || null} onClose={() => setCartDetails(null)} />
               <StationDetailsModal
                 gameState={g}
                 stationId={stationDetails?.id || null}

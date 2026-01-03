@@ -1,5 +1,5 @@
 import { Station, Line, Cargo, Cart } from '../../lib/types';
-import { dropDeliverLoadCargos } from '../CargoSpawner';
+import { dropDeliverLoadCargos } from '../spawners/CargoSpawner';
 import deepCopy from '../../lib/deepCopy';
 import { GameState, initialState } from '.';
 import randomId from '../../lib/randomId';
@@ -16,36 +16,31 @@ export type GameAction =
   | { type: 'UPGRADE_CART'; cart: Cart }
   | {
       type: 'ARRIVE_AT_STATION';
-      cart: Cart;
+      cartId: Cart['id'];
       station: Station;
       cartNextStation: Station;
     }
   | { type: 'SET_RUNNING'; isRunning: boolean }
   | { type: 'TICK_CLOCK' };
 
-export const gameReducer = (
-  state: GameState,
-  action: GameAction
-): GameState => {
+export const gameReducer = (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
-    case 'RESTART_GAME':
+    case 'RESTART_GAME': {
       return deepCopy({ ...initialState, gameId: randomId() });
+    }
 
-    case 'ADD_STATION':
+    case 'ADD_STATION': {
       return { ...state, stations: [...state.stations, action.station] };
+    }
 
     case 'REMOVE_LINE': {
-      const removedCartIds = state.carts
-        .filter((cart) => cart.line.id === action.line.id)
-        .map((cart) => cart.id);
+      const removedCartIds = state.carts.filter((cart) => cart.line.id === action.line.id).map((cart) => cart.id);
 
       return {
         ...state,
         lines: state.lines.filter((line) => line.id !== action.line.id),
         carts: state.carts.filter((cart) => cart.line.id !== action.line.id),
-        cargos: state.cargos.filter(
-          (cargo) => !(cargo.cartId && removedCartIds.includes(cargo.cartId))
-        ),
+        cargos: state.cargos.filter((cargo) => !(cargo.cartId && removedCartIds.includes(cargo.cartId))),
         perkAvailableLines: state.perkAvailableLines + removedCartIds.length,
       };
     }
@@ -53,12 +48,8 @@ export const gameReducer = (
     case 'ADD_CARGO': {
       const newState = { ...state, cargos: [...state.cargos, action.cargo] };
 
-      const stationOcupation = state.cargos.filter(
-        (c) => c.stationId === action.cargo.stationId
-      ).length;
-      const stationCapacity = state.stations.find(
-        (s) => s.id === action.cargo.stationId
-      )!.capacity;
+      const stationOcupation = state.cargos.filter((c) => c.stationId === action.cargo.stationId).length;
+      const stationCapacity = state.stations.find((s) => s.id === action.cargo.stationId)!.capacity;
 
       if (stationOcupation > stationCapacity) {
         newState.lost = true;
@@ -71,35 +62,33 @@ export const gameReducer = (
     case 'REROUTE_CARGO': {
       return {
         ...state,
-        cargos: state.cargos.map((cargo) =>
-          cargo.id === action.cargo.id ? action.cargo : cargo
-        ),
+        cargos: state.cargos.map((cargo) => (cargo.id === action.cargo.id ? action.cargo : cargo)),
       };
     }
 
-    case 'ADD_CART':
+    case 'ADD_CART': {
       return {
         ...state,
         carts: [...state.carts, action.cart],
         perkCartUpgrades: state.perkCartUpgrades - 1,
       };
+    }
 
-    case 'ADD_LINE':
+    case 'ADD_LINE': {
       return {
         ...state,
         lines: [...state.lines, action.line],
         perkAvailableLines: state.perkAvailableLines - 1,
         perkCartUpgrades: state.perkCartUpgrades + 1, // as we instantly add a cart when adding a line, we dont want to deplete the cart upgrade perk
       };
+    }
 
     case 'UPGRADE_STATION': {
       const upgradedStations = state.stations.map((station) =>
         station.id === action.station.id
           ? {
               ...station,
-              capacity: Math.floor(
-                station.capacity * state.perkStationUpgradeFactor
-              ),
+              capacity: Math.floor(station.capacity * state.perkStationUpgradeFactor),
             }
           : station
       );
@@ -127,17 +116,11 @@ export const gameReducer = (
     }
 
     case 'ARRIVE_AT_STATION': {
-      const newCargos = dropDeliverLoadCargos(
-        state.cargos,
-        action.cart,
-        action.station,
-        action.cartNextStation
-      );
+      const cart = state.carts.find((c) => c.id === action.cartId)!;
+      const newCargos = dropDeliverLoadCargos(state.cargos, cart, action.station, action.cartNextStation);
       const deliveredCargosCount = state.cargos.length - newCargos.length;
       const newCarts = state.carts.map((cart) =>
-        cart.id === action.cart.id
-          ? { ...cart, points: cart.points + deliveredCargosCount }
-          : cart
+        cart.id === action.cartId ? { ...cart, points: cart.points + deliveredCargosCount } : cart
       );
       return {
         ...state,
@@ -147,32 +130,33 @@ export const gameReducer = (
       };
     }
 
-    case 'SET_RUNNING':
+    case 'SET_RUNNING': {
       return {
         ...state,
         running: action.isRunning,
       };
+    }
 
     case 'TICK_CLOCK': {
       const newClock = state.clock + 1;
       let nextState: GameState = { ...state, clock: newClock };
 
+      const perkKeys = ['perkCartUpgrades', 'perkStationUpgrades', 'perkAvailableLines'] as const;
+      const newPerk = perkKeys[Math.floor(Math.random() * perkKeys.length)];
+
       if (newClock % 60 === 0) {
         nextState = {
           ...nextState,
           round: nextState.round + 1,
-          perkCartUpgrades: nextState.perkCartUpgrades + 1,
-          perkStationUpgrades: nextState.perkStationUpgrades + 1,
-          perkAvailableLines: nextState.perkAvailableLines + 1,
+          [newPerk]: nextState[newPerk] + 1,
         };
       }
 
-      if (newClock % 130 === 0) {
+      if (newClock % 75 === 0) {
         nextState = {
           ...nextState,
           cargoSpawningFrequencyMs:
-            nextState.cargoSpawningFrequencyMs *
-            nextState.cargoSpawningFrequencyReductionFactor,
+            nextState.cargoSpawningFrequencyMs * nextState.cargoSpawningFrequencyReductionFactor,
         };
       }
 

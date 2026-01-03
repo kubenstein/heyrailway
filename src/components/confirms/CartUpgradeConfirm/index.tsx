@@ -7,10 +7,7 @@ interface CartUpgradeConfirmProps {
   onConfirmClick: (line: Cart) => void;
 }
 
-export default function CartUpgradeConfirm({
-  cartToUpgrade,
-  onConfirmClick,
-}: CartUpgradeConfirmProps) {
+export default function CartUpgradeConfirm({ cartToUpgrade, onConfirmClick }: CartUpgradeConfirmProps) {
   const [slideIn, setSlideIn] = useState(false);
 
   useEffect(() => {
@@ -22,10 +19,7 @@ export default function CartUpgradeConfirm({
     <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
       <p>Do you want to upgrade this cart?</p>
 
-      <button
-        className={styles.btn}
-        onClick={() => cartToUpgrade && onConfirmClick(cartToUpgrade)}
-      >
+      <button className={styles.btn} onClick={() => cartToUpgrade && onConfirmClick(cartToUpgrade)}>
         Upgrade
       </button>
     </div>

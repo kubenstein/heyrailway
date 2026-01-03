@@ -2,7 +2,7 @@ import Graph from 'graphology';
 import { bidirectional } from 'graphology-shortest-path';
 import { Cargo, Line, Station } from '../types';
 import randomId from '../randomId';
-import randomCargoType from '../randomCargoType';
+import { randomCargoType } from '../cargoTypes';
 
 interface CargoSpawnerEngineProps {
   enabled: boolean;
@@ -34,7 +34,7 @@ export default class CargoSpawnerEngine {
     this.addLineToGraph(this.graph, line);
 
     // Reroute cargos that were stuck, maybe they can be routed now
-    this.rerouteStuckCargos(allCargos);
+    this.rerouteCargos(allCargos);
   }
 
   removeLine(lineId: Line['id'] | null, allCargos: Cargo[]) {
@@ -44,13 +44,11 @@ export default class CargoSpawnerEngine {
 
     // rebuild whole graph from exisitng lines
     this.graph = new Graph();
-    this.stations.forEach(({ id, cargoType }) => {
-      this.graph.addNode(id, { cargoType });
-    });
+    this.stations.forEach(({ id, cargoType }) => this.graph.addNode(id, { cargoType }));
     this.lines.forEach((line) => this.addLineToGraph(this.graph, line));
 
     // Reroute all cargos
-    this.rerouteAllCargos(allCargos);
+    this.rerouteCargos(allCargos);
   }
 
   addStation(station: Station) {
@@ -64,10 +62,7 @@ export default class CargoSpawnerEngine {
 
     clearInterval(this.timeIntervalId || 0);
     if (this.enabled) {
-      this.timeIntervalId = setInterval(
-        this.spawnCargos.bind(this),
-        this.frequencyMs
-      );
+      this.timeIntervalId = setInterval(this.spawnCargos.bind(this), this.frequencyMs);
     }
   }
 
@@ -76,10 +71,7 @@ export default class CargoSpawnerEngine {
 
     clearInterval(this.timeIntervalId || 0);
     if (this.enabled) {
-      this.timeIntervalId = setInterval(
-        this.spawnCargos.bind(this),
-        this.frequencyMs
-      );
+      this.timeIntervalId = setInterval(this.spawnCargos.bind(this), this.frequencyMs);
     }
   }
 
@@ -89,17 +81,12 @@ export default class CargoSpawnerEngine {
   }
 
   private spawnCargo() {
-    const availableCargoTypes = [
-      ...new Set(this.stations.map((s) => s.cargoType)),
-    ];
+    const availableCargoTypes = [...new Set(this.stations.map((s) => s.cargoType))];
     const cargoType = randomCargoType(availableCargoTypes);
 
     // pick random station with different cargo type from destination
-    const connectedStations = this.graph.filterNodes(
-      (_node, attrs) => attrs.cargoType !== cargoType
-    );
-    const startStationId =
-      connectedStations[Math.floor(Math.random() * connectedStations.length)];
+    const connectedStations = this.graph.filterNodes((_node, attrs) => attrs.cargoType !== cargoType);
+    const startStationId = connectedStations[Math.floor(Math.random() * connectedStations.length)];
 
     const stationIdsRoute = this.findRoute(startStationId, cargoType);
 
@@ -114,29 +101,9 @@ export default class CargoSpawnerEngine {
   }
 
   // rerouting
-  private rerouteStuckCargos(allCargos: Cargo[]) {
-    allCargos
-      .filter((cargo) => cargo.stationIdsRoute[0] === 'NO_PATH')
-      .forEach((cargo) => {
-        const stationIdsRoute = this.findRoute(
-          cargo.stationId,
-          cargo.cargoType
-        );
-        if (!stationIdsRoute) return;
-
-        const updatedCargo: Cargo = {
-          ...cargo,
-          stationIdsRoute,
-        };
-        this.onCargoReroute(updatedCargo);
-      });
-  }
-
-  private rerouteAllCargos(allCargos: Cargo[]) {
+  private rerouteCargos(allCargos: Cargo[]) {
     allCargos.forEach((cargo) => {
-      const stationIdsRoute = this.findRoute(cargo.stationId, cargo.cargoType);
-      if (!stationIdsRoute) return;
-
+      const stationIdsRoute = this.findRoute(cargo.stationId, cargo.cargoType) || ['NO_PATH'];
       const updatedCargo: Cargo = {
         ...cargo,
         stationIdsRoute,
@@ -167,11 +134,7 @@ export default class CargoSpawnerEngine {
     tmpGraph
       .filterNodes((_node, attrs) => attrs.cargoType === cargoType)
       .forEach((node) => tmpGraph.addUndirectedEdge(node, 'fakeDestination'));
-    const fullStationIdsRoute = bidirectional(
-      tmpGraph,
-      startStationId,
-      'fakeDestination'
-    );
+    const fullStationIdsRoute = bidirectional(tmpGraph, startStationId, 'fakeDestination');
 
     if (fullStationIdsRoute) {
       // remove start and fake destination stations

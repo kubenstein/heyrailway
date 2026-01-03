@@ -2,25 +2,25 @@
   position: absolute;
   top: 0;
   left: 0;
+  z-index: var(--main-z-index);
   width: 0;
   height: 0;
   transform: translate(-10000px, -10000px);
   will-change: transform;
-  z-index: var(--main-z-index);
 }
 
 .cartWrapper {
   --local-size: calc(var(--gap) * 2/3);
 
   position: absolute;
-  top: calc(var(--local-size) * -1/2);
   display: flex;
+  top: calc(var(--local-size) * -1 / 2);
   flex-direction: column;
   align-items: center;
-  will-change: transform;
   transform: scale(1) translateX(-50%);
-  transform-origin: 0 calc(var(--local-size) * 1/2);
+  transform-origin: 0 calc(var(--local-size) * 1 / 2);
   transition: transform 0.2s ease;
+  will-change: transform;
 
   &.highlighted {
     transform: scale(2) translateX(-50%);
@@ -34,31 +34,45 @@
     &::before {
       content: '';
       position: absolute;
-      left: calc(var(--local-size) * -1/2);
-      top: calc(var(--local-size) * -1/2);
+      top: calc(var(--local-size) * -1 / 2);
+      z-index: 10;
       width: calc(var(--local-size) * 2);
       height: calc(var(--local-size) * 2);
       cursor: pointer;
     }
   }
 
+  &.upgraded .cartBody {
+    &::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      right: 3px;
+      width: 10px;
+      height: 10px;
+      background: url('/assets/crown.png') center / contain no-repeat;
+      pointer-events: none;
+    }
+  }
+
   .cartBody {
+    position: relative;
+    flex-shrink: 0;
     width: var(--local-size);
     height: var(--local-size);
-    border-radius: 100rem;
     background-color: var(--local-color);
     box-shadow: 0 0 var(--local-size) var(--local-color);
-    flex-shrink: 0;
+    border-radius: 100rem;
   }
 
   .cargosWrapper {
     display: flex;
+    flex-shrink: 0;
     flex-wrap: wrap;
     gap: 3px;
+    justify-content: center;
     width: 100rem;
     max-width: calc(var(--local-size) * 3);
-    justify-content: center;
     margin-top: calc(var(--local-size) / 3);
-    flex-shrink: 0;
   }
 }

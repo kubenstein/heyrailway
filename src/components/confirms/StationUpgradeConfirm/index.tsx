@@ -7,10 +7,7 @@ interface StationUpgradeConfirmProps {
   onConfirmClick: (line: Station) => void;
 }
 
-export default function StationUpgradeConfirm({
-  stationToUpgrade,
-  onConfirmClick,
-}: StationUpgradeConfirmProps) {
+export default function StationUpgradeConfirm({ stationToUpgrade, onConfirmClick }: StationUpgradeConfirmProps) {
   const [slideIn, setSlideIn] = useState(false);
 
   useEffect(() => {
@@ -22,10 +19,7 @@ export default function StationUpgradeConfirm({
     <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
       <p>Do you want to upgrade this station?</p>
 
-      <button
-        className={styles.btn}
-        onClick={() => stationToUpgrade && onConfirmClick(stationToUpgrade)}
-      >
+      <button className={styles.btn} onClick={() => stationToUpgrade && onConfirmClick(stationToUpgrade)}>
         Upgrade
       </button>
     </div>

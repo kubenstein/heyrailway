@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Station, Line, Cargo, Cart } from '../../lib/types';
-import CargoSpawnerEngine from '../../lib/cargoSpawnerEngine/cargoSpawnerEngine';
-import deepCopy from '../../lib/deepCopy';
+import { Station, Line, Cargo, Cart } from '../../../lib/types';
+import CargoSpawnerEngine from '../../../lib/cargoSpawnerEngine/cargoSpawnerEngine';
+import deepCopy from '../../../lib/deepCopy';
 
 interface CargoSpawnerProps {
   enabled: boolean;
@@ -23,10 +23,7 @@ export default function CargoSpawner(props: CargoSpawnerProps) {
     return () => spawningEngine.setEnabled(false);
   }, [props.enabled, spawningEngine]);
 
-  useEffect(
-    () => spawningEngine.setFrequency(props.frequencyMs),
-    [props.frequencyMs, spawningEngine]
-  );
+  useEffect(() => spawningEngine.setFrequency(props.frequencyMs), [props.frequencyMs, spawningEngine]);
 
   useEffect(() => {
     // add new lines
@@ -54,12 +51,7 @@ export default function CargoSpawner(props: CargoSpawnerProps) {
   return null;
 }
 
-export const dropDeliverLoadCargos = (
-  prevCargos: Cargo[],
-  cart: Cart,
-  station: Station,
-  cartNextStation: Station
-) => {
+export const dropDeliverLoadCargos = (prevCargos: Cargo[], cart: Cart, station: Station, cartNextStation: Station) => {
   const newCargos = deepCopy(prevCargos);
   return (
     newCargos
@@ -79,10 +71,7 @@ export const dropDeliverLoadCargos = (
       .map((cargo) => {
         if (cargo.stationId !== station.id) return cargo; // not this station
         if (cargo.stationIdsRoute[0] !== cartNextStation.id) return cargo; // not going to cart next station
-        if (
-          cart.capacity <= newCargos.filter((c) => c.cartId === cart.id).length
-        )
-          return cargo; // cart full
+        if (cart.capacity <= newCargos.filter((c) => c.cartId === cart.id).length) return cargo; // cart full
 
         cargo.cartId = cart.id;
         cargo.stationId = null;

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Station } from '../../lib/types';
-import { GameState } from '../GameController';
+import { Station } from '../../../lib/types';
+import { GameState } from '../../GameController';
 import styles from './StationDetailsModal.module.css';
-import CargoRenderer from '../renderers/CargoRenderer';
+import CargoRenderer from '../../renderers/CargoRenderer';
 
 interface StationDetailsModalProps {
   gameState: GameState;
@@ -10,11 +10,7 @@ interface StationDetailsModalProps {
   onClose: () => void;
 }
 
-export default function StationDetailsModal({
-  gameState,
-  stationId,
-  onClose,
-}: StationDetailsModalProps) {
+export default function StationDetailsModal({ gameState, stationId, onClose }: StationDetailsModalProps) {
   const [slideIn, setSlideIn] = useState(false);
 
   useEffect(() => {
@@ -22,17 +18,12 @@ export default function StationDetailsModal({
     return () => clearTimeout(timeout);
   }, [stationId]);
 
-  const station =
-    stationId && gameState.stations.find((s) => s.id === stationId);
-  const cargos = stationId
-    ? gameState.cargos.filter((c) => c.stationId === stationId)
-    : [];
+  const station = stationId && gameState.stations.find((s) => s.id === stationId);
+  const cargos = stationId ? gameState.cargos.filter((c) => c.stationId === stationId) : [];
 
   const emergency = station ? cargos.length / station.capacity > 0.75 : false;
 
-  const headerClass = [styles.header, emergency ? styles.emergency : ''].join(
-    ' '
-  );
+  const headerClass = [styles.header, emergency ? styles.emergency : ''].join(' ');
 
   return (
     <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
@@ -45,7 +36,10 @@ export default function StationDetailsModal({
             <strong>Station Details</strong>
             <div className={styles.typeExplanation}>
               Type:
-              <CargoRenderer type={station.cargoType} size={32} />
+              <CargoRenderer
+                cargo={{ cargoType: station.cargoType, id: '', stationId: null, cartId: null, stationIdsRoute: [] }}
+                size={32}
+              />
               {
                 {
                   DB: 'Postgres',
@@ -60,6 +54,7 @@ export default function StationDetailsModal({
             Station id: <em>{station.id}</em>
             <br />
             capacity: <em>{station.capacity}</em>
+            {station.capacity > gameState.stationCapacity && <i className={styles.crownIcon}></i>}
             <br />
             Age: <em>{gameState.round - station.createdAt} rounds</em>
             <br />
@@ -68,11 +63,7 @@ export default function StationDetailsModal({
             <br />
             <div className={styles.cargosWrapper}>
               {cargos.map((cargo) => (
-                <CargoRenderer
-                  key={cargo.id}
-                  type={cargo.cargoType}
-                  size={32}
-                />
+                <CargoRenderer key={cargo.id} cargo={cargo} size={32} />
               ))}
             </div>
           </div>

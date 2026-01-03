@@ -7,10 +7,7 @@ interface LineToRemoveConfirmProps {
   onConfirmClick: (line: Line) => void;
 }
 
-export default function LineToRemoveConfirm({
-  lineToRemove,
-  onConfirmClick,
-}: LineToRemoveConfirmProps) {
+export default function LineToRemoveConfirm({ lineToRemove, onConfirmClick }: LineToRemoveConfirmProps) {
   const [slideIn, setSlideIn] = useState(false);
 
   useEffect(() => {
@@ -22,10 +19,7 @@ export default function LineToRemoveConfirm({
     <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
       <p>Do you want to remove this line?</p>
 
-      <button
-        className={styles.btn}
-        onClick={() => lineToRemove && onConfirmClick(lineToRemove)}
-      >
+      <button className={styles.btn} onClick={() => lineToRemove && onConfirmClick(lineToRemove)}>
         Remove
       </button>
     </div>

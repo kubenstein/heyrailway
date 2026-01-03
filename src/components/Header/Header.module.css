@@ -1,32 +1,32 @@
 .headerWrapper {
   --local-header-z-index: 3;
   --local-menu-z-index: 2;
-
-  z-index: var(--eleveted-z-index);
   position: relative;
   display: flex;
+
+  z-index: var(--eleveted-z-index);
   flex-direction: column;
 }
 
 .header {
   display: flex;
-  align-items: center;
   z-index: var(--local-header-z-index);
+  align-items: center;
+  height: var(--gap2);
   padding: 0 var(--gap);
   color: var(--primary-ink);
   background-color: var(--primary-color);
   border-bottom: 1px solid var(--primary-border);
-  height: var(--gap2);
 
-  &>* {
+  & > * {
     flex: 1;
   }
 
   .primary {
     display: flex;
+    gap: var(--gap);
     align-items: center;
     height: 100%;
-    gap: var(--gap);
 
     img {
       display: block;
@@ -45,9 +45,9 @@
 
   .stats {
     display: flex;
+    gap: var(--gap);
     justify-content: flex-end;
     font-size: var(--tertiary-font-size);
-    gap: var(--gap);
 
     .counter {
       font-size: var(--secondary-font-size);
@@ -56,23 +56,23 @@
 }
 
 .editModeMenu {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   position: relative;
+  display: flex;
+  top: -1px;
   z-index: var(--local-menu-z-index);
-  width: 50%;
   gap: var(--gap);
+  align-items: center;
+  justify-content: center;
+  width: 50%;
   height: var(--gap2);
   margin: calc(var(--gap2) * -1) auto 0 auto;
   color: var(--primary-ink);
   background-color: var(--primary-color);
-  top: -1px;
+  transition: top 0.3s ease;
   border: 1px solid var(--primary-border);
   border-top: none;
-  transition: top 0.3s ease;
-  border-bottom-left-radius: var(--primary-border-radius);
   border-bottom-right-radius: var(--primary-border-radius);
+  border-bottom-left-radius: var(--primary-border-radius);
 
   &.opened {
     top: var(--gap2);
@@ -80,14 +80,14 @@
 }
 
 .btn {
-  border: none;
-  border-radius: var(--primary-border-radius);
   padding: 8px 16px;
+  color: var(--primary-accent-ink);
   font-size: var(--secondary-font-size);
+  background-color: var(--primary-accent-color);
   cursor: pointer;
   opacity: 0.6;
-  background-color: var(--primary-accent-color);
-  color: var(--primary-accent-ink);
+  border: none;
+  border-radius: var(--primary-border-radius);
 
   &.active,
   &:hover {
@@ -95,8 +95,8 @@
   }
 
   &:disabled {
-    background-color: var(--primary-color);
     color: var(--secondary-ink);
+    background-color: var(--primary-color);
     cursor: not-allowed;
   }
 }

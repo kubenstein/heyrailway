@@ -62,25 +62,18 @@ export function LineRenderer({
     });
   }
 
+  const lineClassNames = [styles.line, highLight ? styles.highLight : '', hoverable ? styles.hoverable : ''].join(' ');
+
   return (
     <div
       onClick={() => onLineClick?.(line)}
       onMouseEnter={() => onMouseEnterLine?.(line)}
       onMouseLeave={() => onMouseLeaveLine?.(line)}
-      className={`
-        ${styles.line}
-        ${highLight ? styles.highLight : ''}
-        ${hoverable ? styles.hoverable : ''}
-      `}
-      style={
-        { '--local-color': `var(--line-color-${line.id})` } as CSSProperties
-      }
+      className={lineClassNames}
+      style={{ '--local-color': `var(--line-color-${line.id})` } as CSSProperties}
     >
       {segments.map((segment, index) => (
-        <SegmentRenderer
-          key={`line-${line.id}-segment-${index}`}
-          segment={segment}
-        />
+        <SegmentRenderer key={`line-${line.id}-segment-${index}`} segment={segment} />
       ))}
     </div>
   );
@@ -91,8 +84,7 @@ interface SegmentRendererProps {
 }
 
 export function SegmentRenderer({ segment }: SegmentRendererProps) {
-  const isDiagonal =
-    segment.start.x !== segment.end.x && segment.start.y !== segment.end.y;
+  const isDiagonal = segment.start.x !== segment.end.x && segment.start.y !== segment.end.y;
 
   if (isDiagonal) {
     const pivot = { x: segment.end.x, y: segment.start.y };

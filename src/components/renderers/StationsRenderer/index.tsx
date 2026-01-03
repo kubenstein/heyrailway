@@ -9,6 +9,7 @@ interface StationsRendererProps {
   stationToHighlight: Station | null;
   stations: Station[];
   cargos: Cargo[];
+  initialStationCapacity: number;
   onStationClick: (station: Station) => void;
 }
 
@@ -18,14 +19,13 @@ export default function StationsRenderer({
   stationToHighlight,
   stations,
   cargos,
+  initialStationCapacity,
   onStationClick,
 }: StationsRendererProps) {
   return stations.map((station) => {
     const { x, y } = pointToBoardPoint(station.position);
 
-    const stationCargos = cargos.filter(
-      (cargo) => cargo.stationId === station.id
-    );
+    const stationCargos = cargos.filter((cargo) => cargo.stationId === station.id);
 
     const emergency = stationCargos.length / station.capacity > 0.75;
 
@@ -35,9 +35,8 @@ export default function StationsRenderer({
       emergency ? styles.emergency : '',
       hoverable ? styles.hoverable : '',
       highlightAll ? styles.highlighted : '',
-      stationToHighlight && stationToHighlight.id === station.id
-        ? styles.highlighted
-        : '',
+      station.capacity > initialStationCapacity ? styles.upgraded : '',
+      stationToHighlight && stationToHighlight.id === station.id ? styles.highlighted : '',
     ].join(' ');
 
     return (
@@ -47,18 +46,14 @@ export default function StationsRenderer({
         style={{ transform: `translate(${x}px, ${y}px)` }}
         className={styles.stationAnchor}
       >
-        <div
-          className={stationWrapperClass}
-          onClick={() => onStationClick(station)}
-        >
-          <div className={styles.stationBody} />
+        <div className={stationWrapperClass} onClick={() => onStationClick(station)}>
+          <div className={styles.stationBody}>
+            <small>#{station.id}</small>
+          </div>
           {stationCargos.length > 0 && (
             <div className={styles.cargosWrapper}>
               {stationCargos.map((cargo) => (
-                <CargoRenderer
-                  key={`station-cargo-${cargo.id}`}
-                  type={cargo.cargoType}
-                />
+                <CargoRenderer key={`station-cargo-${cargo.id}`} cargo={cargo} />
               ))}
             </div>
           )}

@@ -8,6 +8,7 @@ interface CartsRendererProps {
   cartToHighlight: Cart | null;
   carts: Cart[];
   cargos: Cargo[];
+  initialCartCapacity: number;
   onCartClick: (cart: Cart) => void;
 }
 
@@ -17,6 +18,7 @@ export default function CartsRenderer({
   cartToHighlight,
   carts,
   cargos,
+  initialCartCapacity,
   onCartClick,
 }: CartsRendererProps) {
   return carts.map((cart) => {
@@ -26,17 +28,12 @@ export default function CartsRenderer({
       styles.cartWrapper,
       hoverable ? styles.hoverable : '',
       highlightAll ? styles.highlighted : '',
-      cartToHighlight && cartToHighlight.id === cart.id
-        ? styles.highlighted
-        : '',
+      cart.capacity > initialCartCapacity ? styles.upgraded : '',
+      cartToHighlight && cartToHighlight.id === cart.id ? styles.highlighted : '',
     ].join(' ');
 
     return (
-      <div
-        key={`cart-group-${cart.id}`}
-        id={`cart-${cart.id}`}
-        className={styles.cartAnchor}
-      >
+      <div key={`cart-group-${cart.id}`} id={`cart-${cart.id}`} className={styles.cartAnchor}>
         <div
           className={cartWrapperClass}
           onClick={() => onCartClick(cart)}
@@ -50,10 +47,7 @@ export default function CartsRenderer({
           {cartCargos.length > 0 && (
             <div className={styles.cargosWrapper}>
               {cartCargos.map((cargo) => (
-                <CargoRenderer
-                  key={`cart-cargo-${cargo.id}`}
-                  type={cargo.cargoType}
-                />
+                <CargoRenderer key={`cart-cargo-${cargo.id}`} cargo={cargo} />
               ))}
             </div>
           )}
