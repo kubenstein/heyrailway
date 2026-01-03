@@ -22,9 +22,20 @@ export default function App() {
     <main className={styles.host}>
       <div className={styles.main}>
         <div className={styles.story}>
-          <strong>Hey Railway!</strong>
+          <div className={styles.avatar}>
+            <i className={styles.me} />
+            <span>Tokyo-based Sr. Fullstack Software Engineer</span>
+            <strong>Jakub Niewczas</strong>
+            <p>
+              13+ years of industrial experience in building
+              <br />
+              and growing multi-million dollar tech projects.
+            </p>
+          </div>
           <p>
-            Welcome to Hey Railway!, a game where you build and manage a railway system to transport various types of
+            Hey Railway!
+            <br />
+            Welcome to Hey Railway! a game where you build and manage a railway system to transport various types of
             cargo between stations. Your goal is to optimize your railway network, upgrade your stations and carts, and
             ensure timely deliveries while handling increasing demand.
           </p>
