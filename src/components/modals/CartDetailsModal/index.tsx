@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Cart } from '../../lib/types';
+import { Cart } from '../../../lib/types';
 import { GameState } from '../../GameController';
 import styles from './CartDetailsModal.module.css';
 import CargoRenderer from '../../renderers/CargoRenderer';

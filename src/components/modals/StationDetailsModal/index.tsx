@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Station } from '../../lib/types';
+import { Station } from '../../../lib/types';
 import { GameState } from '../../GameController';
 import styles from './StationDetailsModal.module.css';
 import CargoRenderer from '../../renderers/CargoRenderer';
