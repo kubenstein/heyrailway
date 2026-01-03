@@ -13,6 +13,7 @@ export type GameState = {
   points: number;
   round: number;
   running: boolean;
+  stationCapacity: number;
   perkCartUpgrades: number;
   perkCartUpgradeFactor: number;
   perkStationUpgrades: number;
@@ -35,6 +36,7 @@ export const initialState: GameState = {
   clock: 1,
   points: 0,
   round: 1,
+  stationCapacity: 20,
   perkCartUpgrades: 2,
   perkCartUpgradeFactor: 2,
   perkStationUpgrades: 2,

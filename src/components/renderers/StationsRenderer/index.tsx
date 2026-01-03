@@ -9,6 +9,7 @@ interface StationsRendererProps {
   stationToHighlight: Station | null;
   stations: Station[];
   cargos: Cargo[];
+  initialStationCapacity: number;
   onStationClick: (station: Station) => void;
 }
 
@@ -18,6 +19,7 @@ export default function StationsRenderer({
   stationToHighlight,
   stations,
   cargos,
+  initialStationCapacity,
   onStationClick,
 }: StationsRendererProps) {
   return stations.map((station) => {
@@ -33,6 +35,7 @@ export default function StationsRenderer({
       emergency ? styles.emergency : '',
       hoverable ? styles.hoverable : '',
       highlightAll ? styles.highlighted : '',
+      station.capacity > initialStationCapacity ? styles.upgraded : '',
       stationToHighlight && stationToHighlight.id === station.id ? styles.highlighted : '',
     ].join(' ');
 

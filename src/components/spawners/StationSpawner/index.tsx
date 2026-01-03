@@ -9,6 +9,7 @@ interface StationSpawnerProps {
   enabled: boolean;
   frequencyMs: number;
   initialStations: number;
+  initialStationCapacity: number;
   onStationSpawn: (cargo: Station) => void;
 }
 
@@ -17,6 +18,7 @@ export default function StationSpawner({
   enabled,
   frequencyMs,
   initialStations,
+  initialStationCapacity,
   onStationSpawn,
 }: StationSpawnerProps) {
   const timeoutId = useRef(0);
@@ -26,7 +28,7 @@ export default function StationSpawner({
     const newStation = {
       id: randomId(),
       cargoType,
-      capacity: 20,
+      capacity: initialStationCapacity,
       createdAt: round,
       position: {
         x: Math.floor(Math.random() * (BOARD_SIZE - 2)) + 1,

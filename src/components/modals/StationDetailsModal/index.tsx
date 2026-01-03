@@ -51,6 +51,7 @@ export default function StationDetailsModal({ gameState, stationId, onClose }: S
             Station id: <em>{station.id}</em>
             <br />
             capacity: <em>{station.capacity}</em>
+            {station.capacity > gameState.stationCapacity && <i className={styles.crownIcon}></i>}
             <br />
             Age: <em>{gameState.round - station.createdAt} rounds</em>
             <br />

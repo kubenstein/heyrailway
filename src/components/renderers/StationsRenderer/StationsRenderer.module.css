@@ -67,6 +67,19 @@
     }
   }
 
+  &.upgraded .stationBody {
+    &::after {
+      content: '';
+      position: absolute;
+      right: 3px;
+      bottom: 2px;
+      width: 10px;
+      height: 10px;
+      background: url('/assets/crown.png') center / contain no-repeat;
+      pointer-events: none;
+    }
+  }
+
   &.cargoTypeReact .stationBody {
     background-image: url('/assets/react.png');
   }

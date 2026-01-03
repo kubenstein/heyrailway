@@ -58,6 +58,16 @@
     color: var(--primary-accent-ink);
   }
 
+  .crownIcon {
+    position: relative;
+    display: inline-block;
+    top: 1px;
+    width: 1em;
+    height: 1em;
+    margin-left: calc(var(--gap) / 2);
+    background: url('/assets/crown.png') center / contain no-repeat;
+  }
+
   .cargosWrapper {
     display: flex;
     flex-wrap: wrap;

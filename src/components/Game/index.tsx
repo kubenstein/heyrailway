@@ -71,6 +71,7 @@ export default function Game() {
               enabled={g.running}
               round={g.round}
               initialStations={2}
+              initialStationCapacity={g.stationCapacity}
               frequencyMs={g.stationSpawningFrequencyMs}
               onStationSpawn={g.addStation}
             />
@@ -116,6 +117,7 @@ export default function Game() {
                   highlightAll={editMode === 'upgrateStation'}
                   stations={g.stations}
                   cargos={g.cargos}
+                  initialStationCapacity={g.stationCapacity}
                   onStationClick={(station: Station) => {
                     if (editMode === 'upgrateStation' && g.perkStationUpgrades > 0) setStationToUpgrade(station);
                     if (editMode === 'idle') {
