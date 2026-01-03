@@ -57,6 +57,16 @@
       transition: opacity 2s ease;
       pointer-events: none;
     }
+
+    small {
+      position: absolute;
+      display: block;
+      bottom: 0;
+      left: 3px;
+      width: 100%;
+      color: var(--primary-ink);
+      font-size: 8px;
+    }
   }
 
   &.emergency .stationBody {

@@ -47,7 +47,7 @@ export default function CartsRenderer({
           {cartCargos.length > 0 && (
             <div className={styles.cargosWrapper}>
               {cartCargos.map((cargo) => (
-                <CargoRenderer key={`cart-cargo-${cargo.id}`} type={cargo.cargoType} />
+                <CargoRenderer key={`cart-cargo-${cargo.id}`} cargo={cargo} />
               ))}
             </div>
           )}

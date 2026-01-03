@@ -46,7 +46,7 @@ export default function CartDetailsModal({ gameState, cartId, onClose }: CartDet
             <br />
             <div className={styles.cargosWrapper}>
               {cargos.map((cargo) => (
-                <CargoRenderer key={cargo.id} type={cargo.cargoType} size={32} />
+                <CargoRenderer key={cargo.id} cargo={cargo} size={32} />
               ))}
             </div>
           </div>

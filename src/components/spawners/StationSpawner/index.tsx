@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { BOARD_SIZE } from '../../../lib/board';
 import { Station } from '../../../lib/types';
-import randomId from '../../../lib/randomId';
 import { cargoTypes, randomCargoType } from '../../../lib/cargoTypes';
 
 interface StationSpawnerProps {
@@ -21,12 +20,14 @@ export default function StationSpawner({
   initialStationCapacity,
   onStationSpawn,
 }: StationSpawnerProps) {
+  const lastStationId = useRef(0);
   const timeoutId = useRef(0);
   const hasSpawnedInitial = useRef(false);
 
   const spawnStation = (cargoType = randomCargoType()) => {
+    lastStationId.current += 1;
     const newStation = {
-      id: randomId(),
+      id: `${lastStationId.current}`,
       cargoType,
       capacity: initialStationCapacity,
       createdAt: round,

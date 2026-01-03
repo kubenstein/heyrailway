@@ -1,16 +1,28 @@
 import { CSSProperties } from 'react';
-import { CargoType } from '../../../lib/types';
+import { Cargo, CargoType } from '../../../lib/types';
 import styles from './CargoRenderer.module.css';
 
 interface CargoRendererProps {
   size?: number;
-  type: CargoType;
+  cargo: Cargo;
 }
 
-export default function CargoRenderer({ type, size = 12 }: CargoRendererProps) {
-  const className = [styles.cargo, getTypeClass(type)].join(' ');
+export default function CargoRenderer({ cargo, size = 12 }: CargoRendererProps) {
+  const className = [styles.cargo, getTypeClass(cargo.cargoType)].join(' ');
+  let routeString: string;
+  if (cargo.stationIdsRoute[0] == 'NO_PATH') {
+    routeString = 'No route available';
+  } else {
+    routeString = '● → ' + cargo.stationIdsRoute.join(' → ');
+  }
 
-  return <div className={className} style={{ '--local-size': `${size}px` } as CSSProperties} />;
+  return (
+    <div
+      title={`Route:\n${routeString}`}
+      className={className}
+      style={{ '--local-size': `${size}px` } as CSSProperties}
+    />
+  );
 }
 
 // support

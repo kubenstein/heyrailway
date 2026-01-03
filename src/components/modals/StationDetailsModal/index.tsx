@@ -36,7 +36,10 @@ export default function StationDetailsModal({ gameState, stationId, onClose }: S
             <strong>Station Details</strong>
             <div className={styles.typeExplanation}>
               Type:
-              <CargoRenderer type={station.cargoType} size={32} />
+              <CargoRenderer
+                cargo={{ cargoType: station.cargoType, id: '', stationId: null, cartId: null, stationIdsRoute: [] }}
+                size={32}
+              />
               {
                 {
                   DB: 'Postgres',
@@ -60,7 +63,7 @@ export default function StationDetailsModal({ gameState, stationId, onClose }: S
             <br />
             <div className={styles.cargosWrapper}>
               {cargos.map((cargo) => (
-                <CargoRenderer key={cargo.id} type={cargo.cargoType} size={32} />
+                <CargoRenderer key={cargo.id} cargo={cargo} size={32} />
               ))}
             </div>
           </div>

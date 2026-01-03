@@ -47,11 +47,13 @@ export default function StationsRenderer({
         className={styles.stationAnchor}
       >
         <div className={stationWrapperClass} onClick={() => onStationClick(station)}>
-          <div className={styles.stationBody} />
+          <div className={styles.stationBody}>
+            <small>#{station.id}</small>
+          </div>
           {stationCargos.length > 0 && (
             <div className={styles.cargosWrapper}>
               {stationCargos.map((cargo) => (
-                <CargoRenderer key={`station-cargo-${cargo.id}`} type={cargo.cargoType} />
+                <CargoRenderer key={`station-cargo-${cargo.id}`} cargo={cargo} />
               ))}
             </div>
           )}
