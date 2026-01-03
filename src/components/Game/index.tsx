@@ -13,13 +13,13 @@ import LineToRemoveConfirm from '../confirms/LineToRemoveConfirm';
 import StationUpgradeConfirm from '../confirms/StationUpgradeConfirm';
 import CartUpgradeConfirm from '../confirms/CartUpgradeConfirm';
 import AddCartToLineConfirm from '../confirms/AddCartToLineConfirm';
+import CartDetailsModal from '../modals/CartDetailsModal';
+import StationDetailsModal from '../modals/StationDetailsModal';
 import BoardDragger from '../BoardDragger';
 import randomId from '../../lib/randomId';
 import { BOARD_CELL_SIZE, BOARD_SIZE } from '../../lib/board';
 import { Cart, Line, Station, EditMode, Point } from '../../lib/types';
 import styles from './Game.module.css';
-import CartDetailsModal from '../CartDetailsModal';
-import StationDetailsModal from '../StationDetailsModal';
 
 export default function Game() {
   const boardEl = useRef<HTMLDivElement>(null);

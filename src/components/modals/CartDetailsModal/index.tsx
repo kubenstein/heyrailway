@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Cart } from '../../lib/types';
-import { GameState } from '../GameController';
+import { GameState } from '../../GameController';
 import styles from './CartDetailsModal.module.css';
-import CargoRenderer from '../renderers/CargoRenderer';
+import CargoRenderer from '../../renderers/CargoRenderer';
 
 interface CartDetailsModalProps {
   gameState: GameState;
