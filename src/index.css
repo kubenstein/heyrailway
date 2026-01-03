@@ -1,5 +1,7 @@
 body {
   margin: 0;
   font-size: var(--primary-font-size);
+  font-family: Tahoma, sans-serif;
+  line-height: 1.5;
   background-color: var(--secondary-color);
 }
