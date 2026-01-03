@@ -6,9 +6,20 @@
     top: 0;
     padding: 0;
     transform-origin: 0 50%;
-    box-shadow: 0 0 10px var(--local-color), 0 0 20px var(--local-color), 0 0 30px var(--local-color);
-    background-image: repeating-linear-gradient(to right, var(--local-color) 0px, var(--local-color) 10px, transparent 5px, transparent 15px);
-    transition: box-shadow 0.2s ease, background-image 0.2s ease;
+    box-shadow:
+      0 0 10px var(--local-color),
+      0 0 20px var(--local-color),
+      0 0 30px var(--local-color);
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--local-color) 0px,
+      var(--local-color) 10px,
+      transparent 5px,
+      transparent 15px
+    );
+    transition:
+      box-shadow 0.2s ease,
+      background-image 0.2s ease;
 
     &::before {
       content: '';

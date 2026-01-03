@@ -10,15 +10,9 @@ interface HeaderProps {
   onEditModeChange: (mode: EditMode) => void;
 }
 
-export default function Header({
-  gameState: g,
-  editMode,
-  onEditModeChange,
-}: HeaderProps) {
+export default function Header({ gameState: g, editMode, onEditModeChange }: HeaderProps) {
   useEffect(() => {
-    if (editMode === 'addLine' && g.perkAvailableLines <= 0) {
-      onEditModeChange('editLine');
-    }
+    if (editMode === 'addLine' && g.perkAvailableLines <= 0) onEditModeChange('editLine');
   }, [g.perkAvailableLines, editMode, onEditModeChange]);
 
   return (
@@ -32,31 +26,24 @@ export default function Header({
         <div className={styles.actions}>
           <button
             className={`${styles.btn} ${styles.active}`}
-            onClick={() =>
-              onEditModeChange(editMode === 'idle' ? 'addLine' : 'idle')
-            }
+            onClick={() => onEditModeChange(editMode === 'idle' ? 'addLine' : 'idle')}
           >
             {editMode === 'idle' ? 'Edit Mode' : 'Exit Edit Mode'}
           </button>
         </div>
         <div className={styles.stats}>
           <span>
-            Available Lines:{' '}
-            <span className={styles.counter}>{g.perkAvailableLines}</span>
+            Available Lines: <span className={styles.counter}>{g.perkAvailableLines}</span>
           </span>
           <span>
-            Cart Adds/Upgrades:{' '}
-            <span className={styles.counter}>{g.perkCartUpgrades}</span>
+            Cart Adds/Upgrades: <span className={styles.counter}>{g.perkCartUpgrades}</span>
           </span>
           <span>
-            Station Upgrades:{' '}
-            <span className={styles.counter}>{g.perkStationUpgrades}</span>
+            Station Upgrades: <span className={styles.counter}>{g.perkStationUpgrades}</span>
           </span>
         </div>
       </div>
-      <div
-        className={`${styles.editModeMenu} ${editMode !== 'idle' ? styles.opened : ''}`}
-      >
+      <div className={`${styles.editModeMenu} ${editMode !== 'idle' ? styles.opened : ''}`}>
         <button
           className={`${styles.btn} ${editMode === 'addLine' ? styles.active : ''}`}
           disabled={g.perkAvailableLines <= 0}

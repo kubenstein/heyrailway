@@ -18,7 +18,7 @@
   align-items: center;
   will-change: transform;
   transform: scale(1) translateX(-50%);
-  transform-origin: 0 calc(var(--local-size) * 1/2);
+  transform-origin: 0 calc(var(--local-size) * 1 / 2);
   transition: transform 0.2s ease;
 
   &.highlighted {

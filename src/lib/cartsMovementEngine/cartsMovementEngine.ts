@@ -1,10 +1,5 @@
 import { Cart, Line, Point, Station } from '../types';
-import {
-  createCmeLine,
-  createCmeCart,
-  pointOnLineAtProgress,
-  resetCache,
-} from './geometryHelpers';
+import { createCmeLine, createCmeCart, pointOnLineAtProgress, resetCache } from './geometryHelpers';
 
 export type cmeCart = {
   cart: Cart;
@@ -30,11 +25,7 @@ interface CartsMovementEngineProps {
   enabled: boolean;
   speedPxPerSec: number;
   onCartPositionUpdate: (cart: Cart, position: Point) => void;
-  onArriveToStation: (
-    cart: Cart,
-    station: Station,
-    cartNextStation: Station
-  ) => void;
+  onArriveToStation: (cart: Cart, station: Station, cartNextStation: Station) => void;
 }
 
 export default class CartsMovementEngine {
@@ -43,11 +34,7 @@ export default class CartsMovementEngine {
   private cmeCarts: cmeCart[] = [];
   private speedPxPerSec: number;
   private onCartPositionUpdate: (cart: Cart, position: Point) => void;
-  private onArriveToStation: (
-    cart: Cart,
-    station: Station,
-    cartNextStation: Station
-  ) => void;
+  private onArriveToStation: (cart: Cart, station: Station, cartNextStation: Station) => void;
   private gameLoopLastTime: number = 0;
 
   constructor(props: CartsMovementEngineProps) {
@@ -63,9 +50,7 @@ export default class CartsMovementEngine {
   }
 
   removeLine(lineId: Line['id']) {
-    this.cmeLines = this.cmeLines.filter(
-      (cmeLine) => cmeLine.line.id !== lineId
-    );
+    this.cmeLines = this.cmeLines.filter((cmeLine) => cmeLine.line.id !== lineId);
   }
 
   addCart(cart: Cart) {
@@ -73,9 +58,7 @@ export default class CartsMovementEngine {
   }
 
   removeCart(cartId: Cart['id']) {
-    this.cmeCarts = this.cmeCarts.filter(
-      (cmeCart) => cmeCart.cart.id !== cartId
-    );
+    this.cmeCarts = this.cmeCarts.filter((cmeCart) => cmeCart.cart.id !== cartId);
   }
 
   setSpeed(speedPxPerSec: number) {
@@ -117,11 +100,7 @@ export default class CartsMovementEngine {
         cart.nextStation = stations[stationIndex + cart.direction];
       }
 
-      this.onArriveToStation(
-        cart.cart,
-        arivedAtStation.station,
-        cart.nextStation.station
-      );
+      this.onArriveToStation(cart.cart, arivedAtStation.station, cart.nextStation.station);
     }
 
     const newCartPosition = pointOnLineAtProgress(cart.progress, cart.line);

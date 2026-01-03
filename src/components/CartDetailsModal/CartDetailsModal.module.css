@@ -42,7 +42,7 @@
   font-size: var(--primary-font-size);
 
   em {
-    color: var(--primary-accent-ink)
+    color: var(--primary-accent-ink);
   }
 
   .cargosWrapper {

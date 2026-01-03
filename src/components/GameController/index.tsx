@@ -56,11 +56,7 @@ export type RenderProps = GameState & {
   rerouteCargo: (cargo: Cargo) => void;
   upgradeStation: (station: Station) => void;
   upgradeCart: (cart: Cart) => void;
-  onArriveToStation: (
-    cart: Cart,
-    station: Station,
-    cartNextStation: Station
-  ) => void;
+  onArriveToStation: (cart: Cart, station: Station, cartNextStation: Station) => void;
 };
 
 interface GameControllerProps {
@@ -68,10 +64,7 @@ interface GameControllerProps {
   render?: (renderProps: RenderProps) => JSX.Element;
 }
 
-export default function GameController({
-  editMode,
-  render,
-}: GameControllerProps) {
+export default function GameController({ editMode, render }: GameControllerProps) {
   const clockIntervalId = useRef(0);
 
   const stateRef = useRef<GameState>(initialState);
@@ -108,38 +101,16 @@ export default function GameController({
     <>
       {render({
         ...state,
-        restartGame: () => {
-          dispatch({ type: 'RESTART_GAME' });
-        },
-        addStation: (station: Station) => {
-          dispatch({ type: 'ADD_STATION', station });
-        },
-        addLine: (line: Line) => {
-          dispatch({ type: 'ADD_LINE', line });
-        },
-        removeLine: (line: Line) => {
-          dispatch({ type: 'REMOVE_LINE', line });
-        },
-        addCart: (cart: Cart) => {
-          dispatch({ type: 'ADD_CART', cart });
-        },
-        addCargo: (cargo: Cargo) => {
-          dispatch({ type: 'ADD_CARGO', cargo });
-        },
-        rerouteCargo: (cargo: Cargo) => {
-          dispatch({ type: 'REROUTE_CARGO', cargo });
-        },
-        upgradeStation: (station: Station) => {
-          dispatch({ type: 'UPGRADE_STATION', station });
-        },
-        upgradeCart: (cart: Cart) => {
-          dispatch({ type: 'UPGRADE_CART', cart });
-        },
-        onArriveToStation: (
-          cart: Cart,
-          station: Station,
-          cartNextStation: Station
-        ) => {
+        restartGame: () => dispatch({ type: 'RESTART_GAME' }),
+        addStation: (station: Station) => dispatch({ type: 'ADD_STATION', station }),
+        addLine: (line: Line) => dispatch({ type: 'ADD_LINE', line }),
+        removeLine: (line: Line) => dispatch({ type: 'REMOVE_LINE', line }),
+        addCart: (cart: Cart) => dispatch({ type: 'ADD_CART', cart }),
+        addCargo: (cargo: Cargo) => dispatch({ type: 'ADD_CARGO', cargo }),
+        rerouteCargo: (cargo: Cargo) => dispatch({ type: 'REROUTE_CARGO', cargo }),
+        upgradeStation: (station: Station) => dispatch({ type: 'UPGRADE_STATION', station }),
+        upgradeCart: (cart: Cart) => dispatch({ type: 'UPGRADE_CART', cart }),
+        onArriveToStation: (cart: Cart, station: Station, cartNextStation: Station) => {
           dispatch({
             type: 'ARRIVE_AT_STATION',
             cart,

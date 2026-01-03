@@ -11,12 +11,7 @@ interface LineEditorProps {
   scale: number;
 }
 
-export default function LineEditor({
-  stations,
-  lines,
-  onLineCreate,
-  scale,
-}: LineEditorProps) {
+export default function LineEditor({ stations, lines, onLineCreate, scale }: LineEditorProps) {
   const [lineStations, setLineStations] = useState<Station[]>([]);
   const [hoveringPoint, setHoveringPoint] = useState<Point | null>(null);
 
@@ -44,9 +39,7 @@ export default function LineEditor({
   // support
   const createLine = () => {
     const ids: LineId[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    const availableIds = ids.filter(
-      (id) => !lines.find((line) => line.id === id)
-    );
+    const availableIds = ids.filter((id) => !lines.find((line) => line.id === id));
     const id = availableIds[Math.floor(Math.random() * availableIds.length)];
 
     onLineCreate({
@@ -55,8 +48,7 @@ export default function LineEditor({
     });
   };
 
-  const stationAtPoint = (point: Point) =>
-    stations.find((s) => s.position.x === point.x && s.position.y === point.y);
+  const stationAtPoint = (point: Point) => stations.find((s) => s.position.x === point.x && s.position.y === point.y);
 
   // render
   const editingLine: Line = {
@@ -78,12 +70,7 @@ export default function LineEditor({
   };
 
   return (
-    <div
-      className={styles.lineEditor}
-      onClick={onClick}
-      onMouseMove={onMouseMove}
-      onDoubleClick={onDoubleClick}
-    >
+    <div className={styles.lineEditor} onClick={onClick} onMouseMove={onMouseMove} onDoubleClick={onDoubleClick}>
       <LineRenderer line={editingLine} />
     </div>
   );

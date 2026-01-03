@@ -10,12 +10,7 @@ interface CargoRendererProps {
 export default function CargoRenderer({ type, size = 12 }: CargoRendererProps) {
   const className = [styles.cargo, getTypeClass(type)].join(' ');
 
-  return (
-    <div
-      className={className}
-      style={{ '--local-size': `${size}px` } as CSSProperties}
-    />
-  );
+  return <div className={className} style={{ '--local-size': `${size}px` } as CSSProperties} />;
 }
 
 // support

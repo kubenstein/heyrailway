@@ -23,9 +23,7 @@ export default function StationsRenderer({
   return stations.map((station) => {
     const { x, y } = pointToBoardPoint(station.position);
 
-    const stationCargos = cargos.filter(
-      (cargo) => cargo.stationId === station.id
-    );
+    const stationCargos = cargos.filter((cargo) => cargo.stationId === station.id);
 
     const emergency = stationCargos.length / station.capacity > 0.75;
 
@@ -35,9 +33,7 @@ export default function StationsRenderer({
       emergency ? styles.emergency : '',
       hoverable ? styles.hoverable : '',
       highlightAll ? styles.highlighted : '',
-      stationToHighlight && stationToHighlight.id === station.id
-        ? styles.highlighted
-        : '',
+      stationToHighlight && stationToHighlight.id === station.id ? styles.highlighted : '',
     ].join(' ');
 
     return (
@@ -47,18 +43,12 @@ export default function StationsRenderer({
         style={{ transform: `translate(${x}px, ${y}px)` }}
         className={styles.stationAnchor}
       >
-        <div
-          className={stationWrapperClass}
-          onClick={() => onStationClick(station)}
-        >
+        <div className={stationWrapperClass} onClick={() => onStationClick(station)}>
           <div className={styles.stationBody} />
           {stationCargos.length > 0 && (
             <div className={styles.cargosWrapper}>
               {stationCargos.map((cargo) => (
-                <CargoRenderer
-                  key={`station-cargo-${cargo.id}`}
-                  type={cargo.cargoType}
-                />
+                <CargoRenderer key={`station-cargo-${cargo.id}`} type={cargo.cargoType} />
               ))}
             </div>
           )}

@@ -10,11 +10,7 @@ interface CartDetailsModalProps {
   onClose: () => void;
 }
 
-export default function CartDetailsModal({
-  gameState,
-  cartId,
-  onClose,
-}: CartDetailsModalProps) {
+export default function CartDetailsModal({ gameState, cartId, onClose }: CartDetailsModalProps) {
   const [slideIn, setSlideIn] = useState(false);
 
   useEffect(() => {
@@ -23,9 +19,7 @@ export default function CartDetailsModal({
   }, [cartId]);
 
   const cart = cartId && gameState.carts.find((c) => c.id === cartId);
-  const cargos = cartId
-    ? gameState.cargos.filter((c) => c.cartId === cartId)
-    : [];
+  const cargos = cartId ? gameState.cargos.filter((c) => c.cartId === cartId) : [];
 
   return (
     <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
@@ -51,11 +45,7 @@ export default function CartDetailsModal({
             <br />
             <div className={styles.cargosWrapper}>
               {cargos.map((cargo) => (
-                <CargoRenderer
-                  key={cargo.id}
-                  type={cargo.cargoType}
-                  size={32}
-                />
+                <CargoRenderer key={cargo.id} type={cargo.cargoType} size={32} />
               ))}
             </div>
           </div>

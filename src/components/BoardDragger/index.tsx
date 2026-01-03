@@ -8,12 +8,7 @@ interface BoardDraggerProps {
   onScaleChange: (newScale: number) => void;
 }
 
-export default function BoardDragger({
-  boardEl,
-  onBoardMove,
-  currentScale,
-  onScaleChange,
-}: BoardDraggerProps) {
+export default function BoardDragger({ boardEl, onBoardMove, currentScale, onScaleChange }: BoardDraggerProps) {
   const [isDragging, setIsDragging] = useState(false);
   const startPos = useRef<Point>({ x: 0, y: 0 });
   const lastPos = useRef<Point>({ x: 0, y: 0 });

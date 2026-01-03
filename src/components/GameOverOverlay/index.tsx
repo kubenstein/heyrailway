@@ -7,10 +7,7 @@ interface GameOverOverlayProps {
   onRestartGameClick: () => void;
 }
 
-export default function GameOverOverlay({
-  gameState: g,
-  onRestartGameClick,
-}: GameOverOverlayProps) {
+export default function GameOverOverlay({ gameState: g, onRestartGameClick }: GameOverOverlayProps) {
   const [fadeIn, setFadeIn] = useState(false);
 
   useEffect(() => {
@@ -27,15 +24,10 @@ export default function GameOverOverlay({
         <p>
           Oh no! One of the stations is overcrowded!
           <br />
-          You lasted until round <em>{g.round}</em> and scored{' '}
-          <em>{g.points}</em> points!
+          You lasted until round <em>{g.round}</em> and scored <em>{g.points}</em> points!
         </p>
 
-        <button
-          className={styles.btn}
-          disabled={g.perkAvailableLines <= 0}
-          onClick={onRestartGameClick}
-        >
+        <button className={styles.btn} disabled={g.perkAvailableLines <= 0} onClick={onRestartGameClick}>
           Restart the Game!
         </button>
       </div>

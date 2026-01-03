@@ -10,11 +10,7 @@ interface StationDetailsModalProps {
   onClose: () => void;
 }
 
-export default function StationDetailsModal({
-  gameState,
-  stationId,
-  onClose,
-}: StationDetailsModalProps) {
+export default function StationDetailsModal({ gameState, stationId, onClose }: StationDetailsModalProps) {
   const [slideIn, setSlideIn] = useState(false);
 
   useEffect(() => {
@@ -22,17 +18,12 @@ export default function StationDetailsModal({
     return () => clearTimeout(timeout);
   }, [stationId]);
 
-  const station =
-    stationId && gameState.stations.find((s) => s.id === stationId);
-  const cargos = stationId
-    ? gameState.cargos.filter((c) => c.stationId === stationId)
-    : [];
+  const station = stationId && gameState.stations.find((s) => s.id === stationId);
+  const cargos = stationId ? gameState.cargos.filter((c) => c.stationId === stationId) : [];
 
   const emergency = station ? cargos.length / station.capacity > 0.75 : false;
 
-  const headerClass = [styles.header, emergency ? styles.emergency : ''].join(
-    ' '
-  );
+  const headerClass = [styles.header, emergency ? styles.emergency : ''].join(' ');
 
   return (
     <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
@@ -68,11 +59,7 @@ export default function StationDetailsModal({
             <br />
             <div className={styles.cargosWrapper}>
               {cargos.map((cargo) => (
-                <CargoRenderer
-                  key={cargo.id}
-                  type={cargo.cargoType}
-                  size={32}
-                />
+                <CargoRenderer key={cargo.id} type={cargo.cargoType} size={32} />
               ))}
             </div>
           </div>

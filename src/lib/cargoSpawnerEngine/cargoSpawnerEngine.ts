@@ -64,10 +64,7 @@ export default class CargoSpawnerEngine {
 
     clearInterval(this.timeIntervalId || 0);
     if (this.enabled) {
-      this.timeIntervalId = setInterval(
-        this.spawnCargos.bind(this),
-        this.frequencyMs
-      );
+      this.timeIntervalId = setInterval(this.spawnCargos.bind(this), this.frequencyMs);
     }
   }
 
@@ -76,10 +73,7 @@ export default class CargoSpawnerEngine {
 
     clearInterval(this.timeIntervalId || 0);
     if (this.enabled) {
-      this.timeIntervalId = setInterval(
-        this.spawnCargos.bind(this),
-        this.frequencyMs
-      );
+      this.timeIntervalId = setInterval(this.spawnCargos.bind(this), this.frequencyMs);
     }
   }
 
@@ -89,17 +83,12 @@ export default class CargoSpawnerEngine {
   }
 
   private spawnCargo() {
-    const availableCargoTypes = [
-      ...new Set(this.stations.map((s) => s.cargoType)),
-    ];
+    const availableCargoTypes = [...new Set(this.stations.map((s) => s.cargoType))];
     const cargoType = randomCargoType(availableCargoTypes);
 
     // pick random station with different cargo type from destination
-    const connectedStations = this.graph.filterNodes(
-      (_node, attrs) => attrs.cargoType !== cargoType
-    );
-    const startStationId =
-      connectedStations[Math.floor(Math.random() * connectedStations.length)];
+    const connectedStations = this.graph.filterNodes((_node, attrs) => attrs.cargoType !== cargoType);
+    const startStationId = connectedStations[Math.floor(Math.random() * connectedStations.length)];
 
     const stationIdsRoute = this.findRoute(startStationId, cargoType);
 
@@ -118,10 +107,7 @@ export default class CargoSpawnerEngine {
     allCargos
       .filter((cargo) => cargo.stationIdsRoute[0] === 'NO_PATH')
       .forEach((cargo) => {
-        const stationIdsRoute = this.findRoute(
-          cargo.stationId,
-          cargo.cargoType
-        );
+        const stationIdsRoute = this.findRoute(cargo.stationId, cargo.cargoType);
         if (!stationIdsRoute) return;
 
         const updatedCargo: Cargo = {
@@ -167,11 +153,7 @@ export default class CargoSpawnerEngine {
     tmpGraph
       .filterNodes((_node, attrs) => attrs.cargoType === cargoType)
       .forEach((node) => tmpGraph.addUndirectedEdge(node, 'fakeDestination'));
-    const fullStationIdsRoute = bidirectional(
-      tmpGraph,
-      startStationId,
-      'fakeDestination'
-    );
+    const fullStationIdsRoute = bidirectional(tmpGraph, startStationId, 'fakeDestination');
 
     if (fullStationIdsRoute) {
       // remove start and fake destination stations

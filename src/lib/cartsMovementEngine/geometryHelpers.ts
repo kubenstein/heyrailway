@@ -50,9 +50,7 @@ export const createCmeLine = (line: Line, speedPxPerSec: number): cmeLine => {
     cmeStations.push({
       line,
       station: tmpSegments[tmpSegments.length - 1].end,
-      progress:
-        pathFromPoints(pointsFromSegments(tmpSegments)).getTotalLength() /
-        pathLength,
+      progress: pathFromPoints(pointsFromSegments(tmpSegments)).getTotalLength() / pathLength,
     });
     tmpSegments.pop();
   }
@@ -83,10 +81,7 @@ export const createCmeCart = (cart: Cart, cmeLines: cmeLine[]): cmeCart => {
 
 // support
 const isDiagonal = (segment: LineSegment) => {
-  return (
-    segment.start.position.x !== segment.end.position.x &&
-    segment.start.position.y !== segment.end.position.y
-  );
+  return segment.start.position.x !== segment.end.position.x && segment.start.position.y !== segment.end.position.y;
 };
 
 const pointsFromSegments = (segments: LineSegment[]) => {
