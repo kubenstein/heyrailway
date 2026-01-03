@@ -1,10 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { BOARD_SIZE } from '../../../lib/board';
-import { CargoType, Station } from '../../../lib/types';
+import { Station } from '../../../lib/types';
 import randomId from '../../../lib/randomId';
-import randomCargoType from '../../../lib/randomCargoType';
-
-const cargoTypes: CargoType[] = ['DB', 'REACT', 'GATEWAY', 'REDIS'];
+import { cargoTypes, randomCargoType } from '../../../lib/cargoTypes';
 
 interface StationSpawnerProps {
   round: number;

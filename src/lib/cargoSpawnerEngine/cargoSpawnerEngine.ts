@@ -2,7 +2,7 @@ import Graph from 'graphology';
 import { bidirectional } from 'graphology-shortest-path';
 import { Cargo, Line, Station } from '../types';
 import randomId from '../randomId';
-import randomCargoType from '../randomCargoType';
+import { randomCargoType } from '../cargoTypes';
 
 interface CargoSpawnerEngineProps {
   enabled: boolean;
