@@ -68,19 +68,19 @@ export default function Header({ gameState: g, editMode, onEditModeChange }: Hea
         </button>
 
         <button
-          className={`${styles.btn} ${editMode === 'upgrateStation' ? styles.active : ''}`}
-          disabled={g.perkStationUpgrades <= 0}
-          onClick={() => onEditModeChange('upgrateStation')}
-        >
-          Upgrade Stations
-        </button>
-
-        <button
           className={`${styles.btn} ${editMode === 'upgradeCart' ? styles.active : ''}`}
           disabled={g.perkCartUpgrades <= 0}
           onClick={() => onEditModeChange('upgradeCart')}
         >
           Upgrade Carts
+        </button>
+
+        <button
+          className={`${styles.btn} ${editMode === 'upgrateStation' ? styles.active : ''}`}
+          disabled={g.perkStationUpgrades <= 0}
+          onClick={() => onEditModeChange('upgrateStation')}
+        >
+          Upgrade Stations
         </button>
       </div>
     </div>
