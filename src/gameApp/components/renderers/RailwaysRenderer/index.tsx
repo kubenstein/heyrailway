@@ -6,6 +6,7 @@ import styles from './RailwaysRenderer.module.css';
 type LineSegment = { start: Point; end: Point };
 
 interface RailwaysRendererProps {
+  scale: number;
   lines: Line[];
   lineToHighlight: Line | null;
   hoverable: boolean;
@@ -15,6 +16,7 @@ interface RailwaysRendererProps {
 }
 
 export default function RailwaysRenderer({
+  scale,
   lines,
   hoverable,
   lineToHighlight,
@@ -24,6 +26,7 @@ export default function RailwaysRenderer({
 }: RailwaysRendererProps) {
   return lines.map((line) => (
     <LineRenderer
+      scale={scale}
       hoverable={hoverable}
       highLight={line.id === lineToHighlight?.id}
       onMouseEnterLine={onMouseEnterLine}
@@ -36,6 +39,7 @@ export default function RailwaysRenderer({
 }
 
 interface LineRendererProps {
+  scale: number;
   line: Line;
   hoverable?: boolean;
   highLight?: boolean;
@@ -45,6 +49,7 @@ interface LineRendererProps {
 }
 
 export function LineRenderer({
+  scale,
   line,
   hoverable,
   highLight,
@@ -73,34 +78,35 @@ export function LineRenderer({
       style={{ '--local-color': `var(--line-color-${line.id})` } as CSSProperties}
     >
       {segments.map((segment, index) => (
-        <SegmentRenderer key={`line-${line.id}-segment-${index}`} segment={segment} />
+        <SegmentRenderer key={`line-${line.id}-segment-${index}`} segment={segment} scale={scale} />
       ))}
     </div>
   );
 }
 
 interface SegmentRendererProps {
+  scale?: number;
   segment: LineSegment;
 }
 
-export function SegmentRenderer({ segment }: SegmentRendererProps) {
+export function SegmentRenderer({ scale = 1, segment }: SegmentRendererProps) {
   const isDiagonal = segment.start.x !== segment.end.x && segment.start.y !== segment.end.y;
 
   if (isDiagonal) {
     const pivot = { x: segment.end.x, y: segment.start.y };
     return (
       <>
-        {renderSegment(segment.start, pivot)}
-        {renderSegment(pivot, segment.end)}
+        {renderSegment(segment.start, pivot, scale)}
+        {renderSegment(pivot, segment.end, scale)}
       </>
     );
   }
 
-  return renderSegment(segment.start, segment.end);
+  return renderSegment(segment.start, segment.end, scale);
 }
 
 // support
-function renderSegment(start: Point, end: Point) {
+function renderSegment(start: Point, end: Point, scale: number) {
   const bStart = pointToBoardPoint(start);
   const bEnd = pointToBoardPoint(end);
 
@@ -109,7 +115,7 @@ function renderSegment(start: Point, end: Point) {
   const length = Math.sqrt(dx * dx + dy * dy);
   const angle = Math.atan2(dy, dx);
 
-  const thickness = 1;
+  const thickness = 1 / scale;
   const style: CSSProperties = {
     transform: `translate(${bStart.x}px, ${bStart.y - thickness / 2}px) rotate(${angle}rad)`,
     width: length,

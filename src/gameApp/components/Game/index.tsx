@@ -98,6 +98,7 @@ export default function Game() {
                 }}
               >
                 <RailwaysRenderer
+                  scale={scale}
                   lines={g.lines}
                   hoverable={['editLine', 'addCart'].includes(editMode)}
                   lineToHighlight={lineToHighlight}
