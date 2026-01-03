@@ -29,8 +29,8 @@ export default function StationSpawner({
       capacity: 20,
       createdAt: round,
       position: {
-        x: Math.floor(Math.random() * BOARD_SIZE),
-        y: Math.floor(Math.random() * BOARD_SIZE),
+        x: Math.floor(Math.random() * (BOARD_SIZE - 2)) + 1,
+        y: Math.floor(Math.random() * (BOARD_SIZE - 2)) + 1,
       },
     };
     onStationSpawn(newStation);
