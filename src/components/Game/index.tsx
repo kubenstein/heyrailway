@@ -132,6 +132,7 @@ export default function Game() {
                   cartToHighlight={cartDetails}
                   carts={g.carts}
                   cargos={g.cargos}
+                  initialCartCapacity={g.cartCapacity}
                   onCartClick={(cart: Cart) => {
                     if (editMode === 'upgradeCart' && g.perkCartUpgrades > 0) setCartToUpgrade(cart);
                     if (editMode === 'idle') {
@@ -149,7 +150,7 @@ export default function Game() {
                       g.addLine(line);
                       g.addCart({
                         id: randomId(),
-                        capacity: 6,
+                        capacity: g.cartCapacity,
                         line,
                         points: 0,
                         createdAt: g.round,
@@ -172,7 +173,7 @@ export default function Game() {
                 onConfirmClick={(line: Line) => {
                   g.addCart({
                     id: randomId(),
-                    capacity: 6,
+                    capacity: g.cartCapacity,
                     line,
                     points: 0,
                     createdAt: g.round,

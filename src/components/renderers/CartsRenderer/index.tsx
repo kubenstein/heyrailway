@@ -8,6 +8,7 @@ interface CartsRendererProps {
   cartToHighlight: Cart | null;
   carts: Cart[];
   cargos: Cargo[];
+  initialCartCapacity: number;
   onCartClick: (cart: Cart) => void;
 }
 
@@ -17,6 +18,7 @@ export default function CartsRenderer({
   cartToHighlight,
   carts,
   cargos,
+  initialCartCapacity,
   onCartClick,
 }: CartsRendererProps) {
   return carts.map((cart) => {
@@ -26,6 +28,7 @@ export default function CartsRenderer({
       styles.cartWrapper,
       hoverable ? styles.hoverable : '',
       highlightAll ? styles.highlighted : '',
+      cart.capacity > initialCartCapacity ? styles.upgraded : '',
       cartToHighlight && cartToHighlight.id === cart.id ? styles.highlighted : '',
     ].join(' ');
 

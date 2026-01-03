@@ -35,6 +35,7 @@ export default function CartDetailsModal({ gameState, cartId, onClose }: CartDet
             Cart id: <em>{cart.id}</em>
             <br />
             capacity: <em>{cart.capacity}</em>
+            {cart.capacity > gameState.cartCapacity && <i className={styles.crownIcon}></i>}
             <br />
             Age: <em>{gameState.round - cart.createdAt} rounds</em>
             <br />
