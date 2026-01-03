@@ -46,8 +46,8 @@
     &::after {
       content: '';
       position: absolute;
+      top: -10px;
       right: 3px;
-      bottom: 3px;
       width: 10px;
       height: 10px;
       background: url('/assets/crown.png') center / contain no-repeat;
