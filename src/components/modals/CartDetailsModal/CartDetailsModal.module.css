@@ -1,7 +1,7 @@
 .modal {
-  position: fixed;
+  position: absolute;
   display: flex;
-  top: var(--gap3);
+  top: var(--gap2);
   right: -100%;
   z-index: var(--eleveted-z-index);
   gap: var(--gap);

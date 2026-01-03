@@ -1,13 +1,14 @@
 .modal {
-  position: fixed;
+  position: absolute;
   display: flex;
-  top: -1px;
+  top: calc(var(--gap2) * -1);
   left: 50%;
   z-index: var(--elvated-behind-z-index);
   gap: var(--gap);
   align-items: center;
   justify-content: center;
   height: var(--gap2);
+  margin-top: -1px;
   padding: 0 var(--gap);
   color: var(--primary-ink);
   font-size: var(--secondary-font-size);
@@ -20,7 +21,7 @@
   border-bottom-left-radius: var(--primary-border-radius);
 
   &.show {
-    top: calc(var(--gap2) * 2);
+    top: var(--gap2);
   }
 }
 
