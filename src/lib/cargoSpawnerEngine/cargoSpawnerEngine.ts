@@ -34,7 +34,7 @@ export default class CargoSpawnerEngine {
     this.addLineToGraph(this.graph, line);
 
     // Reroute cargos that were stuck, maybe they can be routed now
-    this.rerouteStuckCargos(allCargos);
+    this.rerouteCargos(allCargos);
   }
 
   removeLine(lineId: Line['id'] | null, allCargos: Cargo[]) {
@@ -44,13 +44,11 @@ export default class CargoSpawnerEngine {
 
     // rebuild whole graph from exisitng lines
     this.graph = new Graph();
-    this.stations.forEach(({ id, cargoType }) => {
-      this.graph.addNode(id, { cargoType });
-    });
+    this.stations.forEach(({ id, cargoType }) => this.graph.addNode(id, { cargoType }));
     this.lines.forEach((line) => this.addLineToGraph(this.graph, line));
 
     // Reroute all cargos
-    this.rerouteAllCargos(allCargos);
+    this.rerouteCargos(allCargos);
   }
 
   addStation(station: Station) {
@@ -103,26 +101,9 @@ export default class CargoSpawnerEngine {
   }
 
   // rerouting
-  private rerouteStuckCargos(allCargos: Cargo[]) {
-    allCargos
-      .filter((cargo) => cargo.stationIdsRoute[0] === 'NO_PATH')
-      .forEach((cargo) => {
-        const stationIdsRoute = this.findRoute(cargo.stationId, cargo.cargoType);
-        if (!stationIdsRoute) return;
-
-        const updatedCargo: Cargo = {
-          ...cargo,
-          stationIdsRoute,
-        };
-        this.onCargoReroute(updatedCargo);
-      });
-  }
-
-  private rerouteAllCargos(allCargos: Cargo[]) {
+  private rerouteCargos(allCargos: Cargo[]) {
     allCargos.forEach((cargo) => {
-      const stationIdsRoute = this.findRoute(cargo.stationId, cargo.cargoType);
-      if (!stationIdsRoute) return;
-
+      const stationIdsRoute = this.findRoute(cargo.stationId, cargo.cargoType) || ['NO_PATH'];
       const updatedCargo: Cargo = {
         ...cargo,
         stationIdsRoute,
