@@ -1,6 +1,6 @@
 .lineEditor {
   position: absolute;
-  inset: 0;
   z-index: var(--eleveted-z-index);
   user-select: none;
+  inset: 0;
 }
