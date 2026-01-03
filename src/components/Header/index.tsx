@@ -56,7 +56,7 @@ export default function Header({ gameState: g, editMode, onEditModeChange }: Hea
           className={`${styles.btn} ${editMode === 'editLine' ? styles.active : ''}`}
           onClick={() => onEditModeChange('editLine')}
         >
-          Edit Lines
+          Remove Lines
         </button>
 
         <button
