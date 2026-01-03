@@ -35,7 +35,6 @@
       content: '';
       position: absolute;
       top: calc(var(--local-size) * -1 / 2);
-      left: calc(var(--local-size) * -1 / 2);
       width: calc(var(--local-size) * 2);
       height: calc(var(--local-size) * 2);
       cursor: pointer;
