@@ -26,14 +26,18 @@ export default function StationSpawner({
 
   const spawnStation = (cargoType = randomCargoType()) => {
     lastStationId.current += 1;
+
+    // spawn first stations close to initial user viewport
+    let range = lastStationId.current > 2 ? BOARD_SIZE : BOARD_SIZE / 2;
+
     const newStation = {
       id: `${lastStationId.current}`,
       cargoType,
       capacity: initialStationCapacity,
       createdAt: round,
       position: {
-        x: Math.floor(Math.random() * (BOARD_SIZE - 2)) + 1,
-        y: Math.floor(Math.random() * (BOARD_SIZE - 2)) + 1,
+        x: Math.floor(Math.random() * (range - 2)) + 1,
+        y: Math.floor(Math.random() * (range - 2)) + 1,
       },
     };
     onStationSpawn(newStation);
