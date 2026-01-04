@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import GameApp from './gameApp';
 import Story from './components/Story/Story';
-import Documentation from './components/Documentation/Documentation';
 import GamePreview from './components/GamePreview/GamePreview';
 import Cta from './components/Cta/Cta';
 import styles from './App.module.css';
+
+const Documentation = lazy(() => import('./components/Documentation/Documentation'));
 
 export default function App() {
   const [showGame, setShowGame] = useState(false);
@@ -45,7 +46,10 @@ export default function App() {
           <GamePreview />
         )}
 
-        <Documentation />
+        <div id="documentationScrollAnchor" />
+        <Suspense fallback={<div>Loading documentation...</div>}>
+          <Documentation />
+        </Suspense>
 
         <Cta />
 

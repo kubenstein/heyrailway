@@ -4,7 +4,7 @@ import styles from './Documentation.module.css';
 
 export default function Documentation() {
   return (
-    <div id="documentationScrollAnchor" className={styles.documentation}>
+    <div className={styles.documentation}>
       <strong className={styles.header}>Technical Documentation</strong>
       <br />
       <span>
