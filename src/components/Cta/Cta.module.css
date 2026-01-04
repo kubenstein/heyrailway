@@ -1,0 +1,82 @@
+.cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  strong {
+    display: block;
+    font-weight: normal;
+    font-size: var(--header-font-size);
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  a {
+    color: var(--primary-accent-color);
+    font-size: var(--primary-font-size);
+  }
+
+  .board {
+    --local-board-color: #0f111a;
+    --local-board-border-color: #2c2e36;
+    --local-board-line-color: #ff00ff;
+
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 400px;
+    margin: var(--gap2) 0 var(--gap4);
+    padding: var(--gap4);
+    background-color: var(--local-board-color);
+    background-image: radial-gradient(circle, var(--local-board-border-color) 1px, transparent 1.1px);
+    background-size: 30px 30px;
+    border: 1px solid var(--local-board-border-color);
+    border-radius: 8px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      display: block;
+      top: 50%;
+      right: calc(var(--gap4) * 2);
+      left: calc(var(--gap4) * 2);
+      height: 2px;
+      /* prettier-ignore */
+      background-image: repeating-linear-gradient(to right,
+          var(--local-board-line-color) 0px,
+          var(--local-board-line-color) 10px,
+          transparent 5px,
+          transparent 15px);
+      box-shadow:
+        0 0 10px var(--local-board-line-color),
+        0 0 20px var(--local-board-line-color),
+        0 0 30px var(--local-board-line-color);
+    }
+
+    .me {
+      position: relative;
+      display: block;
+      z-index: 2;
+      width: 100px;
+      height: 100px;
+      background: url('/assets/me.png') no-repeat;
+      background-size: cover;
+      border: 2px solid var(--local-board-border-color);
+      border-radius: 100rem;
+    }
+
+    .railway {
+      position: relative;
+      display: block;
+      z-index: 2;
+      width: 100px;
+      height: 100px;
+      background: url('/assets/railway.png') no-repeat;
+      background-size: cover;
+      border: 2px solid var(--local-board-border-color);
+      border-radius: 100rem;
+    }
+  }
+}

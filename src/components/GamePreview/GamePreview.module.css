@@ -1,0 +1,68 @@
+.gamePreview {
+  position: relative;
+  display: flex;
+  width: 100%;
+  margin-bottom: calc(var(--gap4) * 2);
+  overflow: hidden;
+  background-color: #0f111a;
+  border: 1px solid #2c2e36;
+  border-radius: 8px;
+
+  img.gamePreviewImg {
+    display: block;
+    width: 60%;
+    object-fit: contain;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    padding: var(--gap2);
+    background: url('/assets/preview-station-details.png') 100% 100% no-repeat;
+    background-size: 33%;
+    border-left: 1px solid #2c2e36;
+
+    p,
+    ul {
+      margin: 0;
+    }
+
+    strong {
+      color: var(--primary-accent-color);
+      font-size: var(--header-font-size);
+      text-transform: uppercase;
+    }
+  }
+
+  .stations {
+    display: flex;
+    gap: var(--gap);
+    margin-top: var(--gap4);
+
+    img {
+      width: var(--gap4);
+    }
+  }
+}
+
+@media (max-width: 880px) {
+  .gamePreview {
+    flex-direction: column;
+
+    img.gamePreviewImg {
+      width: 100%;
+      object-fit: contain;
+    }
+
+    .content {
+      background: none;
+      border-top: 1px solid #2c2e36;
+      border-left: none;
+    }
+
+    .stations {
+      justify-content: center;
+    }
+  }
+}
