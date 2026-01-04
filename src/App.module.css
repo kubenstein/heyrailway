@@ -12,7 +12,7 @@
   --gap2: calc(var(--gap) * 2);
   --gap4: calc(var(--gap) * 4);
 
-  --header-font-size: 20px;
+  --header-font-size: 24px;
   --primary-font-size: 16px;
   --secondary-font-size: 12px;
   --tertiary-font-size: 12px;
@@ -68,7 +68,7 @@
 }
 
 .story {
-  & > p {
+  &>p {
     margin: var(--gap4) auto calc(var(--gap4) * 2);
   }
 
@@ -249,12 +249,41 @@
 }
 
 .documentation {
-  strong {
+  .header {
     display: block;
     font-weight: normal;
     font-size: var(--header-font-size);
     text-align: center;
     text-transform: uppercase;
+    border: none;
+  }
+
+  strong {
+    display: block;
+    margin: var(--gap4) 0 var(--gap);
+    font-size: 150%;
+    border-bottom: 1px solid var(--secondary-accent-color);
+  }
+
+  em {
+    display: inline-block;
+    height: 100%;
+    margin: 0 calc(var(--gap) / 4);
+    padding: 2px calc(var(--gap) / 2);
+    font-family: 'Courier New', Courier, monospace;
+    background-color: var(--secondary-color);
+    border-radius: 4px;
+  }
+
+  pre {
+    margin: var(--gap2) 0 !important;
+    border-radius: 8px;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+    margin: 0 auto;
   }
 }
 
@@ -279,7 +308,7 @@
   .board {
     --local-board-color: #0f111a;
     --local-board-border-color: #2c2e36;
-    --local-board-line-color: #00ffff;
+    --local-board-line-color: #ff00ff;
 
     position: relative;
     display: flex;
