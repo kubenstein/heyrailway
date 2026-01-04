@@ -90,8 +90,12 @@
     }
   }
 
-  &.cargoTypeReact .stationBody {
-    background-image: url('/assets/react.png');
+  &.cargoTypeNext .stationBody {
+    background-image: url('/assets/next.png');
+  }
+
+  &.cargoTypeTemporal .stationBody {
+    background-image: url('/assets/temporal.png');
   }
 
   &.cargoTypeDB .stationBody {

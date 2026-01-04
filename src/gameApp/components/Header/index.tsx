@@ -24,6 +24,7 @@ export default function Header({ gameState: g, editMode, onEditModeChange }: Hea
         </div>
         <div className={styles.actions}>
           <button
+            disabled={g.lost}
             className={`${styles.btn} ${styles.active}`}
             onClick={() => onEditModeChange(editMode === 'idle' ? 'addLine' : 'idle')}
           >

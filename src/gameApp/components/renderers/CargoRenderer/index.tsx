@@ -32,8 +32,10 @@ const getTypeClass = (cargoType: CargoType) => {
       return styles.cargoTypeDB;
     case 'GATEWAY':
       return styles.cargoTypeGateway;
-    case 'REACT':
-      return styles.cargoTypeReact;
+    case 'NEXT':
+      return styles.cargoTypeNext;
+    case 'TEMPORAL':
+      return styles.cargoTypeTemporal;
     case 'REDIS':
       return styles.cargoTypeRedis;
     default:
