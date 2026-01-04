@@ -115,7 +115,7 @@ function renderSegment(start: Point, end: Point, scale: number) {
   const length = Math.sqrt(dx * dx + dy * dy);
   const angle = Math.atan2(dy, dx);
 
-  const thickness = 1 / scale;
+  const thickness = 1 + 1 / scale;
   const style: CSSProperties = {
     transform: `translate(${bStart.x}px, ${bStart.y - thickness / 2}px) rotate(${angle}rad)`,
     width: length,

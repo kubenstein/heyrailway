@@ -71,7 +71,7 @@ export default function LineEditor({ stations, lines, onLineCreate, scale }: Lin
 
   return (
     <div className={styles.lineEditor} onClick={onClick} onMouseMove={onMouseMove} onDoubleClick={onDoubleClick}>
-      <LineRenderer line={editingLine} />
+      <LineRenderer line={editingLine} scale={1} />
     </div>
   );
 }
