@@ -20,7 +20,7 @@ export default function Story() {
           <br />
         </span>
         <small>
-          - Jakub Niewczas, during New Year&#39;s holidays 2025/2026
+          - Jakub Niewczas, during New Year&#39;s holidays
           <br />
           (psst.. He built it as a game, scroll down!)
         </small>
