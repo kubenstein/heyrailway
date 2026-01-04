@@ -19,7 +19,7 @@
 
   box-sizing: border-box;
   padding: var(--gap2);
-  background: var(--primary-color) url('/assets/waves-bg.png') 0 5% no-repeat;
+  background: var(--primary-color) url('/assets/waves-bg.png') 0 var(--gap4) no-repeat;
 }
 
 .main {
