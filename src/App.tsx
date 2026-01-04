@@ -1,14 +1,20 @@
-import { useState, lazy, Suspense } from 'react';
-import GameApp from './gameApp';
+import { useState, lazy, Suspense, useEffect } from 'react';
 import Story from './components/Story/Story';
 import GamePreview from './components/GamePreview/GamePreview';
 import Cta from './components/Cta/Cta';
+import DelayedSuspense from './components/DelayedSuspense/DelayedSuspense';
 import styles from './App.module.css';
 
 const Documentation = lazy(() => import('./components/Documentation/Documentation'));
+const GameApp = lazy(() => import('./gameApp'));
 
 export default function App() {
   const [showGame, setShowGame] = useState(false);
+
+  useEffect(() => {
+    // preloading
+    import('./gameApp');
+  }, []);
 
   const startGame = () => {
     setShowGame(true);
@@ -40,7 +46,9 @@ export default function App() {
         {showGame ? (
           <div id="game" className={styles.gameWrapper}>
             <div id="gameScrollAnchor" className={styles.gameScrollAnchor} />
-            <GameApp />
+            <DelayedSuspense fallback={<div>Loading game...</div>} delay={1000}>
+              <GameApp />
+            </DelayedSuspense>
           </div>
         ) : (
           <GamePreview />
