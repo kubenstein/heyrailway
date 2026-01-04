@@ -5,7 +5,7 @@ export default function Story() {
     <div className={styles.host}>
       <div className={styles.avatar}>
         <i className={styles.me} />
-        <span>Tokyo-based Sr. Fullstack Software Engineer</span>
+        <span>Tokyo-based Sr. Full Stack Software Engineer</span>
         <strong>Jakub Niewczas</strong>
         <p>
           13+ years of industrial experience in building
@@ -73,9 +73,9 @@ export default function Story() {
             up, and we made a bunch of people millionaires, that&#39;s for sure.
           </li>
         </ul>
-        I hope these two examples demonstrate a history of successful experiences working with big codebases and tons of
-        responsibilities, while leveraging the flexibility of a remote, autonomous team, and taking pride, and having
-        fun in building amazing software for our customers.
+        I hope these two examples demonstrate a history of successful experiences working with big codebases and a ton
+        of responsibilities, while leveraging the flexibility of a remote, autonomous team, and taking pride in, and
+        having fun in building amazing software for our customers.
         <br />
         <br />
         <br />

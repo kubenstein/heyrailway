@@ -8,7 +8,7 @@ export default function Documentation() {
       <strong className={styles.header}>Technical Documentation</strong>
       <br />
       <span>
-        HeyRailway is a fun mini-metro like game I built over New Year&amp;s holiday inspired by the service
+        HeyRailway is a fun Mini Metro like game I built over New Year&apos;s holiday inspired by the service
         infrastructure editor I saw at railway.com.
         <br />
         <br />
@@ -54,16 +54,16 @@ export type Cargo = {
   stationIdsRoute: Station['id'][];
 };`}
         </Prism>
-        Only <em>cargoSpawnerEngine</em> and <em>cartsMovementEngine</em> are JS classes because it&amp;s easier to
+        Only <em>cargoSpawnerEngine</em> and <em>cartsMovementEngine</em> are JS classes because it&apos;s easier to
         store and clean internal data that way. The rest of the codebase consists of POJOs, pure functions, and React
         stuff.
         <strong>GameController</strong>
         stores and exposes the complete game state as a render function, as well as functions triggering events. State
-        and state changes are handled by using <em>useReducer</em>. I didn&amp;t pull in whole Redux because
+        and state changes are handled by using <em>useReducer</em>. I didn&apos;t pull in whole Redux because
         <em>useReducer</em>
-        was enough, but we could make a use of some caching solutions from Redux.
+        was enough, but we could make use of some caching solutions from Redux.
         <br />
-        Event-driven architecture is the way to go as we can&amp;t rely on <em>useState</em>s in an async game
+        Event-driven architecture is the way to go as we can&apos;t rely on <em>useState</em> in an async game
         environment.
         <Prism language="typescript" style={vscDarkPlus}>
           {`export type GameState = {
@@ -107,16 +107,16 @@ export type RenderProps = GameState & {
         Cart movement is the core aspect of the game and presented itself with several challenges.
         <br />
         <br />
-        First, React is too slow to render changes at 60fps, that&amp;s why the whole cart movement is implemented
+        First, React is too slow to render changes at 60fps, that&apos;s why the whole cart movement is implemented
         outside of React, in an RAF loop, updating the position of each cart by modifying the CSS <em>transform</em>
         property.
         <br />
         <br />
         Second, to properly follow curved paths (in our case, paths consisting of 90-degree segments), the Movement
-        System builds an SVG path based on the line&amp;s station positions, then retrieves the exact position on the
-        path using SVG&amp;s built-in <em>path.getPointAtLength</em> function. For this to work, each Movement System
-        cart&amp;s internal object (different from the gameState cart object) stores position as a percentage progress -
-        current progress against the path&amp;s total length.
+        System builds an SVG path based on the line&apos;s station positions, then retrieves the exact position on the
+        path using SVG&apos;s built-in <em>path.getPointAtLength</em> function. For this to work, each Movement System
+        cart&apos;s internal object (different from the gameState cart object) stores position as a percentage progress
+        - current progress against the path&apos;s total length.
         <Prism language="typescript" style={vscDarkPlus}>
           {`cart.progress += cart.direction * cart.line.speed * deltaTime;
 
@@ -135,13 +135,13 @@ const hasArivedAtNextStation =
         </Prism>
         <img src="/assets/docs-movement.gif" />
         <strong>Cargo spawning and routing</strong>
-        Cargos are spawned randomly at random Station at accelerating intervals. Similar to the cart Movement System,
+        Cargos are spawned randomly at random station at accelerating intervals. Similar to the cart Movement System,
         the Cargo system also maintains its internal representation of lines and stations optimized for its
         functionalities. Each station and each line forms a graph: stations are nodes, and lines are bidirectional
         edges. I use the <em>graphology</em> library as the graph implementation. It comes with a handy API as well as
         out-of-the-box pathfinding.
         <br />
-        Pathfinding is a bit unusual because we don&amp;t want to find a path between two nodes; we want to find a path
+        Pathfinding is a bit unusual because we don&apos;t want to find a path between two nodes; we want to find a path
         between a starting node and the closest node with a matching <em>cargoType</em>. To do this, the system:
         <br />
         <br />
@@ -163,7 +163,7 @@ tmpGraph
 const fullStationIdsRoute = bidirectional(tmpGraph, startStationId, 'fakeDestination');
 `}
         </Prism>
-        While in this small game it&amp;s okay to construct temporary paths for each cargo, for bigger cargo sets it
+        While in this small game it&apos;s okay to construct temporary paths for each cargo, for bigger cargo sets it
         would be better to cache temporary graphs and modify them when a new station or line is created.
         <strong>Transferring cargo at stations</strong>
         Each cargo stores its full route as an array of station IDs. It also stores the current station ID and current
@@ -204,10 +204,10 @@ const fullStationIdsRoute = bidirectional(tmpGraph, startStationId, 'fakeDestina
         Non-React engines are JS classes that are kept in <em>useState</em> of corresponding React wrapper components,
         so they are reinitialized (and garbage collected) as well. The only tricky parts are cleaning the async spawning
         loops and game clock that are implemented as JS <em>setTimeouts</em>. Those are carefully cleaned during the
-        previous game component&amp;s unmount process.
+        previous game component&apos;s unmount process.
         <strong>UI</strong>
-        The UI is inspired by railway.com&amp;s infrastructure editor, with a grid, lines, and a right-hand side details
-        modal.
+        The UI is inspired by railway.com&apos;s infrastructure editor, with a grid, lines, and a right-hand side
+        details modal.
         <br />
         The UI is implemented in several special <em>Renderer</em> components: <em>CargoRenderer</em>,
         <em>CartsRenderer</em>,<em>RailwaysRenderer</em>, <em>StationsRenderer</em>. Each uses information from
@@ -217,7 +217,7 @@ const fullStationIdsRoute = bidirectional(tmpGraph, startStationId, 'fakeDestina
         <br />
         <br />
         Lines are flashy, neon-like dashed lines. Stations show what type each station is, as well as signaling
-        overcrowding by changing color and placing fire; there is also a small crown icon if a station has been
+        overcrowding by changing color and placing fires; there is also a small crown icon if a station has been
         upgraded, rising its capacity.
         <br />
         <br />
