@@ -1,0 +1,38 @@
+.documentation {
+  .header {
+    display: block;
+    font-weight: normal;
+    font-size: var(--header-font-size);
+    text-align: center;
+    text-transform: uppercase;
+    border: none;
+  }
+
+  strong {
+    display: block;
+    margin: var(--gap4) 0 var(--gap);
+    font-size: 150%;
+    border-bottom: 1px solid var(--secondary-accent-color);
+  }
+
+  em {
+    display: inline-block;
+    height: 100%;
+    margin: 0 calc(var(--gap) / 4);
+    padding: 2px calc(var(--gap) / 2);
+    font-family: 'Courier New', Courier, monospace;
+    background-color: var(--secondary-color);
+    border-radius: 4px;
+  }
+
+  pre {
+    margin: var(--gap2) 0 !important;
+    border-radius: 8px;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}
