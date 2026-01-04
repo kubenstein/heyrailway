@@ -1,5 +1,5 @@
 export type EditMode = 'idle' | 'addLine' | 'editLine' | 'addCart' | 'upgrateStation' | 'upgradeCart';
-export type CargoType = 'DB' | 'REACT' | 'GATEWAY' | 'REDIS';
+export type CargoType = 'DB' | 'NEXT' | 'TEMPORAL' | 'GATEWAY' | 'REDIS';
 export type LineId = -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 export type Point = { x: number; y: number };
 export type Station = {

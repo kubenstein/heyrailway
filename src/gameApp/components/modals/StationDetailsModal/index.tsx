@@ -43,7 +43,8 @@ export default function StationDetailsModal({ gameState, stationId, onClose }: S
               {
                 {
                   DB: 'Postgres',
-                  REACT: 'React',
+                  NEXT: 'Next.js',
+                  TEMPORAL: 'Temporal',
                   GATEWAY: 'Gateway',
                   REDIS: 'Redis',
                 }[station.cargoType]

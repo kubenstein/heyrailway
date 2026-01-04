@@ -5,8 +5,12 @@
   height: var(--local-size);
   background-size: cover;
 
-  &.cargoTypeReact {
-    background-image: url('/assets/react.png');
+  &.cargoTypeNext {
+    background-image: url('/assets/next.png');
+  }
+
+  &.cargoTypeTemporal {
+    background-image: url('/assets/temporal.png');
   }
 
   &.cargoTypeDB {
