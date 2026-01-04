@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "tsc --noEmit && eslint . --ext .ts,.tsx && stylelint \"src/**/*.css\"",
-    "lint:format": "prettier --write . ; stylelint \"src/**/*.css\" --fix"
+    "lint:format": "prettier --write . ; eslint . --ext .ts,.tsx --fix ; stylelint \"src/**/*.css\" --fix"
   },
   "dependencies": {},
   "devDependencies": {
