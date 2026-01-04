@@ -102,14 +102,16 @@ export default class CargoSpawnerEngine {
 
   // rerouting
   private rerouteCargos(allCargos: Cargo[]) {
-    allCargos.forEach((cargo) => {
-      const stationIdsRoute = this.findRoute(cargo.stationId, cargo.cargoType) || ['NO_PATH'];
-      const updatedCargo: Cargo = {
-        ...cargo,
-        stationIdsRoute,
-      };
-      this.onCargoReroute(updatedCargo);
-    });
+    allCargos
+      .filter((cargo) => !!cargo.stationId)
+      .forEach((cargo) => {
+        const stationIdsRoute = this.findRoute(cargo.stationId, cargo.cargoType) || ['NO_PATH'];
+        const updatedCargo: Cargo = {
+          ...cargo,
+          stationIdsRoute,
+        };
+        this.onCargoReroute(updatedCargo);
+      });
   }
 
   // support
