@@ -2,6 +2,7 @@
   --primary-color: #0d0c14;
   --primary-accent-color: #f87626;
   --secondary-color: #333239;
+  --secondary-accent-color: #caa289;
   --accent-color-background: linear-gradient(135deg, var(--primary-accent-color), #8d4b20);
   --primary-ink: #dcdce0;
   --secondary-ink: #6b727e;
@@ -18,7 +19,7 @@
 
   box-sizing: border-box;
   padding: var(--gap2);
-  background: var(--primary-color) url('/assets/waves-bg.png') 0 0 no-repeat;
+  background: var(--primary-color) url('/assets/waves-bg.png') 0 5% no-repeat;
 }
 
 .main {
@@ -67,8 +68,36 @@
 }
 
 .story {
-  &>p {
+  & > p {
     margin: var(--gap4) auto calc(var(--gap4) * 2);
+  }
+
+  .quote {
+    margin: var(--gap4) 0 calc(var(--gap4) * 2);
+
+    color: var(--secondary-ink);
+
+    span {
+      font-size: 40px;
+      font-style: italic;
+    }
+
+    small {
+      font-size: var(--secondary-font-size);
+      font-style: normal;
+    }
+  }
+
+  em {
+    color: var(--secondary-accent-color);
+  }
+
+  a {
+    color: var(--primary-ink);
+  }
+
+  ul li {
+    margin-bottom: var(--gap);
   }
 }
 
