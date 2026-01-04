@@ -36,22 +36,22 @@
 .avatar {
   display: flex;
   flex-direction: column;
+  gap: calc(var(--gap) / 2);
   align-items: center;
   text-align: center;
-  gap: calc(var(--gap) / 2);
 
   .me {
     width: 80px;
     height: 80px;
     background: url('/assets/me.png') no-repeat;
     background-size: cover;
-    border-radius: 100rem;
     border: 2px solid var(--primary-accent-color);
+    border-radius: 100rem;
   }
 
   span {
-    font-size: var(--secondary-font-size);
     color: var(--primary-accent-color);
+    font-size: var(--secondary-font-size);
   }
 
   strong {
@@ -60,8 +60,8 @@
   }
 
   p {
-    margin: 0;
     max-width: 400px;
+    margin: 0;
     color: var(--secondary-ink);
   }
 }
@@ -82,14 +82,14 @@
     --btn-shape: url("data:image/svg+xml,%3Csvg%20width='131'%20height='61'%20viewBox='0%200%20131%2061'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3E%3Cpath%20d='M106.054%200.529549L14.5541%205.52955C14.5541%205.52955%2010.5541%205.52955%209.05409%207.52955C7.55409%209.52955%207.0541%2013.0295%207.0541%2013.0295L0.554104%2049.5295C0.554104%2049.5295%20-0.0173397%2054.0295%202.5541%2057.0295C5.12554%2060.0295%209.5541%2059.5295%209.5541%2059.5295L120.054%2048.0295C120.054%2048.0295%20125.459%2047.8373%20128.554%2043.5295C131.905%2038.8659%20129.054%2032.5295%20129.054%2032.5295L119.054%207.52955C119.054%207.52955%20117.882%204.38102%20115.554%202.52955C112.498%200.0984428%20106.054%200.529549%20106.054%200.529549Z'%20fill='white'%20stroke='white'/%3E%3C/svg%3E");
 
     position: relative;
+    top: 0;
     padding: calc(var(--gap2) * 0.8) var(--gap2) var(--gap2) var(--gap2);
     color: var(--primary-ink);
     font-size: var(--primary-font-size);
     background: var(--accent-color-background);
     cursor: pointer;
-    border: none;
-    top: 0;
     transition: top 0.2s ease;
+    border: none;
     -webkit-mask: var(--btn-shape) center / contain no-repeat;
     mask: var(--btn-shape) center / contain no-repeat;
 
@@ -100,18 +100,18 @@
     }
 
     &:hover:not(:disabled) {
-      top: -2px
+      top: -2px;
     }
   }
 
   button.docs {
     position: relative;
+    padding-right: 40px;
     color: var(--primary-ink);
     font-size: var(--primary-font-size);
     background: none;
     cursor: pointer;
     border: none;
-    padding-right: 40px;
 
     /* arrow */
     &::before {
@@ -147,6 +147,75 @@
   .gameScrollAnchor {
     position: absolute;
     top: calc(var(--gap2) * -1);
+  }
+}
+
+.gamePreview {
+  position: relative;
+  display: flex;
+  width: 100%;
+  margin-bottom: calc(var(--gap4) * 2);
+  overflow: hidden;
+  background-color: #0f111a;
+  border: 1px solid #2c2e36;
+  border-radius: 8px;
+
+  img.gamePreviewImg {
+    display: block;
+    width: 60%;
+    object-fit: contain;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    padding: var(--gap2);
+    background: url('/assets/preview-station-details.png') 100% 100% no-repeat;
+    background-size: 33%;
+    border-left: 1px solid #2c2e36;
+
+    p,
+    ul {
+      margin: 0;
+    }
+
+    strong {
+      color: var(--primary-accent-color);
+      font-size: var(--header-font-size);
+      text-transform: uppercase;
+    }
+  }
+
+  .stations {
+    display: flex;
+    gap: var(--gap);
+    margin-top: var(--gap4);
+
+    img {
+      width: var(--gap4);
+    }
+  }
+}
+
+@media (max-width: 880px) {
+  .gamePreview {
+    flex-direction: column;
+
+    img.gamePreviewImg {
+      width: 100%;
+      object-fit: contain;
+    }
+
+    .content {
+      background: none;
+      border-top: 1px solid #2c2e36;
+      border-left: none;
+    }
+
+    .stations {
+      justify-content: center;
+    }
   }
 }
 
@@ -186,6 +255,7 @@
     position: relative;
     display: flex;
     justify-content: space-between;
+    box-sizing: border-box;
     width: 100%;
     max-width: 400px;
     margin: var(--gap2) 0 var(--gap4);
@@ -195,7 +265,6 @@
     background-size: 30px 30px;
     border: 1px solid var(--local-board-border-color);
     border-radius: 8px;
-    box-sizing: border-box;
 
     &::before {
       content: '';
