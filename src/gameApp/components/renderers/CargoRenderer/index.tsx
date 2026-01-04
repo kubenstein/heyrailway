@@ -8,7 +8,7 @@ interface CargoRendererProps {
 }
 
 export default function CargoRenderer({ cargo, size = 12 }: CargoRendererProps) {
-  const className = [styles.cargo, getTypeClass(cargo.cargoType)].join(' ');
+  const className = [styles.host, getTypeClass(cargo.cargoType)].join(' ');
   let routeString: string;
   if (cargo.stationIdsRoute[0] == 'NO_PATH') {
     routeString = 'No route available';

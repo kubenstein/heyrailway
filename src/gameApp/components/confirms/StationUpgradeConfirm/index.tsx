@@ -16,7 +16,7 @@ export default function StationUpgradeConfirm({ stationToUpgrade, onConfirmClick
   }, [stationToUpgrade]);
 
   return (
-    <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
+    <div className={`${styles.host} ${slideIn ? styles.show : ''}`}>
       <p>Do you want to upgrade this station?</p>
 
       <button className={styles.btn} onClick={() => stationToUpgrade && onConfirmClick(stationToUpgrade)}>

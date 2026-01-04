@@ -1,4 +1,4 @@
-.modal {
+.host {
   position: absolute;
   display: flex;
   top: calc(var(--gap2) * -1);

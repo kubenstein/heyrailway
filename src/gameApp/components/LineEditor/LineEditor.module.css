@@ -1,4 +1,4 @@
-.lineEditor {
+.host {
   position: absolute;
   z-index: var(--eleveted-z-index);
   user-select: none;

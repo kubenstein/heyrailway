@@ -45,7 +45,7 @@ export default function Game() {
   }, [editMode]);
 
   return (
-    <div className={styles.game}>
+    <div className={styles.host}>
       <GameController
         editMode={editMode}
         render={(g) => (

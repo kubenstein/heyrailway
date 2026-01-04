@@ -2,7 +2,7 @@ import styles from './GamePreview.module.css';
 
 export default function GamePreview() {
   return (
-    <div className={styles.gamePreview}>
+    <div className={styles.host}>
       <img className={styles.gamePreviewImg} src="/assets/preview.png" />
       <div className={styles.content}>
         <strong>Join the Adventure!</strong>

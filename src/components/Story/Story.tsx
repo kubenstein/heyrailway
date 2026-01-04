@@ -2,7 +2,7 @@ import styles from './Story.module.css';
 
 export default function Story() {
   return (
-    <div className={styles.story}>
+    <div className={styles.host}>
       <div className={styles.avatar}>
         <i className={styles.me} />
         <span>Tokyo-based Sr. Fullstack Software Engineer</span>

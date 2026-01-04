@@ -1,4 +1,4 @@
-.modal {
+.host {
   position: absolute;
   display: flex;
   top: var(--gap2);
