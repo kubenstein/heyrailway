@@ -72,7 +72,7 @@ export default function Game() {
             <StationSpawner
               enabled={g.running}
               round={g.round}
-              initialStations={2}
+              initialStations={g.initialStations}
               initialStationCapacity={g.stationCapacity}
               frequencyMs={g.stationSpawningFrequencyMs}
               onStationSpawn={g.addStation}
