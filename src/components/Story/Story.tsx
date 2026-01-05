@@ -86,7 +86,7 @@ export default function Story() {
         <br />
         Jakub Niewczas
         <br />
-        https://jakubniewczas.pl
+        https://www.jakubniewczas.pl
       </span>
     </div>
   );

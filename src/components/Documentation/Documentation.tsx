@@ -279,11 +279,15 @@ const fullStationIdsRoute = bidirectional(tmpGraph, startStationId, 'fakeDestina
         Initially, I implemented the game board as SVG because it was easier to draw elements. But refactoring carts to
         use the <em>transform</em> property for position adjustments allowed me to fall back to HTML and CSS we all know
         and love, to precisely control how each element looks, feels, and behaves.
+        <strong>Codebase</strong>
+        The complete codebase is available on{' '}
+        <a href="https://github.com/kubenstein/heyrailway" target="_blank" rel="noreferrer">
+          my github
+        </a>
+        . Feel free to explore it, or even maybe contribute!
         <strong>Early sketches</strong>
         <img src="/assets/docs-sketch.jpg" />
         <small className={styles.figureExplenationCenter}>Early game sketches on my whiteboard.</small>
-        <br />
-        <br />
       </span>
     </div>
   );
