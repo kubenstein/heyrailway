@@ -71,7 +71,7 @@ export default function App() {
 
         <div className={styles.footer}>
           Made with ♥ by{' '}
-          <a target="_blank" href="https://jakubniewczas.pl" rel="noreferrer">
+          <a target="_blank" href="https://www.jakubniewczas.pl" rel="noreferrer">
             Jakub Niewczas
           </a>
           <br />
