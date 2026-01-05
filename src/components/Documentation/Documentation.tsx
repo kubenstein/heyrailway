@@ -199,6 +199,7 @@ tmpGraph
   .filterNodes((_node, attrs) => attrs.cargoType === cargoType)
   .forEach((node) => tmpGraph.addUndirectedEdge(node, 'fakeDestination'));
 const fullStationIdsRoute = bidirectional(tmpGraph, startStationId, 'fakeDestination');
+return fullStationIdsRoute.slice(1, -1);
 `}
         </Prism>
         <small className={styles.figureExplenation}>
