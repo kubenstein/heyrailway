@@ -4,7 +4,7 @@
 
 ## HeyRailway
 
-Recruitment pitch page
+A fun side-project coded during the winter holidays 2025/2026.
 
 ### Development
 
