@@ -32,7 +32,8 @@ export default function Story() {
         <br />
         My name is Jakub Niewczas, I&#39;m a Senior Fullstack Software Engineer with{' '}
         <em>13+ years of professional experience</em>, and while researching alternatives for fly.io, I was really
-        <em>amazed by your UI!</em> I thought
+        amazed by railway especially by your UI!
+        <br />I thought{` `}
         <i>
           &#34;Wouldn&#39;t it be cool if the Railway UI were a train map with stations and lines, where trains go back
           and forth carrying data as cargo!&#34;
@@ -45,8 +46,9 @@ export default function Story() {
         <br />
         <br />
         <br />
-        <em>I read your career page, blog posts</em>, and was even more amazed by your <em>working culture</em> -
-        <em>it&#39;s exactly how I work</em>, how I want to work and how I can deliver the most value.
+        <em>I read your career page and blog posts</em>, and was even more amazed by your <em>working culture</em> -
+        <em>it&#39;s exactly how I work</em>, how I want to work and how I can deliver the most value. Would you be open
+        to a quick chat to discuss potential opportunities to work together?
         <br />
         <br />
         As a good starter, let me share just two companies from my resume that I think are the most relevant to Railway:
@@ -59,7 +61,7 @@ export default function Story() {
             for several years. My responsibilities included the development of core payment logic, integrations with
             upstream services, and supporting satellite services. With such a{' '}
             <em>volume of traffic, money, regulations, flows</em>, and all sorts of other <em>responsibilities</em>, it
-            was challenging but actually a very interesting project!
+            was challenging but very interesting project!
           </li>
           <li>
             I&#39;m a <em>Senior FullStack Engineer</em> at{' '}
@@ -69,13 +71,14 @@ export default function Story() {
             , an NFT marketplace in the crypto space. <em>We work in exactly the same way as you!</em> With a fully
             <em>async</em>, <em>global</em> team, leveraging Discord, Linear, having bots, and automating as much as
             possible. With a small, robust, and super smart team, <em>ownership is pushed down to each developer</em>.
-            Everyone has permission from the CTO to merge without reviews in case of emergency, yet nothing ever blew
-            up, and we made a bunch of people millionaires, that&#39;s for sure.
+            Everyone has permission from the CTO to merge even without reviews in case of emergency, &#34;I fully trust
+            your judgement guys&#34;, yet nothing ever blew up, and we made a bunch of people millionaires, that&#39;s
+            for sure.
           </li>
         </ul>
-        I hope these two examples demonstrate a history of successful experiences working with big codebases and a ton
-        of responsibilities, while leveraging the flexibility of a remote, autonomous team, and taking pride in, and
-        having fun in building amazing software for our customers.
+        I hope these two examples demonstrate a history of successful experiences working with big codebases with tons
+        of responsibilities, leveraging the flexibility of a remote, autonomous team, and taking pride, and having fun
+        in building amazing software for our customers.
         <br />
         <br />
         <br />
