@@ -1,0 +1,20 @@
+.host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap2);
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: var(--gap4);
+  padding: var(--gap2);
+  overflow: hidden;
+  text-align: center;
+  background-color: #0f111a;
+  border: 1px solid #2c2e36;
+  border-radius: 8px;
+
+  img.awkwardPngLol {
+    display: block;
+    width: 150px;
+    margin: 0 auto;
+  }
+}

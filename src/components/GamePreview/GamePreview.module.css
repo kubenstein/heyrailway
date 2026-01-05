@@ -47,7 +47,7 @@
 }
 
 @media (max-width: 880px) {
-  .gamePreview {
+  .host {
     flex-direction: column;
 
     img.gamePreviewImg {

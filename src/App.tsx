@@ -4,12 +4,14 @@ import GamePreview from './components/GamePreview/GamePreview';
 import Cta from './components/Cta/Cta';
 import DelayedSuspense from './components/DelayedSuspense/DelayedSuspense';
 import styles from './App.module.css';
+import OnlyDesktopNotice from './components/OnlyDesktopNotice/OnlyDesktopNotice';
 
 const Documentation = lazy(() => import('./components/Documentation/Documentation'));
 const GameApp = lazy(() => import('./gameApp'));
 
 export default function App() {
   const [showGame, setShowGame] = useState(false);
+  const [isDesktop] = useState(() => window?.matchMedia('(min-width: 880px)').matches);
 
   useEffect(() => {
     // preloading
@@ -44,12 +46,18 @@ export default function App() {
         </div>
 
         {showGame ? (
-          <div id="game" className={styles.gameWrapper}>
-            <div id="gameScrollAnchor" className={styles.gameScrollAnchor} />
-            <DelayedSuspense fallback={<div>Loading game...</div>} delay={1000}>
-              <GameApp />
-            </DelayedSuspense>
-          </div>
+          <>
+            {isDesktop ? (
+              <div id="game" className={styles.gameWrapper}>
+                <div id="gameScrollAnchor" className={styles.gameScrollAnchor} />
+                <DelayedSuspense fallback={<div>Loading game...</div>} delay={1000}>
+                  <GameApp />
+                </DelayedSuspense>
+              </div>
+            ) : (
+              <OnlyDesktopNotice />
+            )}
+          </>
         ) : (
           <GamePreview />
         )}
