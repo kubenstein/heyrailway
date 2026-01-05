@@ -8,7 +8,7 @@ export default function Story() {
         <span>Tokyo-based Sr. Full Stack Software Engineer</span>
         <strong>Jakub Niewczas</strong>
         <p>
-          13+ years of industrial experience in building
+          14+ years of industrial experience in building
           <br />
           and growing multi-million dollar tech projects.
         </p>
@@ -31,7 +31,7 @@ export default function Story() {
         <br />
         <br />
         My name is Jakub Niewczas, I&#39;m a Senior Fullstack Software Engineer with{' '}
-        <em>13+ years of professional experience</em>, and while researching alternatives for fly.io, I was really
+        <em>14+ years of professional experience</em>, and while researching alternatives for fly.io, I was really
         amazed by railway especially by your UI!
         <br />I thought{` `}
         <i>
