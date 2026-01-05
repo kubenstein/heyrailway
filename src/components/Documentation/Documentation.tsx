@@ -44,6 +44,7 @@ export type Cart = {
   capacity: number;
   createdAt: number;
   points: number;
+  nextStationId: Station['id'];
 };
 
 export type Cargo = {

@@ -9,6 +9,7 @@ interface CargoSpawnerProps {
   stations: Station[];
   lines: Line[];
   cargos: Cargo[];
+  carts: Cart[];
   onCargoSpawn: (cargo: Cargo) => void;
   onCargoReroute: (cargo: Cargo) => void;
 }
@@ -29,12 +30,12 @@ export default function CargoSpawner(props: CargoSpawnerProps) {
     // add new lines
     props.lines
       .filter((line) => !lineIds.current.includes(line.id))
-      .forEach((line) => spawningEngine.addLine(line, props.cargos));
+      .forEach((line) => spawningEngine.addLine(line, props.cargos, props.carts));
 
     // remove removed lines
     lineIds.current
       .filter((lineId) => !props.lines.find(({ id }) => id === lineId))
-      .forEach((lineId) => spawningEngine.removeLine(lineId, props.cargos));
+      .forEach((lineId) => spawningEngine.removeLine(lineId, props.cargos, props.carts));
 
     lineIds.current = props.lines.map(({ id }) => id);
   }, [props.lines, spawningEngine]);

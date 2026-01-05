@@ -66,6 +66,7 @@ export default function Game() {
               stations={g.stations}
               lines={g.lines}
               cargos={g.cargos}
+              carts={g.carts}
               onCargoSpawn={g.addCargo}
               onCargoReroute={g.rerouteCargo}
             />
@@ -157,6 +158,7 @@ export default function Game() {
                         line,
                         points: 0,
                         createdAt: g.round,
+                        nextStationId: line.stations[0].id,
                       });
                     }}
                   />
@@ -180,6 +182,7 @@ export default function Game() {
                     line,
                     points: 0,
                     createdAt: g.round,
+                    nextStationId: line.stations[0].id,
                   });
                   setAddCartToLine(null);
                 }}

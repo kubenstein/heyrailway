@@ -120,7 +120,9 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
       const newCargos = dropDeliverLoadCargos(state.cargos, cart, action.station, action.cartNextStation);
       const deliveredCargosCount = state.cargos.length - newCargos.length;
       const newCarts = state.carts.map((cart) =>
-        cart.id === action.cartId ? { ...cart, points: cart.points + deliveredCargosCount } : cart
+        cart.id === action.cartId
+          ? { ...cart, nextStationId: action.cartNextStation.id, points: cart.points + deliveredCargosCount }
+          : cart
       );
       return {
         ...state,
