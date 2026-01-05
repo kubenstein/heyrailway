@@ -14,22 +14,22 @@ export default function GamePreview() {
           </li>
           <li>Cart and station upgrades!</li>
           <li>
-            <em>Amazing infrastructure editor!</em>
+            <em>Amazing infrastructure canvas!</em>
           </li>
           <li>
             Hover over cargos to <em>examinate detailed routing!</em>
           </li>
-          <li>Handle dangerous network congestion situations! Oh no!</li>
+          <li>Handle dramatic network congestion situations! Oh no!</li>
         </ul>
         <ul>
           <li>
-            Smooth (and clever) <em>RAF-based animations!</em>
+            Smooth (and clever) <em>rAF-based animations!</em>
           </li>
           <li>
             Advanced <em>graph-based pathfinding!</em>
           </li>
           <li>
-            And simply <em>lots of FUN!</em> <small>(for sure building it!)</small>
+            And simply <em>lots of FUN!</em> <small>(playing and building it!)</small>
           </li>
         </ul>
         <div className={styles.stations}>
