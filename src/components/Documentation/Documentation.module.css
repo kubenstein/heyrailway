@@ -26,8 +26,21 @@
   }
 
   pre {
-    margin: var(--gap2) 0 !important;
+    margin: var(--gap2) 0 0 !important;
     border-radius: 8px;
+  }
+
+  .figureExplenation {
+    display: block;
+    margin: calc(var(--gap) / 2) 0 var(--gap2);
+    color: var(--secondary-ink);
+  }
+
+  .figureExplenationCenter {
+    display: block;
+    margin: calc(var(--gap) / 2) 0 var(--gap2);
+    color: var(--secondary-ink);
+    text-align: center;
   }
 
   img {
