@@ -40,7 +40,7 @@ export const initialState: GameState = {
   round: 1,
   cartCapacity: 6,
   stationCapacity: 20,
-  initialStations: 2,
+  initialStations: 3,
   perkCartUpgrades: 0,
   perkCartUpgradeFactor: 2,
   perkStationUpgrades: 0,

@@ -28,7 +28,7 @@ export default function StationSpawner({
     lastStationId.current += 1;
 
     // spawn first stations close to initial user viewport
-    let range = lastStationId.current > 2 ? BOARD_SIZE : BOARD_SIZE / 2;
+    let range = lastStationId.current > 3 ? BOARD_SIZE : BOARD_SIZE / 2;
 
     const newStation = {
       id: `${lastStationId.current}`,
