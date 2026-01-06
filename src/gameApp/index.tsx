@@ -3,7 +3,7 @@ import styles from './index.module.css';
 
 export default function App() {
   return (
-    <div className={styles.gameVars}>
+    <div className={styles.host}>
       <Game />
     </div>
   );

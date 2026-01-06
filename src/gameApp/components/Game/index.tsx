@@ -45,7 +45,7 @@ export default function Game() {
   }, [editMode]);
 
   return (
-    <div className={styles.game}>
+    <div className={styles.host}>
       <GameController
         editMode={editMode}
         render={(g) => (
@@ -66,12 +66,14 @@ export default function Game() {
               stations={g.stations}
               lines={g.lines}
               cargos={g.cargos}
+              carts={g.carts}
               onCargoSpawn={g.addCargo}
               onCargoReroute={g.rerouteCargo}
             />
             <StationSpawner
               enabled={g.running}
               round={g.round}
+              stations={g.stations}
               initialStations={g.initialStations}
               initialStationCapacity={g.stationCapacity}
               frequencyMs={g.stationSpawningFrequencyMs}
@@ -157,6 +159,7 @@ export default function Game() {
                         line,
                         points: 0,
                         createdAt: g.round,
+                        nextStationId: line.stations[0].id,
                       });
                     }}
                   />
@@ -180,6 +183,7 @@ export default function Game() {
                     line,
                     points: 0,
                     createdAt: g.round,
+                    nextStationId: line.stations[0].id,
                   });
                   setAddCartToLine(null);
                 }}

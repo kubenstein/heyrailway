@@ -1,4 +1,4 @@
-.story {
+.host {
   & > p {
     margin: var(--gap4) auto calc(var(--gap4) * 2);
   }

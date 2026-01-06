@@ -1,4 +1,4 @@
-.cargo {
+.host {
   --local-size: 12px;
 
   width: var(--local-size);

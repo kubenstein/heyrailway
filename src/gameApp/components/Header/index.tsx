@@ -15,7 +15,7 @@ export default function Header({ gameState: g, editMode, onEditModeChange }: Hea
   }, [g.perkAvailableLines, editMode, onEditModeChange]);
 
   return (
-    <div className={styles.headerWrapper}>
+    <div className={styles.host}>
       <div className={styles.header}>
         <div className={styles.primary}>
           <div className={styles.logo} />

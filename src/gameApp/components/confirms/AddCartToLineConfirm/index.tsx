@@ -16,7 +16,7 @@ export default function AddCartToLineConfirm({ line, onConfirmClick }: AddCartTo
   }, [line]);
 
   return (
-    <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
+    <div className={`${styles.host} ${slideIn ? styles.show : ''}`}>
       <p>Do you want to add cart to this line?</p>
 
       <button className={styles.btn} onClick={() => line && onConfirmClick(line)}>

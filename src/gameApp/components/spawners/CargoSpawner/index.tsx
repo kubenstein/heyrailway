@@ -9,6 +9,7 @@ interface CargoSpawnerProps {
   stations: Station[];
   lines: Line[];
   cargos: Cargo[];
+  carts: Cart[];
   onCargoSpawn: (cargo: Cargo) => void;
   onCargoReroute: (cargo: Cargo) => void;
 }
@@ -29,12 +30,12 @@ export default function CargoSpawner(props: CargoSpawnerProps) {
     // add new lines
     props.lines
       .filter((line) => !lineIds.current.includes(line.id))
-      .forEach((line) => spawningEngine.addLine(line, props.cargos));
+      .forEach((line) => spawningEngine.addLine(line, props.cargos, props.carts));
 
     // remove removed lines
     lineIds.current
       .filter((lineId) => !props.lines.find(({ id }) => id === lineId))
-      .forEach((lineId) => spawningEngine.removeLine(lineId, props.cargos));
+      .forEach((lineId) => spawningEngine.removeLine(lineId, props.cargos, props.carts));
 
     lineIds.current = props.lines.map(({ id }) => id);
   }, [props.lines, spawningEngine]);
@@ -71,7 +72,7 @@ export const dropDeliverLoadCargos = (prevCargos: Cargo[], cart: Cart, station: 
       .map((cargo) => {
         if (cargo.stationId !== station.id) return cargo; // not this station
         if (cargo.stationIdsRoute[0] !== cartNextStation.id) return cargo; // not going to cart next station
-        if (cart.capacity <= newCargos.filter((c) => c.cartId === cart.id).length) return cargo; // cart full
+        if (cart.capacity <= newCargos.filter((c) => c.cartId === cart.id).length) return cargo; // cart is full
 
         cargo.cartId = cart.id;
         cargo.stationId = null;

@@ -26,7 +26,7 @@ export default function StationDetailsModal({ gameState, stationId, onClose }: S
   const headerClass = [styles.header, emergency ? styles.emergency : ''].join(' ');
 
   return (
-    <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
+    <div className={`${styles.host} ${slideIn ? styles.show : ''}`}>
       {station && (
         <div className={styles.modalContent}>
           <div className={headerClass}>

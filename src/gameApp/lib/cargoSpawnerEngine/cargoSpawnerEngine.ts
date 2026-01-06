@@ -1,6 +1,6 @@
 import Graph from 'graphology';
 import { bidirectional } from 'graphology-shortest-path';
-import { Cargo, Line, Station } from '../types';
+import { Cargo, Cart, Line, Station } from '../types';
 import randomId from '../randomId';
 import { randomCargoType } from '../cargoTypes';
 
@@ -29,15 +29,15 @@ export default class CargoSpawnerEngine {
     this.setEnabled(props.enabled);
   }
 
-  addLine(line: Line, allCargos: Cargo[]) {
+  addLine(line: Line, allCargos: Cargo[], allCarts: Cart[]) {
     this.lines.push(line);
     this.addLineToGraph(this.graph, line);
 
     // Reroute cargos that were stuck, maybe they can be routed now
-    this.rerouteCargos(allCargos);
+    this.rerouteCargos(allCargos, allCarts);
   }
 
-  removeLine(lineId: Line['id'] | null, allCargos: Cargo[]) {
+  removeLine(lineId: Line['id'] | null, allCargos: Cargo[], allCarts: Cart[]) {
     if (!lineId) return;
 
     this.lines = this.lines.filter(({ id }) => id !== lineId);
@@ -48,7 +48,7 @@ export default class CargoSpawnerEngine {
     this.lines.forEach((line) => this.addLineToGraph(this.graph, line));
 
     // Reroute all cargos
-    this.rerouteCargos(allCargos);
+    this.rerouteCargos(allCargos, allCarts);
   }
 
   addStation(station: Station) {
@@ -101,17 +101,37 @@ export default class CargoSpawnerEngine {
   }
 
   // rerouting
-  private rerouteCargos(allCargos: Cargo[]) {
-    allCargos
-      .filter((cargo) => !!cargo.stationId)
-      .forEach((cargo) => {
-        const stationIdsRoute = this.findRoute(cargo.stationId, cargo.cargoType) || ['NO_PATH'];
-        const updatedCargo: Cargo = {
-          ...cargo,
-          stationIdsRoute,
-        };
-        this.onCargoReroute(updatedCargo);
-      });
+  private rerouteCargos(allCargos: Cargo[], allCarts: Cart[]) {
+    allCargos.forEach((cargo) => {
+      let stationIdsRoute: string[];
+
+      // cargo is waiting at a station
+      if (cargo.stationId) {
+        stationIdsRoute = this.findRoute(cargo.stationId, cargo.cargoType) || ['NO_PATH'];
+
+        // cargo is in a cart
+      } else {
+        const cart = allCarts.find((c) => c.id === cargo.cartId)!;
+        const routeFromNextStation = this.findRoute(cart.nextStationId, cargo.cargoType);
+
+        // a route from the next station is found
+        // so get off at the next station and follow the path
+        if (routeFromNextStation) {
+          stationIdsRoute = [cart.nextStationId, ...routeFromNextStation];
+
+          // no route from the next station is found
+          // so get off at the next station and stay there
+        } else {
+          stationIdsRoute = [cart.nextStationId, 'NO_PATH'];
+        }
+      }
+
+      const updatedCargo: Cargo = {
+        ...cargo,
+        stationIdsRoute,
+      };
+      this.onCargoReroute(updatedCargo);
+    });
   }
 
   // support

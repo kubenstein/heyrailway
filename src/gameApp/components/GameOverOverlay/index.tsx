@@ -16,7 +16,7 @@ export default function GameOverOverlay({ gameState: g, onRestartGameClick }: Ga
   }, []);
 
   return (
-    <div className={`${styles.wrapper} ${fadeIn ? styles.show : ''}`}>
+    <div className={`${styles.host} ${fadeIn ? styles.show : ''}`}>
       <div className={styles.overlay} />
 
       <div className={styles.modal}>

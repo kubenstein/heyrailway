@@ -22,7 +22,7 @@ export default function CartDetailsModal({ gameState, cartId, onClose }: CartDet
   const cargos = cartId ? gameState.cargos.filter((c) => c.cartId === cartId) : [];
 
   return (
-    <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
+    <div className={`${styles.host} ${slideIn ? styles.show : ''}`}>
       {cart && (
         <div className={styles.modalContent}>
           <div className={styles.header}>

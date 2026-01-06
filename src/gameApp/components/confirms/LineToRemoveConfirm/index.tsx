@@ -16,7 +16,7 @@ export default function LineToRemoveConfirm({ lineToRemove, onConfirmClick }: Li
   }, [lineToRemove]);
 
   return (
-    <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
+    <div className={`${styles.host} ${slideIn ? styles.show : ''}`}>
       <p>Do you want to remove this line?</p>
 
       <button className={styles.btn} onClick={() => lineToRemove && onConfirmClick(lineToRemove)}>

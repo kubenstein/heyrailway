@@ -16,7 +16,7 @@ export default function CartUpgradeConfirm({ cartToUpgrade, onConfirmClick }: Ca
   }, [cartToUpgrade]);
 
   return (
-    <div className={`${styles.modal} ${slideIn ? styles.show : ''}`}>
+    <div className={`${styles.host} ${slideIn ? styles.show : ''}`}>
       <p>Do you want to upgrade this cart?</p>
 
       <button className={styles.btn} onClick={() => cartToUpgrade && onConfirmClick(cartToUpgrade)}>

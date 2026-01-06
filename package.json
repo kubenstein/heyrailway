@@ -1,12 +1,12 @@
 {
-  "name": "heyrailway-mini-metro-lite",
+  "name": "heyrailway",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "tsc --noEmit && eslint . --ext .ts,.tsx && stylelint \"src/**/*.css\"",
-    "lint:format": "prettier --write . ; eslint . --ext .ts,.tsx --fix ; stylelint \"src/**/*.css\" --fix"
+    "lint": "tsc --noEmit && eslint \"src/**/\" --ext .ts,.tsx && stylelint \"src/**/*.css\"",
+    "lint:format": "prettier --write . ; eslint \"src/**/\" --ext .ts,.tsx --fix ; stylelint \"src/**/*.css\" --fix"
   },
   "dependencies": {},
   "devDependencies": {
