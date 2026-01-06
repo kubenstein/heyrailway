@@ -49,8 +49,15 @@ export default function BoardDragger({ boardEl, onBoardMove, currentScale, onSca
   const onWheel = useCallback(
     (e: WheelEvent) => {
       e.preventDefault();
-      const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
-      const newScale = Math.max(0.1, Math.min(5, currentScale * zoomFactor));
+      let step = 180;
+      if (e.deltaMode === WheelEvent.DOM_DELTA_LINE) {
+        step = 3;
+      } else if (e.deltaMode === WheelEvent.DOM_DELTA_PAGE) {
+        step = 1;
+      }
+
+      const zoomFactor = Math.pow(0.9, e.deltaY / step);
+      const newScale = Math.max(0.4, Math.min(5, currentScale * zoomFactor));
       onScaleChange(newScale);
     },
     [currentScale, onScaleChange]
