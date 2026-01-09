@@ -16,13 +16,13 @@ export default function Documentation() {
         me briefly discuss all of them one by one, highlighting challenges, solutions, and my takeaways from each of
         them.
         <strong>Types</strong>
-        Heavily relying on TypeScript allowed me to use POJOs for the majority of the data. Exisitng data objects are
-        never modiefied. They are either recreated with new values or deep-copied, modified and returned. This approach
+        Heavily relying on TypeScript allowed me to use POJOs for the majority of the data. Existing data objects are
+        never modified. They are either recreated with new values or deep-copied, modified and returned. This approach
         greatly reduces the chances of bugs related to unintended data mutations and UI data drift.
         <Prism language="typescript" style={vscDarkPlus}>
-          {`export type EditMode = 'idle' | 'addLine' | 'editLine' | 'addCart' | 'upgrateStation' | 'upgradeCart';
+          {`export type EditMode = 'idle' | 'addLine' | 'editLine' | 'addCart' | 'upgradeStation' | 'upgradeCart';
 
-export type CargoType = 'DB' | 'REACT' | 'GATEWAY' | 'REDIS';
+export type CargoType = 'DB' | 'NEXT' | 'TEMPORAL' | 'GATEWAY' | 'REDIS';
 
 export type LineId = -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // -1 - edit mode line
 
@@ -142,7 +142,7 @@ export type RenderProps = GameState & {
 };`}
         </Prism>
         <small className={styles.figureExplenation}>
-          Using SVG getPointAtLength() funciton to move carts along lines
+          Using SVG getPointAtLength() function to move carts along lines
         </small>
         Third, notifying <em>GameController</em> about arriving at a station is done by comparing cart progress to
         station &quot;progress&quot;. When a line is added, the Cart Movement Engine also builds an internal
@@ -266,7 +266,7 @@ return fullStationIdsRoute.slice(1, -1);
         <br />
         <br />
         <img src="/assets/docs-station-fire.png" />
-        <small className={styles.figureExplenationCenter}>Overcrawded station.</small>
+        <small className={styles.figureExplenationCenter}>Overcrowded station.</small>
         <br />
         <br />
         The main menu is a multistep dropdown nicely communicating to users what is the current game state or guiding
@@ -274,7 +274,7 @@ return fullStationIdsRoute.slice(1, -1);
         <br />
         <br />
         <img src="/assets/docs-menu.gif" />
-        <small className={styles.figureExplenation}>UI iteraction with the main menu.</small>
+        <small className={styles.figureExplenation}>UI interaction with the main menu.</small>
         <br />
         <br />
         Initially, I implemented the game board as SVG because it was easier to draw elements. But refactoring carts to
